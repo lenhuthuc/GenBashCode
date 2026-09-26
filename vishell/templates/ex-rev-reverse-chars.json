@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-rev-reverse-chars",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "word": {
+      "choice": [
+        "hello",
+        "world"
+      ]
+    },
+    "outname": {
+      "choice": [
+        "out.txt",
+        "flip.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf '{word}\\n' > f.txt",
+  "requests_vi": [
+    "đảo ngược từng ký tự trong f.txt, lưu vào {outname}",
+    "rev file f.txt ra {outname}",
+    "lật ngược ký tự của f.txt thành {outname}",
+    "đảo chữ trong f.txt ghi ra {outname}"
+  ],
+  "reference_command": "rev f.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cp f.txt {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {outname})\" = \"$(echo {word} | rev)\" ]"
+}

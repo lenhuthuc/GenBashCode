@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-touch-multiple-numbered",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        8
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "page",
+        "slide"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "md",
+        "txt"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo {n} file {prefix}_1..{prefix}_{n}.{ext}",
+    "tạo giúp tôi {n} file rỗng tên {prefix}",
+    "tạo hàng loạt {n} file .{ext} đặt tên {prefix}",
+    "làm ơn tạo {n} file {prefix} đuôi .{ext}"
+  ],
+  "reference_command": "for i in $(seq 1 {n}); do touch {prefix}_$i.{ext}; done",
+  "wrong_commands": [
+    "true",
+    "touch {prefix}_1.{ext}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(ls {prefix}_*.{ext} | wc -l)\" -eq {n} ]"
+}

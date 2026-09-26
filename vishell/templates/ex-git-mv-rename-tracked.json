@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-mv-rename-tracked",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "old": {
+      "choice": [
+        "old_name.py",
+        "src_old.txt"
+      ]
+    },
+    "new": {
+      "choice": [
+        "new_name.py",
+        "src_new.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo x > {old}; git add {old}; git commit -q -m init",
+  "requests_vi": [
+    "đổi tên file {old} thành {new} trong git",
+    "git mv {old} thành {new}",
+    "rename {old} sang {new} và giữ lịch sử git",
+    "đổi tên có theo dõi git từ {old} sang {new}"
+  ],
+  "reference_command": "git mv {old} {new} && git commit -q -m rename",
+  "wrong_commands": [
+    "true",
+    "mv {old} {new}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {old} ] && [ -f {new} ] && [ -z \"$(git status --porcelain)\" ]"
+}

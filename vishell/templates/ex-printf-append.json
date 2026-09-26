@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-printf-append",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "notes.log",
+        "history.txt"
+      ]
+    },
+    "line": {
+      "choice": [
+        "done",
+        "checked"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo existing_$i; done > {fname}",
+  "requests_vi": [
+    "thêm dòng '{line}' vào cuối file {fname}",
+    "append '{line}' vào {fname}",
+    "ghi thêm '{line}' vào file {fname} mà không xoá nội dung cũ",
+    "bổ sung dòng '{line}' ở cuối {fname}"
+  ],
+  "reference_command": "echo '{line}' >> {fname}",
+  "wrong_commands": [
+    "true",
+    "echo '{line}' > {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(tail -n 1 {fname})\" = \"{line}\" ] && [ \"$(wc -l < {fname})\" -eq $(({n} + 1)) ]"
+}

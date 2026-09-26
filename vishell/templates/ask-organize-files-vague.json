@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-organize-files-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "sắp xếp lại các file cho gọn giúp tôi",
+    "tổ chức lại thư mục này",
+    "sắp xếp file theo loại giúp tôi",
+    "dọn cho có tổ chức chút"
+  ],
+  "clarify_question_vi": "Bạn muốn sắp xếp theo tiêu chí nào (loại file, ngày tạo, tên), và có tạo thư mục con không?",
+  "reference_command": "",
+  "wrong_commands": []
+}

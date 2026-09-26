@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-cp-recursive-dir",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "src": {
+      "choice": [
+        "proj",
+        "site"
+      ]
+    },
+    "dst": {
+      "choice": [
+        "proj_copy",
+        "site_copy"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    }
+  },
+  "setup": "mkdir {src}; for i in $(seq 1 {n}); do touch {src}/f_$i.txt; done",
+  "requests_vi": [
+    "sao chép toàn bộ thư mục {src} thành {dst}",
+    "copy thư mục {src} sang {dst}",
+    "tạo bản sao của folder {src} với tên {dst}",
+    "nhân bản thư mục {src} thành {dst}"
+  ],
+  "reference_command": "cp -r {src} {dst}",
+  "wrong_commands": [
+    "true",
+    "mv {src} {dst}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -d {src} ] && [ -d {dst} ] && [ \"$(ls {src} | wc -l)\" -eq \"$(ls {dst} | wc -l)\" ]"
+}

@@ -1,0 +1,28 @@
+{
+  "template_id": "pb-wc-bytes",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        5,
+        40
+      ]
+    }
+  },
+  "setup": "head -c {n} /dev/zero | tr '\\0' 'x' > f.txt",
+  "requests_vi": [
+    "file f.txt nặng bao nhiêu byte?",
+    "đếm số byte của f.txt",
+    "kiểm tra kích thước file f.txt theo byte",
+    "cho tôi biết dung lượng byte của f.txt"
+  ],
+  "reference_command": "wc -c < f.txt",
+  "wrong_commands": [
+    "wc -l < f.txt",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

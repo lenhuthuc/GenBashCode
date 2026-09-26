@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-lines-two-files-total",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        4,
+        40
+      ]
+    },
+    "ext": {
+      "choice": [
+        "log",
+        "out"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "half=$(( {total} / 2 )); seq 1 $half > {prefix}1.{ext}; seq $((half+1)) {total} > {prefix}2.{ext}",
+  "requests_vi": [
+    "đếm tổng số dòng của {prefix}1.{ext} và {prefix}2.{ext}",
+    "tổng số dòng trong hai file {prefix}1.{ext}, {prefix}2.{ext} là bao nhiêu?",
+    "cộng dồn số dòng của {prefix}1.{ext} và {prefix}2.{ext}",
+    "kiểm tra tổng dòng của hai file log này"
+  ],
+  "reference_command": "cat {prefix}1.{ext} {prefix}2.{ext} | wc -l",
+  "wrong_commands": [
+    "true",
+    "wc -l < {prefix}1.{ext}"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{total}"
+}

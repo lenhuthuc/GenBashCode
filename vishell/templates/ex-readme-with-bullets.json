@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-readme-with-bullets",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "title": {
+      "choice": [
+        "My Project",
+        "ViShell"
+      ]
+    },
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "item": {
+      "choice": [
+        "task",
+        "step"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo file README.md với tiêu đề '{title}' và {n} gạch đầu dòng {item}",
+    "viết README.md gồm heading '{title}' và {n} bullet {item}",
+    "tạo README.md cho project '{title}' với {n} dòng {item}",
+    "sinh README.md tiêu đề '{title}', liệt kê {n} {item}"
+  ],
+  "reference_command": "{ echo '# {title}'; for i in $(seq 1 {n}); do echo \"- {item} $i\"; done; } > README.md",
+  "wrong_commands": [
+    "true",
+    "echo '# {title}' > README.md"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < README.md)\" -eq $(({n} + 1)) ] && head -n 1 README.md | grep -q \"{title}\""
+}

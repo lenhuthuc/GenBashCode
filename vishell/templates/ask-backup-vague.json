@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-backup-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "backup dữ liệu lại giúp tôi",
+    "sao lưu mọi thứ trong này",
+    "làm giúp tôi bản backup",
+    "backup lại project này"
+  ],
+  "clarify_question_vi": "Bạn muốn backup những gì (toàn bộ thư mục hay chỉ vài file), và lưu bản backup ở đâu?",
+  "reference_command": "",
+  "wrong_commands": []
+}

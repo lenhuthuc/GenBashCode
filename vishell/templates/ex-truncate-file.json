@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-truncate-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "log.txt",
+        "buffer.dat"
+      ]
+    },
+    "n": {
+      "int": [
+        10,
+        20
+      ]
+    },
+    "size": {
+      "int": [
+        1,
+        5
+      ]
+    }
+  },
+  "setup": "head -c {n} /dev/zero | tr '\\0' 'x' > {fname}",
+  "requests_vi": [
+    "cắt file {fname} còn {size} byte",
+    "giảm kích thước {fname} xuống {size} byte",
+    "truncate file {fname} về {size} byte",
+    "cắt bớt {fname} chỉ giữ {size} byte đầu"
+  ],
+  "reference_command": "truncate -s {size} {fname}",
+  "wrong_commands": [
+    "true",
+    "truncate -s {n} {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(stat -c %s {fname})\" -eq {size} ]"
+}

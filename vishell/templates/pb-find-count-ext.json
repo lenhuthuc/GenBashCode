@@ -1,0 +1,35 @@
+{
+  "template_id": "pb-find-count-ext",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "ext": {
+      "choice": [
+        "log",
+        "tmp",
+        "bak"
+      ]
+    }
+  },
+  "setup": "n_other=$(( {n} + 1 )); for i in $(seq 1 {n}); do touch file_$i.{ext}; done; for i in $(seq 1 $n_other); do touch other_$i.txt; done",
+  "requests_vi": [
+    "đếm số file .{ext} trong thư mục hiện tại",
+    "có bao nhiêu file .{ext} ở đây?",
+    "tìm và đếm file đuôi .{ext}",
+    "kiểm tra số lượng file .{ext}"
+  ],
+  "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" | wc -l",
+  "wrong_commands": [
+    "find . -maxdepth 1 -name \"*.txt\" | wc -l",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

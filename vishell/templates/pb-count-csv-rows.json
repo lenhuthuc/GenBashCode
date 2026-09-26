@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-csv-rows",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        15
+      ]
+    },
+    "col": {
+      "choice": [
+        "name",
+        "id"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "x",
+        "y"
+      ]
+    }
+  },
+  "setup": "echo '{col},value' > data.csv; for i in $(seq 1 {n}); do echo \"row$i,$i\" >> data.csv; done",
+  "requests_vi": [
+    "đếm số dòng dữ liệu trong data.csv (không tính header)",
+    "data.csv có bao nhiêu bản ghi?",
+    "kiểm tra số dòng của data.csv trừ header",
+    "file csv này có mấy row dữ liệu?"
+  ],
+  "reference_command": "tail -n +2 data.csv | wc -l",
+  "wrong_commands": [
+    "true",
+    "wc -l < data.csv"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

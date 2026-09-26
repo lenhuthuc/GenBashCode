@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-lowercase-filenames",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "FILE",
+        "DOC"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "TXT",
+        "DAT"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch {prefix}_$i.{ext}; done",
+  "requests_vi": [
+    "đổi tên toàn bộ file .{ext} sang chữ thường",
+    "viết thường hoá tên file {prefix} lại",
+    "đổi tên file {prefix}_*.{ext} thành chữ thường hết",
+    "chuyển tên file này về lowercase"
+  ],
+  "reference_command": "for f in {prefix}_*.{ext}; do mv \"$f\" \"$(echo \"$f\" | tr 'A-Z' 'a-z')\"; done",
+  "wrong_commands": [
+    "true",
+    "touch lowercase_done.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(ls {prefix}_*.{ext} 2>/dev/null)\" ] && [ \"$(ls $(echo {prefix} | tr A-Z a-z)_*.$(echo {ext} | tr A-Z a-z) 2>/dev/null | wc -l)\" -eq {n} ]"
+}

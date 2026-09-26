@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-git-status-clean",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "a.txt",
+        "b.txt"
+      ]
+    },
+    "msg": {
+      "choice": [
+        "init",
+        "first-commit"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo hi > {fname}; git add {fname}; git commit -q -m '{msg}'",
+  "requests_vi": [
+    "kiểm tra trạng thái git của thư mục này",
+    "xem git status hiện tại",
+    "repo này có thay đổi gì chưa commit không?",
+    "git đang ở trạng thái nào?"
+  ],
+  "reference_command": "git status --porcelain | wc -l",
+  "wrong_commands": [
+    "true",
+    "echo x >> {fname} && git status --porcelain | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "0"
+}

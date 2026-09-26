@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-append-lines-loop",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "fname": {
+      "choice": [
+        "config.ini",
+        "settings.txt"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "opt",
+        "key"
+      ]
+    }
+  },
+  "setup": "touch {fname}",
+  "requests_vi": [
+    "thêm {n} dòng cấu hình vào file {fname}",
+    "ghi thêm {n} dòng {prefix} vào {fname}",
+    "bổ sung {n} entry {prefix} vào cuối {fname}",
+    "append {n} dòng {prefix}_i vào {fname}"
+  ],
+  "reference_command": "for i in $(seq 1 {n}); do echo {prefix}_$i=1 >> {fname}; done",
+  "wrong_commands": [
+    "true",
+    "echo {prefix}_1=1 >> {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {fname})\" -eq {n} ]"
+}

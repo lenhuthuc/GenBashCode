@@ -1,0 +1,19 @@
+{
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "train": "/kaggle/working/vishell/data/smoke/sft_train.jsonl",
+  "val": "/kaggle/working/vishell/data/smoke/sft_val.jsonl",
+  "out_dir": "/kaggle/working/vishell/checkpoints/smoke/sft_qwen25coder15b_lora",
+  "system_prompt": "Bạn là trợ lý dòng lệnh Linux. Hãy chuyển yêu cầu của người dùng thành đúng MỘT lệnh bash trên một dòng. Chỉ trả về lệnh, không giải thích, không dùng markdown.",
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "epochs": 2,
+  "lr": 0.0002,
+  "max_len": 384,
+  "seed": 42,
+  "per_device_bs": 8,
+  "grad_accum": 1,
+  "max_steps": 20,
+  "save_steps": 10,
+  "eval_steps": 10
+}

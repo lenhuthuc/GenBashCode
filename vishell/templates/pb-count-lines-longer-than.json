@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-lines-longer-than",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_long": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "n_short": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "unused_word": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_long}); do echo 'this is a long enough line here'; done > f.txt; for i in $(seq 1 {n_short}); do echo hi; done >> f.txt",
+  "requests_vi": [
+    "đếm số dòng dài hơn 10 ký tự trong f.txt",
+    "có bao nhiêu dòng dài trong f.txt?",
+    "kiểm tra số dòng có độ dài trên 10 trong f.txt",
+    "tìm các dòng dài (>10 ký tự) và đếm"
+  ],
+  "reference_command": "awk 'length > 10' f.txt | wc -l",
+  "wrong_commands": [
+    "true",
+    "wc -l < f.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_long}"
+}

@@ -1,0 +1,5 @@
+{"id": "tr-000045", "nl_vi": "tìm tất cả file có đuôi .mp3 trong thư mục /usr/share/ và di chuyển chúng vào thư mục /tmp/music/", "bash": "find /usr/share/ -name *.mp3 -exec mv '{}' /tmp/music/ ;", "variant": "clean"}
+{"id": "tr-000018", "nl_vi": "tìm tất cả file png trong thư mục hiện tại có mặt trong danh sách mẫu file \"search.txt\"", "bash": "find . -name '*.png' | grep -f <(sed 's?.*?/[0-9]_[0-9]_[0-9]_&_?' search.txt)", "variant": "clean"}
+{"id": "tr-000024", "nl_vi": "tìm tất cả file trong thư mục hiện tại, in ra chúng với ký tự null làm dấu cách, trộn ngẫu nhiên và in ra cái đầu tiên", "bash": "find ~ -type f -print0 | xargs -0 -n1 shuf -e -z | head -n 1", "variant": "clean"}
+{"id": "tr-000045-n", "nl_vi": "find tất cả file có đuôi .mp3 trong thư mục /usr/share/ và move chúng vào dir /tmp/music/", "bash": "find /usr/share/ -name *.mp3 -exec mv '{}' /tmp/music/ ;", "variant": "noisy"}
+{"id": "tr-000010", "nl_vi": "di chuyển file đầu tiên được sắp xếp ngẫu nhiên trong thư mục hiện tại vào thư mục /tmp", "bash": "mv $(ls | sort -R | head -n 1) /tmp", "variant": "clean"}

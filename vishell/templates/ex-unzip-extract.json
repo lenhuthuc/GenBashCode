@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-unzip-extract",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "outdir": {
+      "choice": [
+        "unpacked",
+        "content"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "dat"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.{ext}; done; zip -q pack.zip *.{ext}; rm -f *.{ext}; mkdir {outdir}",
+  "requests_vi": [
+    "giải nén pack.zip vào thư mục {outdir}",
+    "unzip file pack.zip ra {outdir}",
+    "giải nén giúp tôi pack.zip vào {outdir}",
+    "mở file zip pack.zip vào thư mục {outdir}"
+  ],
+  "reference_command": "unzip -q pack.zip -d {outdir}",
+  "wrong_commands": [
+    "true",
+    "cp pack.zip {outdir}/"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(ls {outdir}/*.{ext} 2>/dev/null | wc -l)\" -eq {n} ]"
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-tail-n",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        20,
+        30
+      ]
+    },
+    "n": {
+      "int": [
+        2,
+        8
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "entry",
+        "rec"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {total}); do echo {prefix}$i; done > f.txt",
+  "requests_vi": [
+    "cho tôi xem {n} dòng cuối của f.txt",
+    "hiển thị {n} dòng cuối cùng trong f.txt",
+    "in ra {n} dòng cuối của file f.txt",
+    "xem {n} dòng cuối f.txt"
+  ],
+  "reference_command": "tail -n {n} f.txt",
+  "wrong_commands": [
+    "head -n {n} f.txt",
+    "true"
+  ],
+  "check_type": "stdout_contains",
+  "check_expected": "{prefix}{total}\n"
+}

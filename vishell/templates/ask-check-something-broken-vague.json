@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-check-something-broken-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "có gì đó bị lỗi, kiểm tra giúp tôi",
+    "sao cái này chạy không được, xem giúp",
+    "check giúp tôi tại sao bị lỗi",
+    "hình như có bug, tìm giúp tôi"
+  ],
+  "clarify_question_vi": "Bạn có thể mô tả cụ thể hiện tượng lỗi (thông báo lỗi, khi nào xảy ra) hoặc file/lệnh liên quan không?",
+  "reference_command": "",
+  "wrong_commands": []
+}

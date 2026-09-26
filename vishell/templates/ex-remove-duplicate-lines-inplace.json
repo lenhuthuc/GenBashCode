@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-remove-duplicate-lines-inplace",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n_unique": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "n_dup": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "row",
+        "line"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_unique}); do echo {prefix}_$i; done > f.txt; for i in $(seq 1 {n_dup}); do echo {prefix}_1; done >> f.txt",
+  "requests_vi": [
+    "loại bỏ dòng trùng lặp trong f.txt (sửa trực tiếp)",
+    "xoá dòng lặp trong f.txt luôn tại chỗ",
+    "dedupe file f.txt giúp tôi",
+    "làm sạch f.txt, bỏ dòng trùng"
+  ],
+  "reference_command": "sort -u f.txt -o f.txt",
+  "wrong_commands": [
+    "true",
+    "sort f.txt -o f.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < f.txt)\" -eq {n_unique} ]"
+}

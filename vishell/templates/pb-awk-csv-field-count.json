@@ -1,0 +1,34 @@
+{
+  "template_id": "pb-awk-csv-field-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "value": {
+      "choice": [
+        "active",
+        "pending"
+      ]
+    },
+    "n_match": {
+      "int": [
+        1,
+        6
+      ]
+    }
+  },
+  "setup": "n_other=$(( {n_match} + 1 )); for i in $(seq 1 {n_match}); do echo \"$i,{value}\"; done > data.csv; for i in $(seq 1 $n_other); do echo \"$i,closed\"; done >> data.csv",
+  "requests_vi": [
+    "đếm số dòng có trạng thái {value} trong data.csv",
+    "data.csv có bao nhiêu dòng {value}?",
+    "kiểm tra số bản ghi {value} trong data.csv",
+    "đếm dòng cột 2 bằng {value} trong data.csv"
+  ],
+  "reference_command": "awk -F, '$2==\"{value}\"' data.csv | wc -l",
+  "wrong_commands": [
+    "true",
+    "awk -F, '$2==\"closed\"' data.csv | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_match}"
+}

@@ -1,0 +1,23 @@
+[project]
+name = "vishell"
+version = "0.1.0"
+description = "ViShell: Vietnamese NL -> bash with execute/probe/ask RL pipeline"
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=2",
+  "pyyaml>=6",
+  "bashlex>=0.18",
+]
+
+[project.optional-dependencies]
+train = ["unsloth", "trl>=0.20", "peft", "accelerate", "torch", "transformers", "datasets", "torchao>0.16.0"]
+data = ["requests", "pandas"]
+demo = ["gradio"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["vishell*"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

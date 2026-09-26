@@ -1,0 +1,17 @@
+{
+  "model": "Qwen/Qwen3.5-4B",
+  "multimodal": true,
+  "input": "/kaggle/working/vishell/data/smoke/to_translate.jsonl",
+  "out_dir": "/kaggle/working/vishell/data/smoke/translate_chunks",
+  "chunk_size": 25,
+  "max_model_len": 2048,
+  "max_tokens": 256,
+  "gpu_mem": 0.9,
+  "seed": 42,
+  "temperatures": [
+    0.2,
+    0.7,
+    0.9
+  ],
+  "max_num_seqs": 64
+}

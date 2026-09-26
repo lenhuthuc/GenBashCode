@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-env-var-read",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "name": {
+      "choice": [
+        "APP_ENV",
+        "STAGE"
+      ]
+    },
+    "value": {
+      "choice": [
+        "staging",
+        "testing"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "kiểm tra giá trị biến môi trường {name}",
+    "biến {name} đang được đặt là gì?",
+    "cho tôi xem giá trị của {name}",
+    "in ra biến môi trường {name}"
+  ],
+  "reference_command": "{name}={value} bash -c 'printenv {name}'",
+  "wrong_commands": [
+    "true",
+    "{name}={value} bash -c 'printenv HOME'"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{value}"
+}

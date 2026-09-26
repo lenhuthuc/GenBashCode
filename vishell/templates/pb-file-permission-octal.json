@@ -1,0 +1,41 @@
+{
+  "template_id": "pb-file-permission-octal",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "mode": {
+      "choice": [
+        "644",
+        "755",
+        "600"
+      ]
+    },
+    "fname": {
+      "choice": [
+        "script.sh",
+        "note.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "touch {fname}; chmod {mode} {fname}",
+  "requests_vi": [
+    "file {fname} đang có quyền gì?",
+    "kiểm tra quyền truy cập của {fname}",
+    "cho tôi biết permission của {fname} là bao nhiêu",
+    "xem mode file {fname}"
+  ],
+  "reference_command": "stat -c %a {fname}",
+  "wrong_commands": [
+    "true",
+    "stat -c %a ."
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{mode}"
+}

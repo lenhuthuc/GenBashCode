@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-count-files-write-marker",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "csv"
+      ]
+    },
+    "outname": {
+      "choice": [
+        "count.result",
+        "total.result"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.{ext}; done",
+  "requests_vi": [
+    "đếm số file .{ext} rồi ghi kết quả vào {outname}",
+    "tạo file {outname} chứa số lượng file .{ext}",
+    "ghi số file .{ext} hiện có vào {outname}",
+    "lưu tổng số file .{ext} vào {outname}"
+  ],
+  "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" | wc -l > {outname}",
+  "wrong_commands": [
+    "true",
+    "echo 0 > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {outname})\" -eq {n} ]"
+}

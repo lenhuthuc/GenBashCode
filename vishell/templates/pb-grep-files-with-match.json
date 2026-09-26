@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-grep-files-with-match",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "pattern": {
+      "choice": [
+        "TODO",
+        "FIXME"
+      ]
+    },
+    "n_with": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "n_without": {
+      "int": [
+        1,
+        4
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_with}); do echo '{pattern} here' > has_$i.txt; done; for i in $(seq 1 {n_without}); do echo 'nothing' > clean_$i.txt; done",
+  "requests_vi": [
+    "tìm các file chứa {pattern}",
+    "file nào có chữ {pattern}?",
+    "liệt kê file chứa từ khoá {pattern}",
+    "kiểm tra file nào ghi {pattern}"
+  ],
+  "reference_command": "grep -l {pattern} has_*.txt clean_*.txt 2>/dev/null | wc -l",
+  "wrong_commands": [
+    "true",
+    "grep -l no_such_pattern_xyz has_*.txt clean_*.txt 2>/dev/null | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_with}"
+}

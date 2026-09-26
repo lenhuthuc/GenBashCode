@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-rm-recursive-dir",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "dirname": {
+      "choice": [
+        "cache",
+        "build"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "ext": {
+      "choice": [
+        "o",
+        "log"
+      ]
+    }
+  },
+  "setup": "mkdir {dirname}; for i in $(seq 1 {n}); do touch {dirname}/f_$i.{ext}; done",
+  "requests_vi": [
+    "xoá toàn bộ thư mục {dirname}",
+    "xoá thư mục {dirname} và mọi thứ bên trong",
+    "dọn dẹp thư mục {dirname} giúp tôi",
+    "gỡ bỏ hẳn thư mục {dirname}"
+  ],
+  "reference_command": "rm -rf {dirname}",
+  "wrong_commands": [
+    "true",
+    "rmdir {dirname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {dirname} ]"
+}

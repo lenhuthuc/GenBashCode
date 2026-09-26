@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-stash",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "work.txt",
+        "wip.py"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo base > {fname}; git add {fname}; git commit -q -m init; echo changed > {fname}",
+  "requests_vi": [
+    "stash thay đổi hiện tại của {fname}",
+    "tạm cất thay đổi chưa commit vào git stash",
+    "lưu tạm các thay đổi bằng git stash",
+    "đưa thay đổi chưa lưu vào stash giúp tôi"
+  ],
+  "reference_command": "git stash -q",
+  "wrong_commands": [
+    "true",
+    "git checkout -- {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {fname})\" = \"base\" ] && [ -n \"$(git stash list)\" ]"
+}

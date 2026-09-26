@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-symlinks",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_link": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "n_reg": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "target": {
+      "choice": [
+        "real.txt",
+        "orig.txt"
+      ]
+    }
+  },
+  "setup": "echo x > {target}; for i in $(seq 1 {n_link}); do ln -s {target} link_$i; done; for i in $(seq 1 {n_reg}); do touch reg_$i.txt; done",
+  "requests_vi": [
+    "đếm số symlink trong thư mục hiện tại",
+    "có bao nhiêu liên kết mềm (symlink) ở đây?",
+    "kiểm tra số lượng symbolic link",
+    "tìm và đếm symlink giúp tôi"
+  ],
+  "reference_command": "find . -maxdepth 1 -type l | wc -l",
+  "wrong_commands": [
+    "true",
+    "echo 0"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_link}"
+}

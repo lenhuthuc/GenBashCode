@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-python-write-json-output",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "key": {
+      "choice": [
+        "status",
+        "result"
+      ]
+    },
+    "value": {
+      "choice": [
+        "ok",
+        "done"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf \"import json\\njson.dump({'{key}': '{value}'}, open('out.json','w'))\\n\" > gen.py",
+  "requests_vi": [
+    "chạy gen.py để tạo file out.json",
+    "thực thi script gen.py sinh ra out.json",
+    "chạy giúp tôi gen.py để có file out.json",
+    "run gen.py tạo output json"
+  ],
+  "reference_command": "python3 gen.py",
+  "wrong_commands": [
+    "true",
+    "touch out.json"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(jq -r .{key} out.json)\" = \"{value}\" ]"
+}

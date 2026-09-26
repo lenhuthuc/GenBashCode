@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-env-file-export",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "fname": {
+      "choice": [
+        ".env",
+        "vars.env"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "VAR",
+        "OPT"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo file {fname} chứa {n} biến môi trường {prefix}_i=i",
+    "sinh file {fname} với {n} dòng {prefix}",
+    "tạo giúp tôi {fname} chứa {n} entry {prefix}",
+    "viết {n} biến {prefix} vào file {fname}"
+  ],
+  "reference_command": "for i in $(seq 1 {n}); do echo {prefix}_$i=$i >> {fname}; done",
+  "wrong_commands": [
+    "true",
+    "touch {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {fname})\" -eq {n} ] && grep -q \"{prefix}_1=1\" {fname}"
+}

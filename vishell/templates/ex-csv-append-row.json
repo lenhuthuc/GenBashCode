@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-csv-append-row",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "name": {
+      "choice": [
+        "alice",
+        "bob"
+      ]
+    },
+    "value": {
+      "int": [
+        1,
+        100
+      ]
+    },
+    "col": {
+      "choice": [
+        "name",
+        "user"
+      ]
+    }
+  },
+  "setup": "echo '{col},value' > data.csv",
+  "requests_vi": [
+    "thêm dòng '{name},{value}' vào cuối data.csv",
+    "append '{name},{value}' vào data.csv",
+    "ghi thêm bản ghi {name} với giá trị {value} vào data.csv",
+    "bổ sung dòng dữ liệu {name},{value} vào data.csv"
+  ],
+  "reference_command": "echo '{name},{value}' >> data.csv",
+  "wrong_commands": [
+    "true",
+    "echo '{name},{value}' > data.csv"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < data.csv)\" -eq 2 ] && [ \"$(tail -n 1 data.csv)\" = \"{name},{value}\" ]"
+}

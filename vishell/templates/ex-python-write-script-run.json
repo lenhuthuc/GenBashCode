@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-python-write-script-run",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "a": {
+      "int": [
+        1,
+        20
+      ]
+    },
+    "b": {
+      "int": [
+        1,
+        20
+      ]
+    },
+    "outname": {
+      "choice": [
+        "result.txt",
+        "sum.txt"
+      ]
+    }
+  },
+  "setup": "printf 'print({a} + {b})' > calc.py",
+  "requests_vi": [
+    "chạy file calc.py và lưu kết quả vào {outname}",
+    "thực thi calc.py, ghi output ra {outname}",
+    "chạy script calc.py rồi lưu vào file {outname}",
+    "run calc.py và redirect kết quả vào {outname}"
+  ],
+  "reference_command": "python3 calc.py > {outname}",
+  "wrong_commands": [
+    "true",
+    "cat calc.py > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {outname})\" = \"$(({a} + {b}))\" ]"
+}

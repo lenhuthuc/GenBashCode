@@ -1,0 +1,11 @@
+# Colab A100/L4: bf16 hardware, larger batches, fewer grad-accum steps.
+run_name: full
+
+train:
+  dtype: bf16
+  per_device_bs: 32
+  grad_accum: 2
+
+grpo:
+  dtype: bf16
+  num_generations: 16

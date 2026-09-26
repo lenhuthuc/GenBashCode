@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-total-bytes-two-files",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        4,
+        60
+      ]
+    },
+    "ext": {
+      "choice": [
+        "bin",
+        "dat"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "half=$(( {total} / 2 )); head -c $half /dev/zero > {prefix}1.{ext}; head -c $(({total} - half)) /dev/zero > {prefix}2.{ext}",
+  "requests_vi": [
+    "tổng kích thước byte của {prefix}1.{ext} và {prefix}2.{ext} là bao nhiêu?",
+    "đếm tổng số byte của hai file {prefix}1.{ext}, {prefix}2.{ext}",
+    "cộng dung lượng {prefix}1.{ext} và {prefix}2.{ext} giúp tôi",
+    "kiểm tra tổng byte của hai file này"
+  ],
+  "reference_command": "cat {prefix}1.{ext} {prefix}2.{ext} | wc -c",
+  "wrong_commands": [
+    "true",
+    "wc -c < {prefix}1.{ext}"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{total}"
+}

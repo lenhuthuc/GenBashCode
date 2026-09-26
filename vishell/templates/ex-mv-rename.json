@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-mv-rename",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "old": {
+      "choice": [
+        "draft.md",
+        "temp.txt"
+      ]
+    },
+    "new": {
+      "choice": [
+        "final.md",
+        "done.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo hi > {old}",
+  "requests_vi": [
+    "đổi tên file {old} thành {new}",
+    "đổi {old} sang {new}",
+    "rename {old} thành {new} giúp tôi",
+    "đổi tên giúp tôi {old} -> {new}"
+  ],
+  "reference_command": "mv {old} {new}",
+  "wrong_commands": [
+    "true",
+    "cp {old} {new}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {old} ] && [ -f {new} ]"
+}

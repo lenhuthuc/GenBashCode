@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-files-total-any-ext",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "log"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "f",
+        "doc"
+      ]
+    }
+  },
+  "setup": "n_dirs=$(( {n} + 1 )); for i in $(seq 1 {n}); do touch {prefix}_$i.{ext}; done; for i in $(seq 1 $n_dirs); do mkdir d_$i; done",
+  "requests_vi": [
+    "đếm tổng số file (không tính thư mục) trong thư mục hiện tại",
+    "có bao nhiêu file ở đây (không kể folder)?",
+    "kiểm tra tổng số file, bỏ qua thư mục con",
+    "đếm số file thường trong thư mục này"
+  ],
+  "reference_command": "find . -maxdepth 1 -type f | wc -l",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -type d | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

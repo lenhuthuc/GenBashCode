@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-diff-files-line-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        6,
+        20
+      ]
+    },
+    "changed_line": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "ext": {
+      "choice": [
+        "conf",
+        "cfg"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > a.{ext}; cp a.{ext} b.{ext}; sed -i '1s/.*/CHANGED/' b.{ext}",
+  "requests_vi": [
+    "so sánh a.{ext} và b.{ext} khác nhau mấy dòng",
+    "kiểm tra số dòng khác biệt giữa a.{ext} và b.{ext}",
+    "diff hai file a.{ext} b.{ext} rồi đếm số dòng thay đổi",
+    "cho tôi biết a.{ext} và b.{ext} khác nhau ra sao"
+  ],
+  "reference_command": "diff a.{ext} b.{ext} | grep -c '^>'",
+  "wrong_commands": [
+    "true",
+    "diff a.{ext} b.{ext} | grep -c '^<' | grep -v 1"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "1"
+}

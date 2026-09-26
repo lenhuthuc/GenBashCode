@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-batch-rename-loop",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "old_prefix": {
+      "choice": [
+        "img",
+        "photo"
+      ]
+    },
+    "new_prefix": {
+      "choice": [
+        "picture",
+        "pic"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch {old_prefix}_$i.jpg; done",
+  "requests_vi": [
+    "đổi tên tất cả file {old_prefix}_*.jpg thành {new_prefix}_*.jpg",
+    "đổi tiền tố {old_prefix} thành {new_prefix} cho các file jpg",
+    "rename hàng loạt {old_prefix} sang {new_prefix}",
+    "đổi tên toàn bộ ảnh {old_prefix} thành {new_prefix}"
+  ],
+  "reference_command": "i=0; for f in {old_prefix}_*.jpg; do i=$(expr $i + 1); mv \"$f\" \"{new_prefix}_$i.jpg\"; done",
+  "wrong_commands": [
+    "true",
+    "touch {new_prefix}_1.jpg"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(ls {old_prefix}_*.jpg 2>/dev/null)\" ] && [ \"$(ls {new_prefix}_*.jpg 2>/dev/null | wc -l)\" -eq {n} ]"
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-git-log-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        5
+      ]
+    },
+    "fname": {
+      "choice": [
+        "a.txt",
+        "b.txt"
+      ]
+    },
+    "branch": {
+      "choice": [
+        "main",
+        "trunk"
+      ]
+    }
+  },
+  "setup": "git init -q -b {branch}; git config user.email a@a.com; git config user.name a; for i in $(seq 1 {n}); do echo $i >> {fname}; git add {fname}; git commit -q -m commit_$i; done",
+  "requests_vi": [
+    "repo này có bao nhiêu commit?",
+    "đếm số lượng commit trong git log",
+    "kiểm tra lịch sử commit có mấy lần",
+    "xem tổng số commit của repo hiện tại"
+  ],
+  "reference_command": "git log --oneline | wc -l",
+  "wrong_commands": [
+    "true",
+    "git log --oneline | head -n 1 | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

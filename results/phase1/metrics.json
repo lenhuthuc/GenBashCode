@@ -1,0 +1,240 @@
+{
+  "run": "smoke",
+  "smoke": true,
+  "test_source": "westenfelder/NL2SH-ALFA [test] — kiểm tra thủ công (arXiv 2502.06858)",
+  "n_test": 50,
+  "gold_bashlex_parse_rate": 0.98,
+  "summary": [
+    {
+      "system": "base",
+      "variant": "clean",
+      "n": 50,
+      "parse_rate": 0.98,
+      "exact_match": 0.32,
+      "utility_acc": 0.62
+    },
+    {
+      "system": "sft",
+      "variant": "clean",
+      "n": 50,
+      "parse_rate": 0.98,
+      "exact_match": 0.24,
+      "utility_acc": 0.66
+    },
+    {
+      "system": "base",
+      "variant": "noisy",
+      "n": 50,
+      "parse_rate": 1.0,
+      "exact_match": 0.2,
+      "utility_acc": 0.56
+    },
+    {
+      "system": "sft",
+      "variant": "noisy",
+      "n": 50,
+      "parse_rate": 1.0,
+      "exact_match": 0.14,
+      "utility_acc": 0.56
+    },
+    {
+      "system": "base",
+      "variant": "en",
+      "n": 50,
+      "parse_rate": 0.98,
+      "exact_match": 0.4,
+      "utility_acc": 0.74
+    },
+    {
+      "system": "sft",
+      "variant": "en",
+      "n": 50,
+      "parse_rate": 0.98,
+      "exact_match": 0.38,
+      "utility_acc": 0.8
+    }
+  ],
+  "by_difficulty": [
+    {
+      "system": "base",
+      "variant": "clean",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.55,
+      "utility_acc": 0.65
+    },
+    {
+      "system": "base",
+      "variant": "clean",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.21428571428571427,
+      "utility_acc": 0.6428571428571429
+    },
+    {
+      "system": "base",
+      "variant": "clean",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.125,
+      "utility_acc": 0.5625
+    },
+    {
+      "system": "base",
+      "variant": "en",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.75,
+      "utility_acc": 0.85
+    },
+    {
+      "system": "base",
+      "variant": "en",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.21428571428571427,
+      "utility_acc": 0.7142857142857143
+    },
+    {
+      "system": "base",
+      "variant": "en",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.125,
+      "utility_acc": 0.625
+    },
+    {
+      "system": "base",
+      "variant": "noisy",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.35,
+      "utility_acc": 0.55
+    },
+    {
+      "system": "base",
+      "variant": "noisy",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.07142857142857142,
+      "utility_acc": 0.5
+    },
+    {
+      "system": "base",
+      "variant": "noisy",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.125,
+      "utility_acc": 0.625
+    },
+    {
+      "system": "sft",
+      "variant": "clean",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.45,
+      "utility_acc": 0.6
+    },
+    {
+      "system": "sft",
+      "variant": "clean",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.14285714285714285,
+      "utility_acc": 0.7857142857142857
+    },
+    {
+      "system": "sft",
+      "variant": "clean",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.0625,
+      "utility_acc": 0.625
+    },
+    {
+      "system": "sft",
+      "variant": "en",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.75,
+      "utility_acc": 0.85
+    },
+    {
+      "system": "sft",
+      "variant": "en",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.21428571428571427,
+      "utility_acc": 0.9285714285714286
+    },
+    {
+      "system": "sft",
+      "variant": "en",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.0625,
+      "utility_acc": 0.625
+    },
+    {
+      "system": "sft",
+      "variant": "noisy",
+      "difficulty": 0,
+      "n": 20,
+      "exact_match": 0.2,
+      "utility_acc": 0.3
+    },
+    {
+      "system": "sft",
+      "variant": "noisy",
+      "difficulty": 1,
+      "n": 14,
+      "exact_match": 0.14285714285714285,
+      "utility_acc": 0.7857142857142857
+    },
+    {
+      "system": "sft",
+      "variant": "noisy",
+      "difficulty": 2,
+      "n": 16,
+      "exact_match": 0.0625,
+      "utility_acc": 0.6875
+    }
+  ],
+  "config": {
+    "translator": "Qwen/Qwen3.5-4B",
+    "sft_base": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "epochs": 2,
+    "lr": 0.0002,
+    "noise_ratio": 0.3,
+    "noisy_mode": "augment",
+    "seed": 42
+  },
+  "data_stats": {
+    "test_source": "westenfelder/NL2SH-ALFA [test] — kiểm tra thủ công (arXiv 2502.06858)",
+    "train_raw": 40639,
+    "test_raw": 300,
+    "train_after_clean": 50,
+    "test_used": 50,
+    "train_dropped": {
+      "overlap_test": 73,
+      "duplicate": 106,
+      "too_long": 13,
+      "bashlex_fail": 115
+    },
+    "test_gold_bashlex_parse_rate": 0.9967
+  },
+  "filter_stats": {
+    "train_drop_missing_token": 2,
+    "train_drop_length_ratio": 1,
+    "train_drop_cjk": 1,
+    "final_train": 42,
+    "final_val": 4,
+    "final_test": 50,
+    "train_with_noisy": 6,
+    "sft_train_examples": 48,
+    "sft_val_examples": 5,
+    "test_flagged_vi_check": 1
+  }
+}

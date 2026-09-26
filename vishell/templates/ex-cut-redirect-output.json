@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-cut-redirect-output",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "a": {
+      "choice": [
+        "red",
+        "blue"
+      ]
+    },
+    "b": {
+      "choice": [
+        "10",
+        "20"
+      ]
+    },
+    "outname": {
+      "choice": [
+        "col1.txt",
+        "names.txt"
+      ]
+    }
+  },
+  "setup": "printf '{a},{b}\\n' > data.csv",
+  "requests_vi": [
+    "lấy cột đầu của data.csv lưu vào {outname}",
+    "trích cột 1 từ data.csv ra file {outname}",
+    "cắt cột đầu tiên của data.csv thành {outname}",
+    "tạo file {outname} chứa cột 1 của data.csv"
+  ],
+  "reference_command": "cut -d, -f1 data.csv > {outname}",
+  "wrong_commands": [
+    "true",
+    "cut -d, -f2 data.csv > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {outname})\" = \"{a}\" ]"
+}

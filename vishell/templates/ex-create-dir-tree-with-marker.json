@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-create-dir-tree-with-marker",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "a": {
+      "choice": [
+        "module_a",
+        "pkg_a"
+      ]
+    },
+    "b": {
+      "choice": [
+        "module_b",
+        "pkg_b"
+      ]
+    },
+    "marker": {
+      "choice": [
+        "__init__.py",
+        ".keep"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo hai thư mục {a} và {b}, mỗi thư mục có file {marker}",
+    "tạo cấu trúc thư mục {a}, {b} kèm file {marker} bên trong",
+    "làm ơn tạo folder {a} và {b}, thêm file {marker} vào mỗi cái",
+    "tạo {a}/{marker} và {b}/{marker}"
+  ],
+  "reference_command": "mkdir -p {a} {b} && touch {a}/{marker} {b}/{marker}",
+  "wrong_commands": [
+    "true",
+    "mkdir -p {a} {b}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {a}/{marker} ] && [ -f {b}/{marker} ]"
+}

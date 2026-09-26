@@ -1,0 +1,12 @@
+{
+  "train_drop_missing_token": 2,
+  "train_drop_length_ratio": 1,
+  "train_drop_cjk": 1,
+  "final_train": 42,
+  "final_val": 4,
+  "final_test": 50,
+  "train_with_noisy": 6,
+  "sft_train_examples": 48,
+  "sft_val_examples": 5,
+  "test_flagged_vi_check": 1
+}

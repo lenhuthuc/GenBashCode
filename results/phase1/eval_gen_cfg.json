@@ -1,0 +1,20 @@
+{
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_path": "/kaggle/working/vishell/checkpoints/smoke/sft_qwen25coder15b_lora/final",
+  "lora_rank": 16,
+  "test": "/kaggle/working/vishell/data/smoke/final_test.jsonl",
+  "out": "/kaggle/working/vishell/results/smoke/predictions.jsonl",
+  "systems": [
+    "base",
+    "sft"
+  ],
+  "variants": {
+    "clean": "nl_vi_clean",
+    "noisy": "nl_vi_noisy",
+    "en": "nl"
+  },
+  "system_prompt": "Bạn là trợ lý dòng lệnh Linux. Hãy chuyển yêu cầu của người dùng thành đúng MỘT lệnh bash trên một dòng. Chỉ trả về lệnh, không giải thích, không dùng markdown.",
+  "max_tokens": 128,
+  "gpu_mem": 0.6,
+  "seed": 42
+}

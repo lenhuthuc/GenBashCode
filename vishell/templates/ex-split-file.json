@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-split-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        10,
+        30
+      ]
+    },
+    "lines_per": {
+      "int": [
+        2,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "part_",
+        "chunk_"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > big.txt",
+  "requests_vi": [
+    "chia file big.txt thành các phần {lines_per} dòng mỗi phần, tiền tố {prefix}",
+    "split file big.txt thành nhiều file nhỏ {lines_per} dòng, tên bắt đầu {prefix}",
+    "tách big.txt thành các file con {lines_per} dòng, prefix {prefix}",
+    "chia nhỏ big.txt mỗi phần {lines_per} dòng, đặt tên {prefix}"
+  ],
+  "reference_command": "split -l {lines_per} big.txt {prefix}",
+  "wrong_commands": [
+    "true",
+    "cp big.txt {prefix}aa"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(ls {prefix}* | wc -l)\" -ge 2 ]"
+}

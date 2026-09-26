@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-tac-reverse-lines",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        3,
+        15
+      ]
+    },
+    "outname": {
+      "choice": [
+        "reversed.txt",
+        "rev.txt"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > f.txt",
+  "requests_vi": [
+    "đảo ngược thứ tự dòng của f.txt, lưu ra {outname}",
+    "tac file f.txt ra {outname}",
+    "lật ngược nội dung f.txt thành {outname}",
+    "in ngược các dòng f.txt vào {outname}"
+  ],
+  "reference_command": "tac f.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cp f.txt {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(head -n 1 {outname})\" = \"{total}\" ]"
+}

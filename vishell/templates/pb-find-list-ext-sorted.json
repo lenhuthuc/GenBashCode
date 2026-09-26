@@ -1,0 +1,25 @@
+{
+  "template_id": "pb-find-list-ext-sorted",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {"int": [1, 99]},
+    "prefix": {"choice": ["file", "doc"]},
+    "ext": {"choice": ["csv", "dat"]}
+  },
+  "setup": "touch {prefix}{n}_b.{ext} {prefix}{n}_a.{ext}",
+  "requests_vi": [
+    "liệt kê các file .{ext} theo thứ tự bảng chữ cái",
+    "sắp xếp tên các file .{ext} ở đây",
+    "cho tôi danh sách file .{ext} đã sắp xếp",
+    "hiển thị các file .{ext} theo alphabet"
+  ],
+  "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" -printf \"%f\\n\" | sort",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -name \"*.{ext}\" -printf \"%f\\n\" | sort -r"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{prefix}{n}_a.{ext}\n{prefix}{n}_b.{ext}"
+}

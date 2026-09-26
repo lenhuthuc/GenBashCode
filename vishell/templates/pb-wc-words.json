@@ -1,0 +1,35 @@
+{
+  "template_id": "pb-wc-words",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        3,
+        15
+      ]
+    },
+    "word": {
+      "choice": [
+        "apple",
+        "banana",
+        "cherry"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do printf '%s ' {word}; done > f.txt",
+  "requests_vi": [
+    "đếm số từ trong file f.txt",
+    "file f.txt có bao nhiêu từ?",
+    "kiểm tra số lượng từ của f.txt",
+    "cho tôi số từ trong f.txt"
+  ],
+  "reference_command": "wc -w < f.txt",
+  "wrong_commands": [
+    "wc -l < f.txt",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

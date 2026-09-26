@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-delete-old-files-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "xoá bớt các file cũ đi",
+    "dọn file cũ không cần nữa",
+    "xoá những gì không dùng đến nữa",
+    "gỡ bớt file cũ trong này"
+  ],
+  "clarify_question_vi": "'Cũ' là tính theo mốc thời gian nào (vd quá 30 ngày), hay theo tên/định dạng cụ thể?",
+  "reference_command": "",
+  "wrong_commands": []
+}

@@ -1,0 +1,28 @@
+{
+  "template_id": "pb-wc-lines",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        3,
+        30
+      ]
+    }
+  },
+  "setup": "seq 1 {n} > f.txt",
+  "requests_vi": [
+    "đếm số dòng của file f.txt",
+    "file f.txt có bao nhiêu dòng?",
+    "cho tôi biết số dòng trong f.txt",
+    "kiểm tra số dòng của f.txt"
+  ],
+  "reference_command": "wc -l < f.txt",
+  "wrong_commands": [
+    "wc -c < f.txt",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

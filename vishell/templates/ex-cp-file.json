@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-cp-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "src": {
+      "choice": [
+        "a.txt",
+        "input.dat"
+      ]
+    },
+    "dst": {
+      "choice": [
+        "a.bak",
+        "input.dat.bak"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo hello > {src}",
+  "requests_vi": [
+    "sao chép file {src} thành {dst}",
+    "copy {src} sang {dst}",
+    "tạo bản sao {src} với tên {dst}",
+    "sao chép giúp tôi {src} -> {dst}"
+  ],
+  "reference_command": "cp {src} {dst}",
+  "wrong_commands": [
+    "true",
+    "mv {src} {dst}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {src} ] && [ -f {dst} ]"
+}

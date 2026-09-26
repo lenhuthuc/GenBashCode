@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-increase-disk-space-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "tăng dung lượng ổ đĩa lên giúp tôi",
+    "làm sao có thêm chỗ trống trên đĩa",
+    "ổ đĩa đầy quá, giải quyết giúp tôi",
+    "cần thêm dung lượng, xử lý giúp"
+  ],
+  "clarify_question_vi": "Bạn muốn giải phóng dung lượng bằng cách xoá file cụ thể nào, hay đang muốn resize/gắn thêm ổ đĩa?",
+  "reference_command": "",
+  "wrong_commands": []
+}

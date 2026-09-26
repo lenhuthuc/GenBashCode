@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-cut-column",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "name1": {
+      "choice": [
+        "red",
+        "blue"
+      ]
+    },
+    "name2": {
+      "choice": [
+        "green",
+        "yellow"
+      ]
+    },
+    "delim": {
+      "choice": [
+        ",",
+        ";"
+      ]
+    }
+  },
+  "setup": "printf '{name1}{delim}1\\n{name2}{delim}2\\n' > data.csv",
+  "requests_vi": [
+    "lấy cột đầu tiên trong file data.csv, phân tách bằng '{delim}'",
+    "trích xuất cột đầu của data.csv (delimiter '{delim}')",
+    "hiển thị cột đầu tiên từ data.csv",
+    "cho tôi cột đầu trong file csv này"
+  ],
+  "reference_command": "cut -d'{delim}' -f1 data.csv",
+  "wrong_commands": [
+    "true",
+    "cut -d'{delim}' -f2 data.csv"
+  ],
+  "check_type": "stdout_lines_set",
+  "check_expected": "{name1}\n{name2}"
+}

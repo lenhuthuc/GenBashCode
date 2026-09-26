@@ -1,0 +1,34 @@
+{
+  "template_id": "ex-split-csv-by-column-value",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n_a": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "outname": {
+      "choice": [
+        "group_a.csv",
+        "filtered.csv"
+      ]
+    }
+  },
+  "setup": "n_b=$(( {n_a} + 1 )); for i in $(seq 1 {n_a}); do echo \"a,$i\"; done > data.csv; for i in $(seq 1 $n_b); do echo \"b,$i\"; done >> data.csv",
+  "requests_vi": [
+    "lọc các dòng nhóm 'a' trong data.csv ra {outname}",
+    "trích các dòng bắt đầu bằng 'a,' vào {outname}",
+    "lọc dữ liệu nhóm a từ data.csv thành {outname}",
+    "tách các bản ghi 'a' trong data.csv ra {outname}"
+  ],
+  "reference_command": "grep \"^a,\" data.csv > {outname}",
+  "wrong_commands": [
+    "true",
+    "grep \"^b,\" data.csv > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n_a} ]"
+}

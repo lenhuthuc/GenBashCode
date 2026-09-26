@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-base64-encode-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "content": {
+      "choice": [
+        "hello",
+        "world"
+      ]
+    },
+    "fname": {
+      "choice": [
+        "secret.txt",
+        "payload.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf '{content}' > {fname}",
+  "requests_vi": [
+    "mã hoá base64 file {fname} thành {fname}.b64",
+    "encode base64 {fname} ra file mới",
+    "chuyển {fname} sang base64 lưu vào {fname}.b64",
+    "tạo bản base64 của {fname}"
+  ],
+  "reference_command": "base64 {fname} > {fname}.b64",
+  "wrong_commands": [
+    "true",
+    "cp {fname} {fname}.b64"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(base64 -d {fname}.b64)\" = \"{content}\" ]"
+}

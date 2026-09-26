@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-head-redirect-new-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        10,
+        20
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "outname": {
+      "choice": [
+        "preview.txt",
+        "top.txt"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > full.txt",
+  "requests_vi": [
+    "lấy {n} dòng đầu của full.txt lưu thành {outname}",
+    "tạo file {outname} chứa {n} dòng đầu của full.txt",
+    "trích {n} dòng đầu tiên của full.txt ra file {outname}",
+    "ghi {n} dòng đầu full.txt vào {outname}"
+  ],
+  "reference_command": "head -n {n} full.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "tail -n {n} full.txt > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n} ] && [ \"$(head -n 1 {outname})\" = \"1\" ]"
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-cp-sync-into-existing-dir",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "src": {
+      "choice": [
+        "srcdir",
+        "origin"
+      ]
+    },
+    "dst": {
+      "choice": [
+        "dstdir",
+        "target"
+      ]
+    },
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    }
+  },
+  "setup": "mkdir {src}; for i in $(seq 1 {n}); do touch {src}/f_$i.txt; done; mkdir {dst}",
+  "requests_vi": [
+    "đồng bộ thư mục {src} sang {dst}",
+    "sao chép nội dung {src} vào {dst} đã có sẵn",
+    "sao chép đồng bộ {src} sang {dst}",
+    "sync nội dung {src} sang {dst}"
+  ],
+  "reference_command": "cp -a {src}/. {dst}/",
+  "wrong_commands": [
+    "true",
+    "mkdir -p {dst}/{src}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(ls {dst} | wc -l)\" -eq {n} ]"
+}

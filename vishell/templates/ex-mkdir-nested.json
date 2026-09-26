@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-mkdir-nested",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "a": {
+      "choice": [
+        "src",
+        "app"
+      ]
+    },
+    "b": {
+      "choice": [
+        "utils",
+        "core"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo thư mục {a}/{b} kể cả thư mục cha nếu chưa có",
+    "tạo cây thư mục {a}/{b} giúp tôi",
+    "tạo folder lồng nhau {a}/{b}",
+    "tạo thư mục {b} bên trong {a}, tự tạo {a} nếu chưa tồn tại"
+  ],
+  "reference_command": "mkdir -p {a}/{b}",
+  "wrong_commands": [
+    "true",
+    "mkdir {b}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -d {a}/{b} ]"
+}

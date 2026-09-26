@@ -1,0 +1,33 @@
+# Smoke config: whole pipeline on a tiny slice, fast enough to catch errors early.
+# Load with configs/default.yaml as base (cli.py merges default.yaml <- this file).
+run_name: smoke
+
+data:
+  # real data/nl2bash_vi/ (outer repo root) isn't pulled in yet on this laptop; fall
+  # back to a tiny bundled fixture so the smoke pipeline can still exercise data-nl2bash.
+  nl2bash_dir: tests/fixtures/nl2bash_vi_small.jsonl
+
+templates:
+  n_train_per_template: 4
+  n_test_per_template: 2
+
+verify:
+  n_instances: 3
+
+train:
+  enabled: false   # GPU steps (sft/merge/grpo/export) are skipped in `pipeline` on smoke
+  max_steps: 10
+  save_steps: 5
+  eval_steps: 5
+  per_device_bs: 4
+  grad_accum: 1
+
+grpo:
+  num_generations: 4
+  max_steps: 10
+  save_steps: 5
+
+evaluate:
+  # base/sft_*/grpo need a loaded model (GPU); oracle/mock exercise the eval harness
+  # itself without one, which is the point of a laptop smoke run.
+  systems: [oracle, mock]

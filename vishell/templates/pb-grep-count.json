@@ -1,0 +1,35 @@
+{
+  "template_id": "pb-grep-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_match": {
+      "int": [
+        1,
+        10
+      ]
+    },
+    "pattern": {
+      "choice": [
+        "ERROR",
+        "WARN",
+        "FAIL"
+      ]
+    }
+  },
+  "setup": "n_other=$(( {n_match} + 1 )); for i in $(seq 1 {n_match}); do echo '{pattern} something'; done > log.txt; for i in $(seq 1 $n_other); do echo 'INFO ok'; done >> log.txt",
+  "requests_vi": [
+    "đếm số dòng chứa {pattern} trong log.txt",
+    "file log.txt có bao nhiêu dòng {pattern}?",
+    "kiểm tra số lần xuất hiện {pattern} trong log.txt",
+    "tìm và đếm dòng {pattern} trong log.txt"
+  ],
+  "reference_command": "grep -c {pattern} log.txt",
+  "wrong_commands": [
+    "grep -c INFO log.txt",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_match}"
+}

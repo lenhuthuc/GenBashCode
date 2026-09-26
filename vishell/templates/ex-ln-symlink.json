@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-ln-symlink",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "target": {
+      "choice": [
+        "real.txt",
+        "orig.dat"
+      ]
+    },
+    "link": {
+      "choice": [
+        "shortcut",
+        "alias"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo x > {target}",
+  "requests_vi": [
+    "tạo symlink {link} trỏ tới {target}",
+    "tạo liên kết mềm {link} -> {target}",
+    "làm giúp tôi symbolic link {link} đến file {target}",
+    "tạo link {link} tới {target}"
+  ],
+  "reference_command": "ln -s {target} {link}",
+  "wrong_commands": [
+    "true",
+    "cp {target} {link}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -L {link} ]"
+}

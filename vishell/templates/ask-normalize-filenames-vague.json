@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-normalize-filenames-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "chuẩn hoá tên file trong thư mục này giúp tôi",
+    "đổi tên file cho đồng nhất",
+    "chuẩn hoá lại tên các file",
+    "sửa tên file cho gọn gàng thống nhất"
+  ],
+  "clarify_question_vi": "Bạn muốn theo quy tắc đặt tên nào (chữ thường, gạch dưới, bỏ dấu cách...)?",
+  "reference_command": "",
+  "wrong_commands": []
+}

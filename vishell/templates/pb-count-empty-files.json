@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-empty-files",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_empty": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "n_nonempty": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "x",
+        "y"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_empty}); do touch empty_$i.txt; done; for i in $(seq 1 {n_nonempty}); do echo {prefix} > full_$i.txt; done",
+  "requests_vi": [
+    "đếm số file rỗng trong thư mục hiện tại",
+    "có bao nhiêu file trống ở đây?",
+    "kiểm tra số lượng file rỗng",
+    "tìm và đếm file không có nội dung"
+  ],
+  "reference_command": "find . -maxdepth 1 -type f -empty | wc -l",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -type f | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_empty}"
+}

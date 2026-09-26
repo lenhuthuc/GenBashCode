@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-truncate-log-keep-tail",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        20,
+        40
+      ]
+    },
+    "keep": {
+      "int": [
+        5,
+        10
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > app.log",
+  "requests_vi": [
+    "chỉ giữ {keep} dòng cuối của app.log, xoá phần còn lại",
+    "rút gọn app.log chỉ còn {keep} dòng cuối cùng",
+    "cắt bớt app.log, giữ lại {keep} dòng gần nhất",
+    "làm gọn app.log về {keep} dòng cuối"
+  ],
+  "reference_command": "tail -n {keep} app.log > tmp.log && mv tmp.log app.log",
+  "wrong_commands": [
+    "true",
+    "head -n {keep} app.log > tmp.log && mv tmp.log app.log"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < app.log)\" -eq {keep} ] && [ \"$(tail -n 1 app.log)\" = \"{total}\" ]"
+}

@@ -1,0 +1,11 @@
+# Colab/Kaggle T4 16GB: no bf16 hardware support -> fp16; smaller batch, more grad accum.
+run_name: full
+
+train:
+  dtype: fp16
+  per_device_bs: 8
+  grad_accum: 8
+
+grpo:
+  dtype: fp16
+  num_generations: 8

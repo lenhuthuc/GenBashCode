@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-add-all-commit",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        5
+      ]
+    },
+    "msg": {
+      "choice": [
+        "batch-add",
+        "wip"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "md"
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; for i in $(seq 1 {n}); do echo x > f_$i.{ext}; done",
+  "requests_vi": [
+    "commit tất cả file .{ext} với message '{msg}'",
+    "git add hết rồi commit '{msg}'",
+    "add toàn bộ thay đổi và commit '{msg}'",
+    "commit mọi file mới với nội dung '{msg}'"
+  ],
+  "reference_command": "git add -A && git commit -q -m '{msg}'",
+  "wrong_commands": [
+    "true",
+    "git add f_1.{ext} && git commit -q -m '{msg}'"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(git status --porcelain)\" ] && [ \"$(git show --stat HEAD | grep -c \"{ext}\")\" -ge {n} ]"
+}

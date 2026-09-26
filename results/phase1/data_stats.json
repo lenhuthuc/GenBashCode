@@ -1,0 +1,14 @@
+{
+  "test_source": "westenfelder/NL2SH-ALFA [test] — kiểm tra thủ công (arXiv 2502.06858)",
+  "train_raw": 40639,
+  "test_raw": 300,
+  "train_after_clean": 50,
+  "test_used": 50,
+  "train_dropped": {
+    "overlap_test": 73,
+    "duplicate": 106,
+    "too_long": 13,
+    "bashlex_fail": 115
+  },
+  "test_gold_bashlex_parse_rate": 0.9967
+}

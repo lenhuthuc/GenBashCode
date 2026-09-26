@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-mv-into-dir",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "report.txt",
+        "photo.png"
+      ]
+    },
+    "dirname": {
+      "choice": [
+        "archive",
+        "done"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo x > {fname}; mkdir {dirname}",
+  "requests_vi": [
+    "di chuyển file {fname} vào thư mục {dirname}",
+    "chuyển {fname} sang {dirname} giúp tôi",
+    "đưa file {fname} vào folder {dirname}",
+    "move {fname} vào {dirname}"
+  ],
+  "reference_command": "mv {fname} {dirname}/",
+  "wrong_commands": [
+    "true",
+    "cp {fname} {dirname}/"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {fname} ] && [ -f {dirname}/{fname} ]"
+}

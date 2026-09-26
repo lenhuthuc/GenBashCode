@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-read-specific-line",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        5,
+        20
+      ]
+    },
+    "line_no": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "item",
+        "entry"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {total}); do echo {prefix}_$i; done > f.txt",
+  "requests_vi": [
+    "cho tôi xem dòng số {line_no} của f.txt",
+    "in ra dòng thứ {line_no} trong f.txt",
+    "lấy nội dung dòng {line_no} của file f.txt",
+    "xem dòng {line_no} trong f.txt"
+  ],
+  "reference_command": "sed -n {line_no}p f.txt",
+  "wrong_commands": [
+    "true",
+    "sed -n '$p' f.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{prefix}_{line_no}"
+}

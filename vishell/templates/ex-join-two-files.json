@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-join-two-files",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "outname": {
+      "choice": [
+        "joined.txt",
+        "combined.txt"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo \"$i name$i\"; done > left.txt; for i in $(seq 1 {n}); do echo \"$i val$i\"; done > right.txt",
+  "requests_vi": [
+    "join left.txt và right.txt theo khoá chung, lưu ra {outname}",
+    "kết hợp left.txt với right.txt theo cột đầu, ghi ra {outname}",
+    "ghép left.txt và right.txt theo key vào {outname}",
+    "join hai file left.txt right.txt thành {outname}"
+  ],
+  "reference_command": "join left.txt right.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cat left.txt right.txt > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n} ] && [ \"$(head -n 1 {outname} | wc -w)\" -eq 3 ]"
+}

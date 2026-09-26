@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-rm-single-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "draft.txt",
+        "old.log"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "content": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo {content} >> {fname}; done",
+  "requests_vi": [
+    "xoá file {fname}",
+    "xoá giúp tôi file {fname}",
+    "gỡ bỏ file {fname} khỏi thư mục này",
+    "xoá {fname} đi"
+  ],
+  "reference_command": "rm {fname}",
+  "wrong_commands": [
+    "true",
+    "ls {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {fname} ]"
+}

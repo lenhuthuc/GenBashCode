@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv-vllm/
+
+# pipeline-generated (safe to delete; `python -m vishell pipeline` regenerates them).
+# REPORT.md is NOT ignored -- AGENT.md section 11 makes it a required deliverable.
+data/*/
+checkpoints/*/
+models/*/
+results/*/
+logs/*/
+state/*/

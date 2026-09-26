@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-branch-create",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "branch": {
+      "choice": [
+        "feature-x",
+        "dev"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo x > a.txt; git add a.txt; git commit -q -m init",
+  "requests_vi": [
+    "tạo nhánh git mới tên {branch}",
+    "tạo branch {branch} trong repo này",
+    "git tạo giúp tôi nhánh {branch}",
+    "làm ơn tạo nhánh {branch}"
+  ],
+  "reference_command": "git branch {branch}",
+  "wrong_commands": [
+    "true",
+    "git checkout -b {branch}"
+  ],
+  "check_type": "script",
+  "check_expected": "git branch --list {branch} | grep -q {branch} && [ \"$(git rev-parse --abbrev-ref HEAD)\" != \"{branch}\" ]"
+}

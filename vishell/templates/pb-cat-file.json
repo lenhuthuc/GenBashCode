@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-cat-file",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "a": {
+      "choice": [
+        "hello",
+        "xinchao"
+      ]
+    },
+    "b": {
+      "choice": [
+        "world",
+        "ban"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf '{a} {b}\\n' > note.txt",
+  "requests_vi": [
+    "in nội dung file note.txt",
+    "cho tôi xem file note.txt chứa gì",
+    "hiển thị nội dung của note.txt",
+    "đọc giúp tôi file note.txt"
+  ],
+  "reference_command": "cat note.txt",
+  "wrong_commands": [
+    "true",
+    "wc -l note.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{a} {b}"
+}

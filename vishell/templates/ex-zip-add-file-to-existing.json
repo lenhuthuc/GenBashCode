@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-zip-add-file-to-existing",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "newfile": {
+      "choice": [
+        "extra.txt",
+        "readme.txt"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.txt; done; zip -q pack.zip f_*.txt; echo new > {newfile}",
+  "requests_vi": [
+    "thêm file {newfile} vào file nén pack.zip",
+    "cập nhật pack.zip, thêm {newfile} vào",
+    "zip thêm {newfile} vào pack.zip có sẵn",
+    "bổ sung {newfile} vào archive pack.zip"
+  ],
+  "reference_command": "zip -q pack.zip {newfile}",
+  "wrong_commands": [
+    "true",
+    "touch pack.zip"
+  ],
+  "check_type": "script",
+  "check_expected": "unzip -l pack.zip | grep -q {newfile}"
+}

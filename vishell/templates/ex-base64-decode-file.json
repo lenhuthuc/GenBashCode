@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-base64-decode-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "content": {
+      "choice": [
+        "decoded1",
+        "decoded2"
+      ]
+    },
+    "fname": {
+      "choice": [
+        "blob.b64",
+        "enc.b64"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf '{content}' | base64 > {fname}",
+  "requests_vi": [
+    "giải mã base64 file {fname} thành plain.txt",
+    "decode {fname} ra file plain.txt",
+    "chuyển {fname} về dạng gốc lưu vào plain.txt",
+    "giải mã giúp tôi {fname} thành plain.txt"
+  ],
+  "reference_command": "base64 -d {fname} > plain.txt",
+  "wrong_commands": [
+    "true",
+    "cp {fname} plain.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat plain.txt)\" = \"{content}\" ]"
+}

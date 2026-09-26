@@ -1,0 +1,34 @@
+{
+  "template_id": "pb-file-size-bytes",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        5,
+        50
+      ]
+    },
+    "fname": {
+      "choice": [
+        "payload.bin",
+        "blob.dat"
+      ]
+    }
+  },
+  "setup": "n_other=$(( {n} + 1 )); head -c {n} /dev/zero > {fname}; head -c $n_other /dev/zero > other.bin",
+  "requests_vi": [
+    "file {fname} có kích thước bao nhiêu byte?",
+    "kiểm tra dung lượng của {fname}",
+    "cho tôi biết size của {fname}",
+    "xem kích thước file {fname}"
+  ],
+  "reference_command": "stat -c %s {fname}",
+  "wrong_commands": [
+    "true",
+    "stat -c %s other.bin"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

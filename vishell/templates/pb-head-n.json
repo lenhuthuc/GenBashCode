@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-head-n",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        20,
+        30
+      ]
+    },
+    "n": {
+      "int": [
+        2,
+        8
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "line",
+        "row"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {total}); do echo {prefix}$i; done > f.txt",
+  "requests_vi": [
+    "cho tôi xem {n} dòng đầu của f.txt",
+    "hiển thị {n} dòng đầu tiên trong f.txt",
+    "xem trước {n} dòng của file f.txt",
+    "in ra {n} dòng đầu của f.txt"
+  ],
+  "reference_command": "head -n {n} f.txt",
+  "wrong_commands": [
+    "tail -n {n} f.txt",
+    "true"
+  ],
+  "check_type": "stdout_contains",
+  "check_expected": "{prefix}{n}\n"
+}

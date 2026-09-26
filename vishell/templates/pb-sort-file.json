@@ -1,0 +1,25 @@
+{
+  "template_id": "pb-sort-file",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {"int": [1, 99]},
+    "prefix": {"choice": ["item", "row"]},
+    "ext": {"choice": ["log", "dat"]}
+  },
+  "setup": "printf '{prefix}{n}_c\\n{prefix}{n}_a\\n{prefix}{n}_b\\n' > f.{ext}",
+  "requests_vi": [
+    "sắp xếp nội dung file f.{ext} theo thứ tự alphabet",
+    "hiển thị f.{ext} đã sắp xếp",
+    "cho tôi nội dung f.{ext} theo thứ tự bảng chữ cái",
+    "sort file f.{ext} giúp tôi xem thử"
+  ],
+  "reference_command": "sort f.{ext}",
+  "wrong_commands": [
+    "cat f.{ext}",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{prefix}{n}_a\n{prefix}{n}_b\n{prefix}{n}_c"
+}

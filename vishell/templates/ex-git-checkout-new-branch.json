@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-checkout-new-branch",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "branch": {
+      "choice": [
+        "hotfix",
+        "wip"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo x > a.txt; git add a.txt; git commit -q -m init",
+  "requests_vi": [
+    "tạo và chuyển sang nhánh mới {branch}",
+    "checkout sang branch mới {branch}",
+    "tạo nhánh {branch} rồi chuyển sang nó luôn",
+    "git checkout -b {branch} giúp tôi"
+  ],
+  "reference_command": "git checkout -q -b {branch}",
+  "wrong_commands": [
+    "true",
+    "git branch {branch}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(git rev-parse --abbrev-ref HEAD)\" = \"{branch}\" ]"
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-chmod-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "script.sh",
+        "run.sh"
+      ]
+    },
+    "mode": {
+      "choice": [
+        "755",
+        "700"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "touch {fname}; chmod 644 {fname}",
+  "requests_vi": [
+    "đổi quyền file {fname} thành {mode}",
+    "cấp quyền {mode} cho {fname}",
+    "chmod {fname} thành {mode} giúp tôi",
+    "đặt permission {mode} cho file {fname}"
+  ],
+  "reference_command": "chmod {mode} {fname}",
+  "wrong_commands": [
+    "true",
+    "chmod 644 {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(stat -c %a {fname})\" = \"{mode}\" ]"
+}

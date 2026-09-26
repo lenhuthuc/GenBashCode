@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-mkdir-touch-marker-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "dirname": {
+      "choice": [
+        "stage",
+        "phase"
+      ]
+    },
+    "marker": {
+      "choice": [
+        "DONE",
+        "READY"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo thư mục {dirname} và đánh dấu hoàn tất bằng file {marker}",
+    "tạo folder {dirname}, thêm file {marker} bên trong để đánh dấu xong",
+    "tạo thư mục {dirname} kèm marker {marker}",
+    "tạo {dirname} rồi tạo file {marker} trong đó"
+  ],
+  "reference_command": "mkdir {dirname} && touch {dirname}/{marker}",
+  "wrong_commands": [
+    "true",
+    "mkdir {dirname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {dirname}/{marker} ]"
+}

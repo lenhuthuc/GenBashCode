@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-string-length",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "word": {
+      "choice": [
+        "hello",
+        "world"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "chuỗi '{word}' dài bao nhiêu ký tự?",
+    "đếm số ký tự của chuỗi '{word}'",
+    "kiểm tra độ dài chuỗi '{word}'",
+    "cho tôi biết '{word}' có mấy ký tự"
+  ],
+  "reference_command": "printf '{word}' | wc -c",
+  "wrong_commands": [
+    "true",
+    "printf '{word}\\n' | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "5"
+}

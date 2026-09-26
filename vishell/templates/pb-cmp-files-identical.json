@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-cmp-files-identical",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "content": {
+      "choice": [
+        "hello",
+        "vishell"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "fname": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo {content}; done > {fname}1.txt; cp {fname}1.txt {fname}2.txt",
+  "requests_vi": [
+    "hai file {fname}1.txt và {fname}2.txt có giống nhau không?",
+    "so sánh nội dung {fname}1.txt với {fname}2.txt",
+    "kiểm tra {fname}1.txt và {fname}2.txt có khác nhau không",
+    "so sánh hai file {fname}1.txt {fname}2.txt giúp tôi"
+  ],
+  "reference_command": "cmp -s {fname}1.txt {fname}2.txt && echo same || echo different",
+  "wrong_commands": [
+    "true",
+    "echo different"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "same"
+}

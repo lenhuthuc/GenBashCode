@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-dirname",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "dir": {
+      "choice": [
+        "home/user",
+        "var/log"
+      ]
+    },
+    "fname": {
+      "choice": [
+        "report.txt",
+        "data.csv"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "lấy đường dẫn thư mục chứa file /{dir}/{fname}",
+    "cho tôi biết /{dir}/{fname} nằm trong thư mục nào",
+    "trích xuất dirname của /{dir}/{fname}",
+    "thư mục cha của /{dir}/{fname} là gì?"
+  ],
+  "reference_command": "dirname /{dir}/{fname}",
+  "wrong_commands": [
+    "true",
+    "basename /{dir}/{fname}"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "/{dir}"
+}

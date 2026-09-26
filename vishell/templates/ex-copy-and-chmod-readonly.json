@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-copy-and-chmod-readonly",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "template.txt",
+        "master.cfg"
+      ]
+    },
+    "dst": {
+      "choice": [
+        "locked.txt",
+        "frozen.cfg"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo v1 > {fname}",
+  "requests_vi": [
+    "sao chép {fname} thành {dst} rồi đặt chỉ đọc",
+    "tạo bản {dst} từ {fname} và khoá quyền ghi",
+    "copy {fname} sang {dst} rồi chmod chỉ đọc",
+    "nhân bản {fname} thành {dst} và làm read-only"
+  ],
+  "reference_command": "cp {fname} {dst} && chmod 444 {dst}",
+  "wrong_commands": [
+    "true",
+    "cp {fname} {dst}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {dst} ] && [ \"$(stat -c %a {dst})\" = \"444\" ]"
+}

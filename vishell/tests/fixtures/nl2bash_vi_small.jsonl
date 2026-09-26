@@ -1,0 +1,15 @@
+{"id": "fx-0", "nl_vi": "liệt kê tất cả file trong thư mục hiện tại", "bash": "ls -la"}
+{"id": "fx-1", "nl_vi": "đếm số dòng của file data.csv", "bash": "wc -l data.csv"}
+{"id": "fx-2", "nl_vi": "tìm tất cả file .log trong thư mục hiện tại", "bash": "find . -name '*.log'"}
+{"id": "fx-3", "nl_vi": "in ra 5 dòng cuối của file server.log", "bash": "tail -n 5 server.log"}
+{"id": "fx-4", "nl_vi": "xoá tất cả file .tmp trong thư mục hiện tại", "bash": "rm -f *.tmp"}
+{"id": "fx-5", "nl_vi": "tạo thư mục mới tên backup", "bash": "mkdir backup"}
+{"id": "fx-6", "nl_vi": "đổi tên file a.txt thành b.txt", "bash": "mv a.txt b.txt"}
+{"id": "fx-7", "nl_vi": "nén thư mục project thành project.tar.gz", "bash": "tar czf project.tar.gz project"}
+{"id": "fx-8", "nl_vi": "sao chép file config.yaml sang config.bak", "bash": "cp config.yaml config.bak"}
+{"id": "fx-9", "nl_vi": "hiển thị dung lượng đĩa còn trống", "bash": "df -h"}
+{"id": "fx-10", "nl_vi": "sắp xếp file names.txt theo bảng chữ cái", "bash": "sort names.txt"}
+{"id": "fx-11", "nl_vi": "tải file report.pdf từ server", "bash": "curl -O http://example.com/report.pdf"}
+{"id": "fx-12", "nl_vi": "dừng tiến trình có PID 1234", "bash": "kill -9 1234"}
+{"id": "fx-13", "nl_vi": "xem trạng thái git của thư mục hiện tại", "bash": "git status"}
+{"id": "fx-14", "nl_vi": "đếm số file .py trong cây thư mục", "bash": "find . -name '*.py' | xargs wc -l"}

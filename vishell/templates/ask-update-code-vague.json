@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-update-code-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "cập nhật lại code cho tôi",
+    "sửa code này lên bản mới",
+    "update code trong project giúp tôi",
+    "làm mới lại code đi"
+  ],
+  "clarify_question_vi": "Bạn muốn cập nhật file/module nào, và thay đổi theo hướng gì?",
+  "reference_command": "",
+  "wrong_commands": []
+}

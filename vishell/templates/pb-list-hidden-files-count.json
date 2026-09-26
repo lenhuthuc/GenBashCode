@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-list-hidden-files-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_hidden": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "n_visible": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "cfg",
+        "rc"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_hidden}); do touch .{prefix}$i; done; for i in $(seq 1 {n_visible}); do touch visible_$i.txt; done",
+  "requests_vi": [
+    "đếm số file ẩn trong thư mục hiện tại",
+    "có bao nhiêu file ẩn (bắt đầu bằng dấu chấm) ở đây?",
+    "kiểm tra số lượng dotfile",
+    "tìm file ẩn và đếm giúp tôi"
+  ],
+  "reference_command": "find . -maxdepth 1 -name \".*\" -type f | wc -l",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -type f | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_hidden}"
+}

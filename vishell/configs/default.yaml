@@ -1,0 +1,73 @@
+# Every knob the pipeline reads. Override with --set a.b=c or a smaller config file
+# that only lists what differs (see smoke.yaml / colab_t4.yaml / colab_a100.yaml).
+
+seed: 42
+run_name: default
+
+paths:
+  root: null          # null = auto-detect (paths.py: colab Drive / kaggle working / repo root)
+
+sandbox:
+  backend: auto        # auto | local | docker
+  timeout: 10           # seconds per episode
+  max_workers: 8
+
+data:
+  nl2bash_dir: data/nl2bash_vi         # pre-translated data, if present (see AGENT.md section 2)
+  nl2bash_raw_dir: data/nl2bash_raw    # downloaded all.nl/all.cm when translating from scratch
+  translator:
+    server_url: http://localhost:8000/v1
+    api_key: EMPTY
+    model: auto
+  noise_ratio: 0.30
+  drop_r2_in_sft_nl2bash: true
+
+templates:
+  dir: templates
+  n_train_per_template: 20
+  n_test_per_template: 5
+  test_frac: 0.15
+
+verify:
+  n_instances: 5
+  max_fix_rounds: 3
+
+reward:
+  decision_coef: 1.0
+
+models:
+  base_model: Qwen/Qwen2.5-Coder-1.5B-Instruct
+  sft_v1_dir: models/sft_v1            # pre-existing NL2Bash-vi LoRA adapter, if present
+
+train:
+  enabled: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  max_len: 384
+  lr: 2.0e-4
+  epochs: 2
+  max_steps: -1          # -1 = derive from epochs
+  per_device_bs: 8
+  grad_accum: 8
+  save_steps: 200
+  eval_steps: 200
+  dtype: auto             # auto | bf16 | fp16
+
+grpo:
+  dtype: auto
+  use_vllm: true
+  num_generations: 8
+  max_prompt_length: 256
+  max_completion_length: 128
+  lr: 1.0e-5
+  max_steps: 300
+  save_steps: 50
+
+evaluate:
+  systems: [base, sft_nl2bash, sft_scenarios, grpo]
+  api_base_env: VISHELL_API_BASE       # only run "api_large" system if this env var is set
+  max_new_tokens: 128
+
+demo:
+  share: false

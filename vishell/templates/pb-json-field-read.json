@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-json-field-read",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "key": {
+      "choice": [
+        "name",
+        "status"
+      ]
+    },
+    "value": {
+      "choice": [
+        "viet",
+        "ok"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "printf '{\"{key}\": \"{value}\", \"id\": 1}' > data.json",
+  "requests_vi": [
+    "lấy giá trị trường {key} trong data.json",
+    "trong data.json thì {key} là gì?",
+    "trích xuất field {key} từ file json",
+    "cho tôi giá trị của {key} trong data.json"
+  ],
+  "reference_command": "jq -r .{key} data.json",
+  "wrong_commands": [
+    "true",
+    "jq -r .id data.json"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{value}"
+}

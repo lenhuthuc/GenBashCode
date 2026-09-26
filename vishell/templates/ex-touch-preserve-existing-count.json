@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-touch-preserve-existing-count",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "new_name": {
+      "choice": [
+        "extra.txt",
+        "bonus.txt"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "md"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch existing_$i.{ext}; done",
+  "requests_vi": [
+    "tạo thêm file {new_name} mà không đụng vào các file .{ext} khác",
+    "thêm file mới {new_name}, giữ nguyên các file .{ext} cũ",
+    "tạo {new_name} bên cạnh các file hiện có",
+    "tạo file {new_name} mới trong thư mục này"
+  ],
+  "reference_command": "touch {new_name}",
+  "wrong_commands": [
+    "true",
+    "rm existing_1.{ext}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {new_name} ] && [ \"$(ls existing_*.{ext} | wc -l)\" -eq {n} ]"
+}

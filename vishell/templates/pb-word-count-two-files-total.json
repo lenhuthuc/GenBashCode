@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-word-count-two-files-total",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        4,
+        20
+      ]
+    },
+    "word": {
+      "choice": [
+        "go",
+        "run"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "dat"
+      ]
+    }
+  },
+  "setup": "half=$(( {total} / 2 )); for i in $(seq 1 $half); do printf '{word} '; done > a.{ext}; for i in $(seq 1 $(( {total} - half ))); do printf '{word} '; done > b.{ext}",
+  "requests_vi": [
+    "đếm tổng số từ trong a.{ext} và b.{ext}",
+    "tổng số từ của hai file a.{ext}, b.{ext} là bao nhiêu?",
+    "cộng dồn số từ trong a.{ext} và b.{ext}",
+    "kiểm tra tổng từ của hai file này"
+  ],
+  "reference_command": "cat a.{ext} b.{ext} | wc -w",
+  "wrong_commands": [
+    "true",
+    "wc -w < a.{ext}"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{total}"
+}

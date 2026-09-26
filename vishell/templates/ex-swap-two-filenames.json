@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-swap-two-filenames",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "a": {
+      "choice": [
+        "blue.txt",
+        "left.txt"
+      ]
+    },
+    "b": {
+      "choice": [
+        "red.txt",
+        "right.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "echo AAA > {a}; echo BBB > {b}",
+  "requests_vi": [
+    "đổi tên chéo (hoán đổi) hai file {a} và {b}",
+    "swap tên file {a} với {b}",
+    "hoán đổi nội dung/tên giữa {a} và {b}",
+    "đổi tên {a} thành {b} và ngược lại"
+  ],
+  "reference_command": "mv {a} tmp_swap.txt && mv {b} {a} && mv tmp_swap.txt {b}",
+  "wrong_commands": [
+    "true",
+    "mv {a} {b}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {a})\" = \"BBB\" ] && [ \"$(cat {b})\" = \"AAA\" ]"
+}

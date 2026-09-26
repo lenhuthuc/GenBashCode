@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-create-gitignore",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "ext": {
+      "choice": [
+        "log",
+        "tmp"
+      ]
+    },
+    "dirname": {
+      "choice": [
+        "node_modules",
+        "__pycache__"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "git init -q",
+  "requests_vi": [
+    "tạo file .gitignore bỏ qua *.{ext} và thư mục {dirname}",
+    "thêm .gitignore, loại trừ *.{ext} và {dirname}",
+    "tạo .gitignore cho *.{ext} với {dirname}",
+    "viết .gitignore bỏ qua {dirname} và file .{ext}"
+  ],
+  "reference_command": "printf '*.{ext}\\n{dirname}/\\n' > .gitignore",
+  "wrong_commands": [
+    "true",
+    "touch .gitignore"
+  ],
+  "check_type": "script",
+  "check_expected": "grep -q \"\\*.{ext}\" .gitignore && grep -q \"{dirname}\" .gitignore"
+}

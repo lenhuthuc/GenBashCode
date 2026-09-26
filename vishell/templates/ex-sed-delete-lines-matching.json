@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-sed-delete-lines-matching",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "pattern": {
+      "choice": [
+        "DEBUG",
+        "TRACE"
+      ]
+    },
+    "n_match": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "n_other": {
+      "int": [
+        1,
+        5
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_match}); do echo '{pattern} noisy'; done > f.txt; for i in $(seq 1 {n_other}); do echo 'INFO ok'; done >> f.txt",
+  "requests_vi": [
+    "xoá các dòng chứa {pattern} trong file f.txt",
+    "loại bỏ dòng {pattern} khỏi f.txt",
+    "dọn các dòng {pattern} ra khỏi f.txt",
+    "xoá dòng có chữ {pattern} trong f.txt"
+  ],
+  "reference_command": "sed -i '/{pattern}/d' f.txt",
+  "wrong_commands": [
+    "true",
+    "sed -i '/INFO/d' f.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(grep {pattern} f.txt)\" ] && [ \"$(wc -l < f.txt)\" -eq {n_other} ]"
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-gunzip-decompress",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "archive.log",
+        "old.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        10
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {n} > {fname}; gzip {fname}",
+  "requests_vi": [
+    "giải nén file {fname}.gz",
+    "gunzip {fname}.gz giúp tôi",
+    "mở file nén {fname}.gz ra",
+    "giải nén {fname}.gz thành file gốc"
+  ],
+  "reference_command": "gunzip {fname}.gz",
+  "wrong_commands": [
+    "true",
+    "rm {fname}.gz"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {fname} ] && [ ! -e {fname}.gz ]"
+}

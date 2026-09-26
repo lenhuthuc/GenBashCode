@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-sort-unique-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_unique": {
+      "int": [
+        2,
+        8
+      ]
+    },
+    "n_dup": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "item",
+        "row"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_unique}); do echo {prefix}_$i; done > f.txt; for i in $(seq 1 {n_dup}); do echo {prefix}_1; done >> f.txt",
+  "requests_vi": [
+    "đếm số dòng khác nhau (không trùng) trong f.txt",
+    "file f.txt có bao nhiêu giá trị duy nhất?",
+    "kiểm tra số dòng không lặp lại trong f.txt",
+    "cho tôi số lượng dòng phân biệt trong f.txt"
+  ],
+  "reference_command": "sort -u f.txt | wc -l",
+  "wrong_commands": [
+    "wc -l < f.txt",
+    "true"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_unique}"
+}

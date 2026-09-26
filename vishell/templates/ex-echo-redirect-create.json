@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-echo-redirect-create",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "greeting.txt",
+        "message.txt"
+      ]
+    },
+    "content": {
+      "choice": [
+        "hello",
+        "xin chao"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo file {fname} với nội dung '{content}'",
+    "ghi '{content}' vào file {fname}",
+    "tạo giúp tôi {fname} chứa chữ '{content}'",
+    "lưu '{content}' thành file {fname}"
+  ],
+  "reference_command": "echo '{content}' > {fname}",
+  "wrong_commands": [
+    "true",
+    "echo other > {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(cat {fname})\" = \"{content}\" ]"
+}

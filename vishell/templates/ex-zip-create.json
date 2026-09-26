@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-zip-create",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "csv"
+      ]
+    },
+    "archive": {
+      "choice": [
+        "bundle.zip",
+        "files.zip"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.{ext}; done",
+  "requests_vi": [
+    "nén tất cả file .{ext} thành {archive}",
+    "tạo file zip {archive} chứa các file .{ext}",
+    "zip các file .{ext} lại thành {archive}",
+    "đóng gói file .{ext} thành {archive}"
+  ],
+  "reference_command": "zip -q {archive} *.{ext}",
+  "wrong_commands": [
+    "true",
+    "touch {archive}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {archive} ] && unzip -l {archive} >/dev/null 2>&1"
+}

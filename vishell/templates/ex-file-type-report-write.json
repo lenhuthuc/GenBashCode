@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-file-type-report-write",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "script.sh",
+        "data.bin"
+      ]
+    },
+    "content": {
+      "choice": [
+        "#!/bin/bash\\necho hi",
+        "plain text"
+      ]
+    },
+    "outname": {
+      "choice": [
+        "type.txt",
+        "info.txt"
+      ]
+    }
+  },
+  "setup": "printf '{content}\\n' > {fname}",
+  "requests_vi": [
+    "kiểm tra loại file {fname} rồi ghi kết quả vào {outname}",
+    "xác định file type của {fname}, lưu vào {outname}",
+    "chạy file(1) trên {fname} và ghi ra {outname}",
+    "phân loại {fname} rồi lưu kết quả vào {outname}"
+  ],
+  "reference_command": "file -b {fname} > {outname}",
+  "wrong_commands": [
+    "true",
+    "echo unknown > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -s {outname} ] && ! grep -qx unknown {outname}"
+}

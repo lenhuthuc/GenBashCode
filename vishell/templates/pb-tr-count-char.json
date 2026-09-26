@@ -1,0 +1,34 @@
+{
+  "template_id": "pb-tr-count-char",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_a": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "ch": {
+      "choice": [
+        "x",
+        "y"
+      ]
+    }
+  },
+  "setup": "n_b=$(( {n_a} + 1 )); { for i in $(seq 1 {n_a}); do printf '{ch}'; done; for i in $(seq 1 $n_b); do printf 'z'; done; } > f.txt",
+  "requests_vi": [
+    "đếm số ký tự '{ch}' trong file f.txt",
+    "file f.txt có bao nhiêu ký tự '{ch}'?",
+    "kiểm tra số lần xuất hiện ký tự '{ch}' trong f.txt",
+    "cho tôi số ký tự '{ch}' của f.txt"
+  ],
+  "reference_command": "tr -cd '{ch}' < f.txt | wc -c",
+  "wrong_commands": [
+    "true",
+    "tr -cd 'z' < f.txt | wc -c"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_a}"
+}

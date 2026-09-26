@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-nonempty-lines",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_text": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "n_blank": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "word": {
+      "choice": [
+        "ok",
+        "hi"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_text}); do echo {word}_$i; done > f.txt; for i in $(seq 1 {n_blank}); do echo >> f.txt; done",
+  "requests_vi": [
+    "đếm số dòng không rỗng trong f.txt",
+    "file f.txt có bao nhiêu dòng có nội dung?",
+    "kiểm tra số dòng khác trống trong f.txt",
+    "đếm dòng không blank trong f.txt"
+  ],
+  "reference_command": "grep -c '.' f.txt",
+  "wrong_commands": [
+    "true",
+    "wc -l < f.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_text}"
+}

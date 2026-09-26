@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-paste-combine-columns",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "outname": {
+      "choice": [
+        "merged.tsv",
+        "joined.tsv"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {n} > col1.txt; seq 101 $((100 + {n})) > col2.txt",
+  "requests_vi": [
+    "ghép cột col1.txt và col2.txt thành {outname}",
+    "paste hai file col1.txt col2.txt ra {outname}",
+    "gộp col1.txt với col2.txt theo cột, lưu {outname}",
+    "kết hợp col1.txt và col2.txt thành {outname}"
+  ],
+  "reference_command": "paste col1.txt col2.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cat col1.txt col2.txt > {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n} ] && [ \"$(head -n 1 {outname} | wc -w)\" -eq 2 ]"
+}

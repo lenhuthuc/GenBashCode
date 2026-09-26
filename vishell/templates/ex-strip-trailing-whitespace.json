@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-strip-trailing-whitespace",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        8
+      ]
+    },
+    "word": {
+      "choice": [
+        "clean",
+        "tidy"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do printf '{word}_%s   \\n' $i; done > f.txt",
+  "requests_vi": [
+    "xoá khoảng trắng cuối dòng trong f.txt",
+    "loại bỏ trailing whitespace của f.txt",
+    "làm sạch khoảng trắng thừa cuối mỗi dòng f.txt",
+    "cắt bớt space cuối dòng trong f.txt"
+  ],
+  "reference_command": "sed -i 's/[ \\t]*$//' f.txt",
+  "wrong_commands": [
+    "true",
+    "cat f.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(grep \" $\" f.txt)\" ]"
+}

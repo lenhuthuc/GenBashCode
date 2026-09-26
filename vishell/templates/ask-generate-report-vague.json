@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-generate-report-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "tạo báo cáo giúp tôi",
+    "làm giúp tôi một cái report",
+    "xuất báo cáo từ dữ liệu này",
+    "tạo report tổng hợp giúp tôi"
+  ],
+  "clarify_question_vi": "Bạn muốn báo cáo dựa trên dữ liệu/file nào, và cần những nội dung/định dạng gì?",
+  "reference_command": "",
+  "wrong_commands": []
+}

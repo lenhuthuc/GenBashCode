@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-comm-unique-to-output",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n_shared": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "n_only_a": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "outname": {
+      "choice": [
+        "only_a.txt",
+        "diff.txt"
+      ]
+    }
+  },
+  "setup": "{ seq 1 {n_shared}; seq 101 $((100 + {n_only_a})); } | sort > a.txt; seq 1 {n_shared} | sort > b.txt",
+  "requests_vi": [
+    "tìm các dòng chỉ có trong a.txt (không có trong b.txt) rồi lưu vào {outname}",
+    "so sánh a.txt và b.txt, lưu phần riêng của a.txt vào {outname}",
+    "lấy nội dung a.txt không trùng với b.txt, ghi vào {outname}",
+    "diff a.txt b.txt, phần chỉ ở a.txt lưu ra {outname}"
+  ],
+  "reference_command": "comm -23 a.txt b.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cp a.txt {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n_only_a} ]"
+}

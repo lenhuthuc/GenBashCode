@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-touch-new-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "marker.flag",
+        "ready.ok"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo file {fname}",
+    "tạo giúp tôi một file rỗng tên {fname}",
+    "tạo file mới {fname}",
+    "làm ơn tạo file {fname}"
+  ],
+  "reference_command": "touch {fname}",
+  "wrong_commands": [
+    "true",
+    "echo x"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {fname} ]"
+}

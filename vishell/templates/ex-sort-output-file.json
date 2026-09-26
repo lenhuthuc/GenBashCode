@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-sort-output-file",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "x": {
+      "choice": [
+        "zeta",
+        "delta"
+      ]
+    },
+    "y": {
+      "choice": [
+        "alpha",
+        "beta"
+      ]
+    },
+    "outname": {
+      "choice": [
+        "sorted.txt",
+        "result.txt"
+      ]
+    }
+  },
+  "setup": "printf '{x}\\n{y}\\n' > raw.txt",
+  "requests_vi": [
+    "sắp xếp raw.txt rồi lưu thành {outname}",
+    "sort file raw.txt và ghi kết quả vào {outname}",
+    "tạo file {outname} chứa nội dung raw.txt đã sắp xếp",
+    "sắp xếp giúp tôi raw.txt ra {outname}"
+  ],
+  "reference_command": "sort raw.txt -o {outname}",
+  "wrong_commands": [
+    "true",
+    "cp raw.txt {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -f {outname} ] && [ \"$(head -n 1 {outname})\" = \"$(printf '{x}\\n{y}\\n' | sort | head -n 1)\" ]"
+}

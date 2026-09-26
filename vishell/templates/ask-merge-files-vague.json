@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-merge-files-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "gộp mấy file lại thành một giúp tôi",
+    "merge các file trong này lại",
+    "ghép hết file lại làm một",
+    "hợp nhất các file này giúp tôi"
+  ],
+  "clarify_question_vi": "Bạn muốn gộp những file cụ thể nào, theo thứ tự ra sao, và file kết quả tên gì?",
+  "reference_command": "",
+  "wrong_commands": []
+}

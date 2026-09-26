@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-sed-replace-inplace",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "old_word": {
+      "choice": [
+        "foo",
+        "draft"
+      ]
+    },
+    "new_word": {
+      "choice": [
+        "bar",
+        "final"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        5
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo {old_word}_line_$i; done > f.txt",
+  "requests_vi": [
+    "thay thế '{old_word}' bằng '{new_word}' trong file f.txt",
+    "sửa toàn bộ '{old_word}' thành '{new_word}' trong f.txt",
+    "đổi '{old_word}' thành '{new_word}' trực tiếp trong file f.txt",
+    "tìm và thay thế '{old_word}' bằng '{new_word}' trong f.txt"
+  ],
+  "reference_command": "sed -i 's/{old_word}/{new_word}/g' f.txt",
+  "wrong_commands": [
+    "true",
+    "sed 's/{old_word}/{new_word}/g' f.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(grep {old_word} f.txt)\" ] && [ -n \"$(grep {new_word} f.txt)\" ]"
+}

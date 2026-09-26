@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-rerun-pipeline-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "chạy lại pipeline giúp tôi",
+    "chạy lại toàn bộ quy trình",
+    "rerun cái job đó đi",
+    "chạy lại job xử lý dữ liệu"
+  ],
+  "clarify_question_vi": "Bạn muốn chạy lại script/pipeline nào, và có cần chạy lại từ đầu hay chỉ bước bị lỗi?",
+  "reference_command": "",
+  "wrong_commands": []
+}

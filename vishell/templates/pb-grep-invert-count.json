@@ -1,0 +1,34 @@
+{
+  "template_id": "pb-grep-invert-count",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "pattern": {
+      "choice": [
+        "SKIP",
+        "IGNORE"
+      ]
+    },
+    "n_other": {
+      "int": [
+        1,
+        6
+      ]
+    }
+  },
+  "setup": "n_match=$(( {n_other} + 1 )); for i in $(seq 1 $n_match); do echo '{pattern} line'; done > f.txt; for i in $(seq 1 {n_other}); do echo 'keep line'; done >> f.txt",
+  "requests_vi": [
+    "đếm số dòng KHÔNG chứa {pattern} trong f.txt",
+    "có bao nhiêu dòng không phải {pattern} trong f.txt?",
+    "kiểm tra số dòng loại trừ {pattern} trong f.txt",
+    "đếm dòng không khớp {pattern} trong f.txt"
+  ],
+  "reference_command": "grep -vc {pattern} f.txt",
+  "wrong_commands": [
+    "true",
+    "grep -c {pattern} f.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_other}"
+}

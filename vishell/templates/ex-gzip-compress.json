@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-gzip-compress",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "big.log",
+        "data.txt"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        10
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {n} > {fname}",
+  "requests_vi": [
+    "nén file {fname} bằng gzip",
+    "gzip file {fname} giúp tôi",
+    "nén {fname} lại cho gọn",
+    "compress file {fname} bằng gzip"
+  ],
+  "reference_command": "gzip {fname}",
+  "wrong_commands": [
+    "true",
+    "touch {fname}.gz"
+  ],
+  "check_type": "script",
+  "check_expected": "[ ! -e {fname} ] && [ -f {fname}.gz ]"
+}

@@ -1,0 +1,6 @@
+{"step": "1.1_load_data", "seconds": 16.5, "time": "2026-09-26 07:05:18"}
+{"step": "translate", "seconds": 686.1, "time": "2026-09-26 07:16:44", "exit_code": 0}
+{"step": "1.4_filter", "seconds": 0.1, "time": "2026-09-26 07:16:45"}
+{"step": "sft", "seconds": 81.7, "time": "2026-09-26 07:18:06", "exit_code": 0}
+{"step": "eval_gen", "seconds": 226.3, "time": "2026-09-26 07:21:53", "exit_code": 0}
+{"step": "1.6_metrics", "seconds": 0.5, "time": "2026-09-26 07:21:53"}

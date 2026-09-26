@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-find-delete-empty-dirs",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n_empty": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "n_full": {
+      "int": [
+        1,
+        3
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "tmp",
+        "old"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_empty}); do mkdir {prefix}_empty_$i; done; for i in $(seq 1 {n_full}); do mkdir {prefix}_full_$i; touch {prefix}_full_$i/f.txt; done",
+  "requests_vi": [
+    "xoá các thư mục rỗng",
+    "dọn dẹp mọi thư mục trống trong thư mục hiện tại",
+    "xoá hết folder rỗng giúp tôi",
+    "tìm và xoá thư mục không có nội dung"
+  ],
+  "reference_command": "find . -mindepth 1 -maxdepth 1 -type d -empty -delete",
+  "wrong_commands": [
+    "true",
+    "find . -mindepth 1 -maxdepth 1 -type d | xargs echo"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(find . -mindepth 1 -maxdepth 1 -type d | wc -l)\" -eq {n_full} ]"
+}

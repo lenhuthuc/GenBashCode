@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-concat-files-to-one",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "outname": {
+      "choice": [
+        "combined.txt",
+        "all.txt"
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "part",
+        "seg"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do echo {prefix}_$i > {prefix}_$i.txt; done",
+  "requests_vi": [
+    "gộp tất cả file {prefix}_*.txt thành {outname}",
+    "nối các file {prefix} lại thành {outname}",
+    "ghép nội dung mọi file {prefix}_*.txt vào {outname}",
+    "hợp nhất file {prefix} thành một file {outname}"
+  ],
+  "reference_command": "cat {prefix}_*.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "touch {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {n} ]"
+}

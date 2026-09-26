@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-optimize-project-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "tối ưu lại thư mục project giúp tôi",
+    "làm gọn project này lại",
+    "optimize project cho tôi",
+    "dọn tối ưu lại cấu trúc project"
+  ],
+  "clarify_question_vi": "Bạn muốn tối ưu theo hướng nào: giảm dung lượng, gộp file trùng, hay sắp xếp lại cấu trúc thư mục?",
+  "reference_command": "",
+  "wrong_commands": []
+}

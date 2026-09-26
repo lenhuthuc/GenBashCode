@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-git-add-commit",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "fname": {
+      "choice": [
+        "main.py",
+        "readme.md"
+      ]
+    },
+    "msg": {
+      "choice": [
+        "init",
+        "add-file"
+      ]
+    },
+    "n": {
+      "int": [
+        1,
+        3
+      ]
+    }
+  },
+  "setup": "git init -q; git config user.email a@a.com; git config user.name a; echo x > {fname}",
+  "requests_vi": [
+    "commit file {fname} với message '{msg}'",
+    "thêm và commit {fname}, nội dung message '{msg}'",
+    "git add {fname} rồi commit với '{msg}'",
+    "lưu thay đổi {fname} vào git với message '{msg}'"
+  ],
+  "reference_command": "git add {fname} && git commit -q -m '{msg}'",
+  "wrong_commands": [
+    "true",
+    "git add {fname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(git log --oneline | wc -l)\" -eq 1 ] && [ -z \"$(git status --porcelain)\" ]"
+}

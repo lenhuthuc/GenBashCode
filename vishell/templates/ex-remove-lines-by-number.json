@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-remove-lines-by-number",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        5,
+        15
+      ]
+    },
+    "line_no": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "seq 1 {total} > f.txt",
+  "requests_vi": [
+    "xoá dòng số {line_no} trong file f.txt",
+    "loại bỏ dòng thứ {line_no} khỏi f.txt",
+    "xoá giúp tôi dòng {line_no} của f.txt",
+    "gỡ dòng {line_no} ra khỏi file f.txt"
+  ],
+  "reference_command": "sed -i '{line_no}d' f.txt",
+  "wrong_commands": [
+    "true",
+    "sed -i '$d' f.txt"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < f.txt)\" -eq $(({total} - 1)) ] && ! grep -qx {line_no} f.txt"
+}

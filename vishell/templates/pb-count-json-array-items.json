@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-json-array-items",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        8
+      ]
+    },
+    "key": {
+      "choice": [
+        "items",
+        "users"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "python3 -c \"import json; json.dump({'{key}': list(range({n}))}, open('data.json','w'))\"",
+  "requests_vi": [
+    "đếm số phần tử trong mảng {key} của data.json",
+    "trường {key} trong data.json có mấy phần tử?",
+    "kiểm tra độ dài mảng {key}",
+    "cho tôi biết {key} có bao nhiêu item"
+  ],
+  "reference_command": "jq '.{key} | length' data.json",
+  "wrong_commands": [
+    "true",
+    "jq '.{key} | length + 1' data.json"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n}"
+}

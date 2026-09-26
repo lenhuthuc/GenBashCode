@@ -1,0 +1,34 @@
+{
+  "template_id": "pb-count-blank-lines",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_blank": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "word": {
+      "choice": [
+        "log",
+        "note"
+      ]
+    }
+  },
+  "setup": "n_text=$(( {n_blank} + 1 )); for i in $(seq 1 $n_text); do echo {word}_$i; done > f.txt; for i in $(seq 1 {n_blank}); do echo >> f.txt; done",
+  "requests_vi": [
+    "đếm số dòng trống trong f.txt",
+    "file f.txt có bao nhiêu dòng rỗng?",
+    "kiểm tra số lượng blank line trong f.txt",
+    "tìm dòng trống và đếm giúp tôi trong f.txt"
+  ],
+  "reference_command": "grep -c '^$' f.txt",
+  "wrong_commands": [
+    "true",
+    "grep -c '^.' f.txt"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_blank}"
+}

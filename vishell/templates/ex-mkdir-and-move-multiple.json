@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-mkdir-and-move-multiple",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "dirname": {
+      "choice": [
+        "sorted",
+        "grouped"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "txt",
+        "md"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.{ext}; done",
+  "requests_vi": [
+    "tạo thư mục {dirname} rồi chuyển hết file .{ext} vào đó",
+    "gom tất cả file .{ext} vào thư mục mới {dirname}",
+    "tạo folder {dirname} và di chuyển các file .{ext} vào",
+    "sắp xếp file .{ext} vào thư mục {dirname}"
+  ],
+  "reference_command": "mkdir {dirname} && mv *.{ext} {dirname}/",
+  "wrong_commands": [
+    "true",
+    "mkdir {dirname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(ls {dirname}/*.{ext} | wc -l)\" -eq {n} ] && [ -z \"$(ls *.{ext} 2>/dev/null)\" ]"
+}

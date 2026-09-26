@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-nl-number-lines",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "total": {
+      "int": [
+        2,
+        10
+      ]
+    },
+    "outname": {
+      "choice": [
+        "numbered.txt",
+        "withnum.txt"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {total}); do echo x; done > f.txt",
+  "requests_vi": [
+    "đánh số dòng cho f.txt, lưu ra {outname}",
+    "thêm số thứ tự vào từng dòng f.txt ra {outname}",
+    "nl file f.txt ghi kết quả vào {outname}",
+    "đánh số các dòng của f.txt thành {outname}"
+  ],
+  "reference_command": "nl -ba f.txt > {outname}",
+  "wrong_commands": [
+    "true",
+    "cp f.txt {outname}"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(wc -l < {outname})\" -eq {total} ] && [ -n \"$(grep {total} {outname})\" ]"
+}

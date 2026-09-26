@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-create-multiple-dirs-loop",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        2,
+        6
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "week",
+        "sprint"
+      ]
+    },
+    "unused": {
+      "choice": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  "setup": "",
+  "requests_vi": [
+    "tạo {n} thư mục {prefix}_1 đến {prefix}_{n}",
+    "tạo hàng loạt {n} folder {prefix}",
+    "làm ơn tạo {n} thư mục tên {prefix}_i",
+    "tạo {n} thư mục con tên {prefix}"
+  ],
+  "reference_command": "for i in $(seq 1 {n}); do mkdir {prefix}_$i; done",
+  "wrong_commands": [
+    "true",
+    "mkdir {prefix}_1"
+  ],
+  "check_type": "script",
+  "check_expected": "[ \"$(find . -maxdepth 1 -type d -name \"{prefix}_*\" | wc -l)\" -eq {n} ]"
+}

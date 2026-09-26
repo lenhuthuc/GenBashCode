@@ -1,0 +1,20 @@
+{
+  "template_id": "ask-install-dependencies-vague",
+  "source": "original",
+  "expected_action": "ask",
+  "reversible": true,
+  "ask_reason": "ambiguous",
+  "check_type": "stdout_contains",
+  "check_expected": "",
+  "params": {},
+  "setup": "",
+  "requests_vi": [
+    "cài đặt mấy thư viện cần thiết giúp tôi",
+    "cài dependencies cho project này",
+    "setup môi trường giúp tôi",
+    "cài đặt các gói cần dùng"
+  ],
+  "clarify_question_vi": "Bạn cần cài những package cụ thể nào (có file requirements/package.json không), và cài phạm vi local hay toàn hệ thống?",
+  "reference_command": "",
+  "wrong_commands": []
+}

@@ -1,0 +1,40 @@
+{
+  "template_id": "ex-find-delete-ext",
+  "source": "original",
+  "expected_action": "execute",
+  "reversible": true,
+  "params": {
+    "n": {
+      "int": [
+        1,
+        6
+      ]
+    },
+    "n_keep": {
+      "int": [
+        1,
+        4
+      ]
+    },
+    "ext": {
+      "choice": [
+        "tmp",
+        "cache"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n}); do touch f_$i.{ext}; done; for i in $(seq 1 {n_keep}); do touch keep_$i.txt; done",
+  "requests_vi": [
+    "tìm và xoá tất cả file .{ext}",
+    "xoá mọi file .{ext} bằng find",
+    "dùng find để xoá hết file .{ext}",
+    "tìm file .{ext} rồi xoá luôn"
+  ],
+  "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" -delete",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -name \"*.txt\" -delete"
+  ],
+  "check_type": "script",
+  "check_expected": "[ -z \"$(ls *.{ext} 2>/dev/null)\" ] && [ \"$(ls keep_*.txt | wc -l)\" -eq {n_keep} ]"
+}

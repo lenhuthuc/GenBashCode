@@ -1,0 +1,40 @@
+{
+  "template_id": "pb-count-executable-files",
+  "source": "original",
+  "expected_action": "probe",
+  "reversible": true,
+  "params": {
+    "n_exec": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "n_plain": {
+      "int": [
+        1,
+        5
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "run",
+        "job"
+      ]
+    }
+  },
+  "setup": "for i in $(seq 1 {n_exec}); do touch {prefix}_$i.sh; chmod +x {prefix}_$i.sh; done; for i in $(seq 1 {n_plain}); do touch note_$i.txt; done",
+  "requests_vi": [
+    "đếm số file có quyền thực thi trong thư mục hiện tại",
+    "có bao nhiêu file executable ở đây?",
+    "kiểm tra số lượng file được cấp quyền chạy",
+    "tìm file thực thi được và đếm giúp tôi"
+  ],
+  "reference_command": "find . -maxdepth 1 -type f -perm -u+x | wc -l",
+  "wrong_commands": [
+    "true",
+    "find . -maxdepth 1 -type f | wc -l"
+  ],
+  "check_type": "stdout_equals",
+  "check_expected": "{n_exec}"
+}
