@@ -22,8 +22,16 @@ if [ ! -d "$VENV_DIR" ]; then
     uv pip install --python "$VENV_DIR/bin/python" -U vllm
 fi
 
+# Same knobs the Kaggle notebook used successfully on a T4: short context, capped concurrent
+# sequences (Qwen3.5 otherwise runs out of Mamba cache blocks on 16GB), 90% of VRAM.
+# Extra flags can be appended via VLLM_EXTRA_ARGS (e.g. to drop the vision encoder).
+# shellcheck disable=SC2086
 exec "$VENV_DIR/bin/python" -m vllm.entrypoints.openai.api_server \
     --model "$MODEL" \
     --port "$PORT" \
     --api-key "$API_KEY" \
-    --dtype float16
+    --dtype float16 \
+    --max-model-len 2048 \
+    --max-num-seqs 64 \
+    --gpu-memory-utilization 0.90 \
+    ${VLLM_EXTRA_ARGS:-}

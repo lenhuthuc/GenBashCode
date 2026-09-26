@@ -13,12 +13,18 @@ sandbox:
   max_workers: 8
 
 data:
-  nl2bash_dir: data/nl2bash_vi         # pre-translated data, if present (see AGENT.md section 2)
-  nl2bash_raw_dir: data/nl2bash_raw    # downloaded all.nl/all.cm when translating from scratch
+  # If this path exists it is used as-is (already translated). If not, data-nl2bash downloads
+  # NL2Bash and translates it itself through the vLLM server below (AGENT.md sections 2-3).
+  nl2bash_dir: data/nl2bash_vi
+  max_rows: null                        # null = all (~40k); a number = only the first N pairs (smoke)
   translator:
     server_url: http://localhost:8000/v1
     api_key: EMPTY
-    model: auto
+    model: Qwen/Qwen3.5-4B              # T4 16GB; colab_a100.yaml uses the 9B
+    autostart: true                     # start scripts/start_vllm.sh if nothing answers, stop it after
+    startup_timeout: 1800               # seconds: first run installs vllm + downloads the model
+    chunk_size: 2000                    # rows per resumable chunk file
+    max_workers: 64                     # concurrent requests so vLLM can batch
   noise_ratio: 0.30
   drop_r2_in_sft_nl2bash: true
 

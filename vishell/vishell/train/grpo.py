@@ -1,5 +1,5 @@
 """GRPO stage: TRL GRPOTrainer, new LoRA on top of the merged sft_scenarios model,
-rewarded entirely by rewards.make_grpo_reward_fn (sandbox execution, no LLM judge).
+rewarded entirely by rewards.make_grpo_reward_fns (sandbox execution, no LLM judge).
 Tries vLLM generation first (much faster), falls back to plain `generate` if it errors
 out — vLLM+GRPO version pinning is notoriously fragile, per AGENT.md section 6.
 """
@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 from ..prompts import SYSTEM_PROMPT, build_messages
-from ..rewards import make_grpo_reward_fn
+from ..rewards import make_grpo_reward_fns
 from ..schema import Instance
 from .sft import filter_kwargs, latest_checkpoint, pick_dtype, read_jsonl
 
@@ -46,7 +46,7 @@ def train_grpo(
 
     peft_cfg = LoraConfig(r=lora_r, lora_alpha=lora_alpha, lora_dropout=lora_dropout,
                           target_modules="all-linear", task_type="CAUSAL_LM")
-    reward_fn = make_grpo_reward_fn(backend, coef=decision_coef)
+    reward_fns = make_grpo_reward_fns(backend, coef=decision_coef)
 
     resume_from = latest_checkpoint(out)
     base_kwargs = dict(
@@ -61,7 +61,7 @@ def train_grpo(
         grpo_args = GRPOConfig(**filter_kwargs(GRPOConfig, base_kwargs))
         trainer = GRPOTrainer(**filter_kwargs(GRPOTrainer, dict(
             model=model, args=grpo_args, train_dataset=train_ds, processing_class=tok,
-            reward_funcs=[reward_fn], peft_config=peft_cfg,
+            reward_funcs=reward_fns, peft_config=peft_cfg,
         )))
     except Exception as e:
         print(f"[grpo] use_vllm={use_vllm} generation setup failed ({e}); retrying with use_vllm=False")
@@ -69,7 +69,7 @@ def train_grpo(
         grpo_args = GRPOConfig(**filter_kwargs(GRPOConfig, base_kwargs))
         trainer = GRPOTrainer(**filter_kwargs(GRPOTrainer, dict(
             model=model, args=grpo_args, train_dataset=train_ds, processing_class=tok,
-            reward_funcs=[reward_fn], peft_config=peft_cfg,
+            reward_funcs=reward_fns, peft_config=peft_cfg,
         )))
 
     trainer.train(resume_from_checkpoint=str(resume_from) if resume_from else None)

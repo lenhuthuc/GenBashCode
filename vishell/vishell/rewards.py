@@ -8,6 +8,8 @@ training can log them individually (as the spec asks).
 """
 from __future__ import annotations
 
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Callable, Optional
 
@@ -150,20 +152,47 @@ def make_exec_fn(instance: Instance, backend, timeout: float = 10) -> ExecFn:
     return _run
 
 
-def make_grpo_reward_fn(backend, coef: float = 1.0, timeout: float = 10):
-    """TRL GRPOTrainer reward function: `(prompts, completions, **kwargs) -> list[float]`.
-    TRL forwards every other dataset column as a kwarg of matching length, so the
-    dataset built by data/templates.py must include an `instance` column (an Instance,
-    or its `.model_dump()` dict — either is accepted here)."""
+def make_grpo_reward_fns(backend, coef: float = 1.0, timeout: float = 10, max_workers: int = 8):
+    """TRL GRPOTrainer reward functions `[r_format, r_decision]`, each `(prompts, completions,
+    **kwargs) -> list[float]`. TRL logs every function separately (rewards/r_format,
+    rewards/r_decision) and sums them, which is how AGENT.md 6.5 wants the components tracked.
 
-    def reward_fn(prompts, completions, **kwargs) -> list[float]:
-        instances_raw = kwargs["instance"]
-        out = []
+    TRL forwards every other dataset column as a kwarg of matching length, so the dataset
+    from data/templates.py must carry an `instance` column (an Instance or its dict).
+    Sandbox runs go through a thread pool, and results are cached per (instance, completion):
+    TRL calls the two functions one after the other on the same completions, so the second
+    one reads the cache instead of running everything again."""
+    cache: dict[tuple[str, str], ScoreResult] = {}
+    lock = threading.Lock()
+
+    def _score_all(completions, instances_raw) -> list[ScoreResult]:
+        jobs = []
         for completion, inst_raw in zip(completions, instances_raw):
             instance = inst_raw if isinstance(inst_raw, Instance) else Instance.model_validate(inst_raw)
             text = completion if isinstance(completion, str) else completion[-1]["content"]
-            result = score(instance, text, make_exec_fn(instance, backend, timeout), coef)
-            out.append(result.total)
-        return out
+            jobs.append((instance, text))
 
-    return reward_fn
+        def one(job) -> ScoreResult:
+            instance, text = job
+            key = (instance.instance_id, text)
+            with lock:
+                hit = cache.get(key)
+            if hit is not None:
+                return hit
+            result = score(instance, text, make_exec_fn(instance, backend, timeout), coef)
+            with lock:
+                if len(cache) > 20000:
+                    cache.clear()
+                cache[key] = result
+            return result
+
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            return list(ex.map(one, jobs))
+
+    def r_format(prompts, completions, **kwargs) -> list[float]:
+        return [r.r_format for r in _score_all(completions, kwargs["instance"])]
+
+    def r_decision(prompts, completions, **kwargs) -> list[float]:
+        return [r.r_decision for r in _score_all(completions, kwargs["instance"])]
+
+    return [r_format, r_decision]

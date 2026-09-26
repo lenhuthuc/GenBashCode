@@ -85,33 +85,64 @@ def _resolve_data_path(rel: str) -> Path:
     return PROJECT_ROOT.parent / rel
 
 
+def _translate_from_scratch(cfg: dict, paths: Paths) -> tuple[list[dict], dict]:
+    """NL2Bash (GitHub) -> clean -> translate EN->VI through a vLLM server (started and
+    stopped here if not already running). Resumable per chunk."""
+    from .data import nl2bash as nb
+
+    tc = cfg["data"]["translator"]
+    nl_path, cm_path = nb.download_nl2bash(paths.data / "nl2bash_raw")
+    pairs, clean_stats = nb.clean_and_dedupe(nb.load_raw_pairs(nl_path, cm_path))
+    if cfg["data"]["max_rows"]:
+        pairs = pairs[: cfg["data"]["max_rows"]]
+    print(f"[data-nl2bash] {len(pairs)} pairs to translate (cleaning dropped {clean_stats})")
+
+    with nb.translator_server(
+        tc["server_url"], tc["api_key"], tc["model"], tc["autostart"],
+        PROJECT_ROOT / "scripts" / "start_vllm.sh", tc["startup_timeout"], paths.logs / "vllm.log",
+    ):
+        chat = nb._openai_chat(tc["server_url"], tc["api_key"], tc["model"])
+        translated = nb.translate_rows(pairs, chat, paths.data / "translate_chunks",
+                                       tc["chunk_size"], tc["max_workers"])
+
+    from collections import Counter
+    reasons = Counter(r["reason"] for r in translated)
+    rows = [{"id": r["id"], "nl_vi": r["nl_vi"], "bash": r["bash"]} for r in translated if r["nl_vi"]]
+    return rows, {"translator_model": tc["model"], "clean_dropped": clean_stats,
+                  "translation_reasons": dict(reasons), "n_translated_ok": len(rows)}
+
+
 def step_data_nl2bash(cfg: dict, paths: Paths) -> None:
-    from .data.nl2bash import (
-        build_sft_nl2bash_dataset, clean_and_dedupe, download_nl2bash, load_existing_vi,
-        load_raw_pairs,
-    )
+    from .data import nl2bash as nb
 
     vi_path = _resolve_data_path(cfg["data"]["nl2bash_dir"])
     has_data = vi_path.is_file() or (vi_path.is_dir() and any(vi_path.iterdir()))
+    extra: dict = {}
     if has_data:
-        rows = load_existing_vi(vi_path)
+        rows = nb.load_existing_vi(vi_path)
         source = f"existing translated data at {vi_path}"
     else:
-        raw_dir = paths.data / "nl2bash_raw"
-        nl_path, cm_path = download_nl2bash(raw_dir)
-        pairs, clean_stats = clean_and_dedupe(load_raw_pairs(nl_path, cm_path))
-        print(f"[data-nl2bash] cleaned {len(pairs)} pairs, dropped {clean_stats}")
-        raise SystemExit(
-            "No translated data/nl2bash_vi/ found and no translator server configured for this "
-            "laptop run. Point configs at an existing data/nl2bash_vi/, or run the translation "
-            "step on a machine with a vLLM server up (configs.data.translator.server_url)."
-        )
+        sft_v1 = _resolve_data_path(cfg["models"]["sft_v1_dir"])
+        if (sft_v1 / "adapter_config.json").exists():
+            # spec 6.1: a ready sft_v1 means sft_nl2bash is skipped, so translating is wasted work
+            print(f"[data-nl2bash] {sft_v1} exists and no translated data given: skipping translation")
+            _write_json(paths.results / "data_stats.json", {"source": "skipped (sft_v1 already trained)"})
+            return
+        rows, extra = _translate_from_scratch(cfg, paths)
+        source = f"NL2Bash (TellinaTool) translated with {cfg['data']['translator']['model']}"
 
-    sft_rows = build_sft_nl2bash_dataset(rows, seed=cfg["seed"], noise_ratio=cfg["data"]["noise_ratio"],
-                                         drop_r2=cfg["data"]["drop_r2_in_sft_nl2bash"])
-    out = [{"request_vi": r["nl_vi"], "target": r["target_json"]} for r in sft_rows]
-    _write_jsonl(paths.data / "sft_nl2bash.jsonl", out)
-    _write_json(paths.results / "data_stats.json", {"source": source, "n_raw": len(rows), "n_sft": len(out)})
+    # split BY COMMAND so nothing in val/test leaks into train
+    train, val, test = nb.split_by_command_group(rows, seed=cfg["seed"])
+    noise, drop_r2 = cfg["data"]["noise_ratio"], cfg["data"]["drop_r2_in_sft_nl2bash"]
+    to_pairs = lambda sft: [{"request_vi": r["nl_vi"], "target": r["target_json"]} for r in sft]
+    sft_train = nb.build_sft_nl2bash_dataset(train, seed=cfg["seed"], noise_ratio=noise, drop_r2=drop_r2)
+    sft_val = nb.build_sft_nl2bash_dataset(val, seed=cfg["seed"], noise_ratio=0.0, drop_r2=drop_r2)
+    _write_jsonl(paths.data / "sft_nl2bash.jsonl", to_pairs(sft_train))
+    _write_jsonl(paths.data / "sft_nl2bash_val.jsonl", to_pairs(sft_val))
+    _write_jsonl(paths.data / "nl2bash_test.jsonl", test)  # for the NL2Bash parse/EM/utility eval (not wired yet)
+    _write_json(paths.results / "data_stats.json", {
+        "source": source, "n_raw": len(rows), "n_train_rows": len(train), "n_val_rows": len(val),
+        "n_test_rows": len(test), "n_sft": len(sft_train), "n_sft_val": len(sft_val), **extra})
 
 
 def step_verify(cfg: dict, paths: Paths) -> None:
@@ -208,6 +239,11 @@ def step_merge(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
 
     base_model = cfg["models"]["base_model"] if stage == "nl2bash" else str(paths.models / f"merged_{_prev_stage(stage)}")
     adapter_dir = str(paths.checkpoints / f"sft_{stage}" / "final") if stage != "grpo" else str(paths.checkpoints / "grpo" / "final")
+    if stage == "nl2bash":
+        # step_sft skips training when a pre-trained sft_v1 exists, so merge that adapter
+        sft_v1 = _resolve_data_path(cfg["models"]["sft_v1_dir"])
+        if (sft_v1 / "adapter_config.json").exists():
+            adapter_dir = str(sft_v1)
     out_dir = paths.models / f"merged_{stage}"
     result = merge_adapter(base_model, adapter_dir, str(out_dir), dtype=cfg["train"]["dtype"], force=force)
     print(f"[merge-{stage}] {result}")

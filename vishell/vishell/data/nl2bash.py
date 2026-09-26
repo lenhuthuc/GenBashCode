@@ -9,12 +9,19 @@ schema.ModelOutput so this file never re-invents the JSON shape.
 from __future__ import annotations
 
 import json
+import math
+import os
+import random
 import re
+import subprocess
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Iterator, Optional
 
 from ..classify import classify
 from ..noise import noisy_for, selected_for_noise
@@ -127,31 +134,57 @@ def _openai_chat(server_url: str, api_key: str, model: str) -> ChatFn:
     urllib (no extra dependency needed just to hit a JSON HTTP endpoint)."""
 
     def call(messages: list[dict], temperature: float) -> str:
-        body = json.dumps({"model": model, "messages": messages, "temperature": temperature,
-                            "max_tokens": 256}).encode("utf-8")
-        req = urllib.request.Request(
-            server_url.rstrip("/") + "/chat/completions", data=body,
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
-        )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            data = json.loads(resp.read())
-        return data["choices"][0]["message"]["content"].strip()
+        body = json.dumps({
+            "model": model, "messages": messages, "temperature": temperature, "max_tokens": 256,
+            # Qwen3.5 "thinks" before answering by default; the notebook turned that off too
+            "chat_template_kwargs": {"enable_thinking": False},
+        }).encode("utf-8")
+        last_err: Exception | None = None
+        for attempt in range(3):
+            req = urllib.request.Request(
+                server_url.rstrip("/") + "/chat/completions", data=body,
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    data = json.loads(resp.read())
+                return data["choices"][0]["message"]["content"].strip()
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+                last_err = e
+                time.sleep(2 * (attempt + 1))
+        raise RuntimeError(f"translation server call failed after 3 tries: {last_err}")
 
     return call
 
 
-_FEWSHOT = [
-    ("find all .txt files in /home/user larger than 10MB",
-     "tìm tất cả file .txt trong /home/user có kích thước lớn hơn 10MB"),
-    ("print the last 5 lines of config_backup.sh",
-     "in ra 5 dòng cuối của file config_backup.sh"),
-]
+# Ported from the user's Kaggle notebook (translate.py): same rules, same few-shots, and
+# the reference command is shown as context only, never to be copied into the translation.
 _TRANSLATE_SYS = (
-    "Bạn là biên dịch viên kỹ thuật. Dịch yêu cầu tiếng Anh sang tiếng Việt tự nhiên, "
-    "giống cách một lập trình viên Việt Nam gõ yêu cầu cho trợ lý dòng lệnh. Giữ nguyên "
-    "tên file, đường dẫn, tên tiện ích, tuỳ chọn, số, URL và mọi nội dung trong dấu nháy. "
-    "Không giải thích, không viết lệnh bash, chỉ trả về một dòng là bản dịch."
+    "Bạn là biên dịch viên kỹ thuật. Hãy dịch yêu cầu tiếng Anh sang tiếng Việt tự nhiên, giống cách "
+    "một lập trình viên Việt Nam gõ yêu cầu cho trợ lý dòng lệnh.\nQuy tắc:\n"
+    "1. GIỮ NGUYÊN, không dịch, không thêm dấu: tên file, đường dẫn, tên thư mục, tên chương trình/tiện ích "
+    "(grep, find, tar...), tùy chọn (-l, --all), biến ($HOME), đuôi file (.txt), số, URL, tên người dùng/máy/gói, "
+    "mẫu tìm kiếm.\n2. Giữ nguyên dấu nháy và toàn bộ nội dung bên trong dấu nháy.\n"
+    "3. Không thêm, không bớt ý. Không giải thích. Không viết lệnh bash.\n"
+    "4. Dùng thuật ngữ quen thuộc của dân IT Việt: file, thư mục, quyền, tiến trình, đường dẫn...\n"
+    "5. Chỉ trả về MỘT dòng là bản dịch."
 )
+_FEWSHOT = [
+    ("find all .txt files in /home/user larger than 10MB", 'find /home/user -name "*.txt" -size +10M',
+     "tìm tất cả file .txt trong /home/user có kích thước lớn hơn 10MB"),
+    ("print the last 5 lines of config_backup.sh", "tail -n 5 config_backup.sh",
+     "in ra 5 dòng cuối của file config_backup.sh"),
+    ("change the owner of /srv/app/data.db to user 'www-data'", "chown www-data /srv/app/data.db",
+     "đổi chủ sở hữu của /srv/app/data.db thành người dùng 'www-data'"),
+    ("Counts lines in all *.py files in the current directory tree", "find . -name '*.py' | xargs wc -l",
+     "đếm số dòng của tất cả file *.py trong cây thư mục hiện tại"),
+    ("Recursively removes all empty directories under current directory", "find . -type d -empty -delete",
+     "xoá đệ quy tất cả thư mục rỗng trong thư mục hiện tại"),
+]
+
+
+def _user_msg(nl: str, bash: str) -> str:
+    return f"Câu tiếng Anh: {nl}\nLệnh tham chiếu (chỉ để hiểu ngữ cảnh, KHÔNG đưa vào bản dịch): {bash}"
 
 
 def check_translation(nl_vi: str, reference_command: str) -> tuple[bool, str]:
@@ -173,9 +206,9 @@ def check_translation(nl_vi: str, reference_command: str) -> tuple[bool, str]:
 def translate_row(nl: str, reference_command: str, chat_fn: ChatFn, max_tries: int = 3) -> tuple[str, str, int]:
     """Returns (nl_vi, reason, tries). Retries at increasing temperature on rejection."""
     messages = [{"role": "system", "content": _TRANSLATE_SYS}]
-    for en, vi in _FEWSHOT:
-        messages += [{"role": "user", "content": en}, {"role": "assistant", "content": vi}]
-    messages.append({"role": "user", "content": nl})
+    for en, cmd, vi in _FEWSHOT:
+        messages += [{"role": "user", "content": _user_msg(en, cmd)}, {"role": "assistant", "content": vi}]
+    messages.append({"role": "user", "content": _user_msg(nl, reference_command)})
 
     last_reason = "empty"
     for attempt in range(max_tries):
@@ -186,6 +219,102 @@ def translate_row(nl: str, reference_command: str, chat_fn: ChatFn, max_tries: i
             return out, reason, attempt + 1
         last_reason = reason
     return "", last_reason, max_tries
+
+
+def _server_ready(server_url: str, api_key: str) -> bool:
+    req = urllib.request.Request(server_url.rstrip("/") + "/models", headers={"Authorization": f"Bearer {api_key}"})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.status == 200
+    except (urllib.error.URLError, TimeoutError, ConnectionError):
+        return False
+
+
+@contextmanager
+def translator_server(
+    server_url: str, api_key: str, model: str, autostart: bool, script_path: str | Path,
+    startup_timeout: float = 1800, log_path: str | Path | None = None,
+) -> Iterator[None]:
+    """Make sure an OpenAI-compatible server is answering at server_url for the duration of
+    the block. Already up -> use it and leave it alone. Not up and autostart -> launch
+    scripts/start_vllm.sh, wait until ready, and TERMINATE it on exit so vLLM gives the GPU
+    back before SFT starts (vLLM holds most of the VRAM while it lives)."""
+    if _server_ready(server_url, api_key):
+        yield
+        return
+    if not autostart:
+        raise RuntimeError(f"no translation server at {server_url} and data.translator.autostart is false")
+
+    port = urllib.parse.urlparse(server_url).port or 8000
+    env = {**os.environ, "VLLM_API_KEY": api_key}
+    log = open(log_path, "ab") if log_path else subprocess.DEVNULL
+    proc = subprocess.Popen(["bash", str(script_path), model, str(port)], env=env, stdout=log, stderr=subprocess.STDOUT)
+    try:
+        deadline = time.time() + startup_timeout
+        while not _server_ready(server_url, api_key):
+            if proc.poll() is not None:
+                raise RuntimeError(f"vLLM server exited early (code {proc.returncode}); see {log_path}")
+            if time.time() > deadline:
+                raise RuntimeError(f"vLLM server not ready after {startup_timeout:.0f}s; see {log_path}")
+            time.sleep(5)
+        yield
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+        if log_path:
+            log.close()
+
+
+def translate_rows(
+    rows: list[dict], chat_fn: ChatFn, chunk_dir: str | Path, chunk_size: int = 2000,
+    max_workers: int = 32, progress: Callable[[str], None] = print,
+) -> list[dict]:
+    """Translate [{"id","nl","bash"}] in fixed chunks; a chunk whose file already exists is
+    skipped, so a killed run resumes where it stopped (same idea as the notebook's
+    ChunkStore). Requests inside a chunk run concurrently so vLLM can batch them."""
+    chunk_dir = Path(chunk_dir)
+    chunk_dir.mkdir(parents=True, exist_ok=True)
+    n_chunks = math.ceil(len(rows) / chunk_size) if rows else 0
+    out: list[dict] = []
+    for ci in range(n_chunks):
+        chunk = rows[ci * chunk_size:(ci + 1) * chunk_size]
+        # length is part of the name so a changed max_rows never reuses a stale partial chunk
+        path = chunk_dir / f"chunk_{ci:05d}_{len(chunk)}.jsonl"
+        if path.exists():
+            done = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        else:
+            with ThreadPoolExecutor(max_workers=max_workers) as ex:
+                results = list(ex.map(lambda r: translate_row(r["nl"], r["bash"], chat_fn), chunk))
+            done = [{"id": r["id"], "nl": r["nl"], "bash": r["bash"], "nl_vi": vi, "reason": reason, "tries": tries}
+                    for r, (vi, reason, tries) in zip(chunk, results)]
+            tmp = path.with_name(path.name + ".tmp")
+            tmp.write_text("".join(json.dumps(d, ensure_ascii=False) + "\n" for d in done), encoding="utf-8")
+            os.replace(tmp, path)
+            progress(f"[translate] chunk {ci + 1}/{n_chunks} done")
+        out.extend(done)
+    return out
+
+
+def split_by_command_group(
+    rows: list[dict], seed: int = 0, test_frac: float = 0.05, val_frac: float = 0.02
+) -> tuple[list[dict], list[dict], list[dict]]:
+    """train/val/test split BY COMMAND (normalized), so no command that appears in test or
+    val also appears in train — the same command phrased several ways stays on one side."""
+    groups = sorted({normalize_cmd(r["bash"]) for r in rows})
+    random.Random(seed).shuffle(groups)
+    n_test = max(1, round(test_frac * len(groups)))
+    n_val = max(1, round(val_frac * len(groups)))
+    test_g = set(groups[:n_test])
+    val_g = set(groups[n_test:n_test + n_val])
+    train, val, test = [], [], []
+    for r in rows:
+        g = normalize_cmd(r["bash"])
+        (test if g in test_g else val if g in val_g else train).append(r)
+    return train, val, test
 
 
 # --------------------------------------------------------------------------- SFT target

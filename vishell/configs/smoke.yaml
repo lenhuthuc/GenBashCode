@@ -3,9 +3,14 @@
 run_name: smoke
 
 data:
-  # real data/nl2bash_vi/ (outer repo root) isn't pulled in yet on this laptop; fall
-  # back to a tiny bundled fixture so the smoke pipeline can still exercise data-nl2bash.
+  # A tiny bundled fixture lets the laptop smoke run skip translation (no GPU/vLLM there).
+  # To smoke-test the translation stage itself on Kaggle/Colab, override:
+  #   --set data.nl2bash_dir=data/nl2bash_vi     (path that does not exist -> translate)
   nl2bash_dir: tests/fixtures/nl2bash_vi_small.jsonl
+  max_rows: 50                  # only used when translating: first 50 pairs
+  translator:
+    chunk_size: 25
+    max_workers: 16
 
 templates:
   n_train_per_template: 4

@@ -11,13 +11,26 @@ tham số ngẫu nhiên trùng nhau, hoặc do dùng `stdout_lines_set` cho lệ
 điều cần kiểm), (3) công cụ không có sẵn trong sandbox image (`rsync`, `xz` — bỏ template
 thay vì mở rộng image, để giữ đúng danh sách công cụ AGENT.md mục 4 đã quy định).
 
+## Bước dịch nằm trong pipeline (không cần notebook riêng)
+- `data-nl2bash`: nếu `data.nl2bash_dir` tồn tại thì dùng nguyên (đã dịch); nếu không thì tự
+  tải NL2Bash, lọc, dịch qua server vLLM rồi chia train/val/test **theo nhóm lệnh**. Nếu
+  `models/sft_v1/` đã có thì bỏ qua luôn việc dịch (vì `sft-nl2bash` cũng bị bỏ qua).
+- Server vLLM được `translator_server()` tự bật bằng `scripts/start_vllm.sh` và **tự tắt sau
+  khi dịch xong**: vLLM chiếm ~90% VRAM, nếu để sống thì SFT ngay sau đó sẽ hết bộ nhớ.
+  Có sẵn server thì dùng luôn và không đụng tới.
+- Prompt dịch, luật kiểm tra bản dịch và tham số vLLM (`max_model_len 2048`, `max_num_seqs 64`,
+  `gpu_mem 0.90`, tắt thinking của Qwen3.5) lấy lại từ notebook cũ của người dùng vì nó đã
+  chạy thành công trên T4. Chỉ đổi cách gọi: HTTP song song (64 luồng) để vLLM tự gộp batch,
+  thay vì gọi vLLM in-process.
+- Chưa từng chạy với vLLM thật (máy này không có GPU) — chỉ test với server giả.
+
 ## Dữ liệu có sẵn (`finals/`, `models/sft_v1/`, `data/nl2bash_vi/`)
 - `finals/` (adapter LoRA, root repo) là kết quả một lần chạy **SMOKE** trên Kaggle
   (20 bước, 48 mẫu, target ở dạng **plain bash**, không phải JSON action). Pipeline này
   **không** dùng `finals/` làm `models/sft_v1/`: định dạng target khác (plain bash vs JSON
   `{action,command,question}`) và cỡ mẫu chỉ mang tính smoke-test, không đại diện.
-- `models/sft_v1/` và `data/nl2bash_vi/` (nêu trong AGENT.md §2) chưa có trên máy tại thời
-  điểm viết; người dùng sẽ tự chuyển vào sau. `cli.py` (`step_sft`/`step_data_nl2bash`)
+- `models/sft_v1/` và `data/nl2bash_vi/` (nêu trong AGENT.md §2) **chưa tồn tại**: notebook
+  `notebook1668f85465.ipynb` mới chỉ có output smoke, bản full (`SMOKE=False`) chưa từng chạy. `cli.py` (`step_sft`/`step_data_nl2bash`)
   kiểm tra sự tồn tại của các đường dẫn này trước khi chạy — có thì dùng lại (skip), không
   thì train mới / báo lỗi rõ ràng yêu cầu trỏ tới dữ liệu thật thay vì đoán.
 - Cột dữ liệu dịch (`nl_vi`/`vi`/`description_vi`, `cmd`/`bash`/`command`) được nhận dạng

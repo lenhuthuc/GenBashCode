@@ -1,6 +1,10 @@
 # Colab A100/L4: bf16 hardware, larger batches, fewer grad-accum steps.
 run_name: full
 
+data:
+  translator:
+    model: Qwen/Qwen3.5-9B      # fits on A100 40GB+; the 4B default is for T4 16GB
+
 train:
   dtype: bf16
   per_device_bs: 32

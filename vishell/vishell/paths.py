@@ -8,10 +8,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent  # vishell/ (the package's
 
 
 def detect_env() -> str:
-    if Path("/content").exists():
-        return "colab"
+    # Kaggle first: its image also has /content and google.colab installed, so checking
+    # for Colab first misidentifies Kaggle (drive.mount then raises NotImplementedError).
     if Path("/kaggle/working").exists():
         return "kaggle"
+    if Path("/content").exists():
+        return "colab"
     return "local"
 
 

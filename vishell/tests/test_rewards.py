@@ -141,3 +141,43 @@ def test_coefficient_scales_decision_reward():
     out = ModelOutput(action="ask", question="?")
     r = score_decision("ask_ambiguous", out, _never_called, coef=0.5)
     assert r.total == 0.5
+
+
+# ---- TRL reward functions: separate components, parallel sandbox, one run per completion
+class _CountingBackend:
+    def __init__(self):
+        self.calls = 0
+
+    def run(self, payload):
+        self.calls += 1
+        return {"rc": 0, "check_passed": True, "fs_changed": False}
+
+
+def test_grpo_reward_fns_split_format_and_decision_and_run_sandbox_once():
+    from vishell.rewards import make_grpo_reward_fns
+
+    inst = make_instance("execute", True).model_dump()
+    good = json.dumps({"action": "execute", "command": "ls", "question": ""})
+    ask = json.dumps({"action": "ask", "command": "", "question": "?"})
+    completions = [
+        [{"role": "assistant", "content": good}],   # chat-format completion, valid, runs in sandbox
+        [{"role": "assistant", "content": ask}],    # valid, fixed cell, no sandbox
+        [{"role": "assistant", "content": "junk"}], # invalid JSON
+    ]
+    backend = _CountingBackend()
+    r_format, r_decision = make_grpo_reward_fns(backend, max_workers=4)
+    kwargs = {"instance": [inst, inst, inst]}
+
+    assert [r_format.__name__, r_decision.__name__] == ["r_format", "r_decision"]  # TRL logs by function name
+    assert r_format(None, completions, **kwargs) == [0.0, 0.0, -1.0]
+    assert r_decision(None, completions, **kwargs) == [1.0, -0.3, 0.0]
+    assert backend.calls == 1  # only the one execute completion ran; the second fn reused the cache
+
+
+def test_grpo_reward_fns_accept_plain_string_completions():
+    from vishell.rewards import make_grpo_reward_fns
+
+    inst = make_instance("ask", False, ask_reason="irreversible").model_dump()
+    r_format, r_decision = make_grpo_reward_fns(_CountingBackend())
+    text = json.dumps({"action": "ask", "command": "", "question": "?"})
+    assert r_decision(None, [text], instance=[inst]) == [1.0]
