@@ -53,12 +53,55 @@ def _fmt(v) -> str:
     return str(v)
 
 
-def _data_stats_section(paths: Paths) -> str:
+def _artifacts_section(paths: Paths) -> str:
+    rows = [
+        ("data-nl2bash", paths.data / "sft_nl2bash.jsonl"),
+        ("verify", paths.results / "verify.json"),
+        ("build-dataset", paths.data / "instances_train.jsonl, instances_test.jsonl, sft_scenarios.jsonl"),
+        ("sft_nl2bash", paths.checkpoints / "sft_nl2bash" / "final"),
+        ("merge-nl2bash", paths.models / "merged_nl2bash"),
+        ("sft_scenarios", paths.checkpoints / "sft_scenarios" / "final"),
+        ("merge-scenarios", paths.models / "merged_scenarios"),
+        ("grpo", paths.checkpoints / "grpo" / "final"),
+        ("merge-grpo", paths.models / "merged_grpo"),
+        ("export", paths.models / "gguf"),
+        ("evaluate", paths.results / "eval_templates_summary.json, predictions_templates.jsonl"),
+    ]
+    return "### Artifact từng giai đoạn\n" + _md_table(
+        [{"giai đoạn": s, "đường dẫn": f"`{p}`"} for s, p in rows]
+    )
+
+
+def _data_stats_section(paths: Paths, project_root: Path) -> str:
+    from collections import Counter
+
+    from .data.templates import load_templates
+
+    lines = ["### Thống kê dữ liệu"]
     stats = _read_json(paths.results / "data_stats.json")
     if stats is None:
-        return "### Thống kê dữ liệu\n_(chưa chạy data-nl2bash / build-dataset)_"
-    return "### Thống kê dữ liệu\n" + _md_table([stats]) if isinstance(stats, list) else \
-        "### Thống kê dữ liệu\n```json\n" + json.dumps(stats, ensure_ascii=False, indent=2) + "\n```"
+        lines.append("- NL2Bash-vi: _(chưa chạy data-nl2bash)_")
+    else:
+        src = str(stats.get("source", ""))
+        lines.append(f"- NL2Bash-vi: {stats.get('n_raw')} mẫu thô → {stats.get('n_sft')} mẫu SFT (nguồn: `{src}`)")
+        if "fixtures" in src.replace("\\", "/"):
+            lines.append("  - ⚠️ đây là fixture nhỏ dùng cho smoke, KHÔNG phải dữ liệu NL2Bash-vi thật")
+
+    tdir = Path(project_root) / "templates"
+    if tdir.exists():
+        templates, errors = load_templates(tdir)
+        dist = Counter(f"ask/{t.ask_reason}" if t.expected_action == "ask" else t.expected_action for t in templates)
+        lines.append(f"- Template: {len(templates)} (lỗi parse: {len(errors)}) — " +
+                     ", ".join(f"{k}: {v}" for k, v in sorted(dist.items())))
+
+    for split in ("train", "test"):
+        rows = _read_jsonl(paths.data / f"instances_{split}.jsonl")
+        if rows:
+            acts = Counter(r["expected_action"] for r in rows)
+            noisy = sum(1 for r in rows if r["is_noisy"])
+            lines.append(f"- Instance {split}: {len(rows)} (nhiễu: {noisy}) — " +
+                         ", ".join(f"{k}: {v}" for k, v in sorted(acts.items())))
+    return "\n".join(lines)
 
 
 def _verify_section(paths: Paths) -> str:
@@ -139,9 +182,11 @@ def _format_example(p: dict | None) -> str:
 
 
 def _qualitative_section(paths: Paths) -> str:
-    preds = [p for p in _read_jsonl(paths.results / "predictions_templates.jsonl") if not p.get("json_error")]
+    all_preds = [p for p in _read_jsonl(paths.results / "predictions_templates.jsonl") if not p.get("json_error")]
+    preds = [p for p in all_preds if p.get("system") not in ("oracle", "mock")]
     if not preds:
-        return "### Ví dụ định tính\n_(chưa có dự đoán để trích ví dụ)_"
+        note = " (hiện chỉ có hệ oracle/mock — không phải model thật nên không trích ví dụ)" if all_preds else ""
+        return f"### Ví dụ định tính\n_(chưa có dự đoán của model thật để trích ví dụ)_{note}"
     lines = ["### Ví dụ định tính"]
     for action in ("execute", "probe", "ask"):
         matching = [p for p in preds if p.get("expected_action") == action]
@@ -169,7 +214,8 @@ def render_report(paths: Paths, project_root: str | Path) -> str:
     header = "# ViShell — Báo cáo pipeline\n\n" + _PIPELINE_MERMAID
     sections = [
         header,
-        _data_stats_section(paths),
+        _artifacts_section(paths),
+        _data_stats_section(paths, Path(project_root)),
         _verify_section(paths),
         _train_section(paths),
         _metrics_section(paths),

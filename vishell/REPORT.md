@@ -17,14 +17,27 @@ flowchart TD
     X --> DE[demo: Gradio]
 ```
 
+### Artifact từng giai đoạn
+| giai đoạn | đường dẫn |
+| --- | --- |
+| data-nl2bash | `D:\myProject\TheWicknessHero\vishell\data\smoke\sft_nl2bash.jsonl` |
+| verify | `D:\myProject\TheWicknessHero\vishell\results\smoke\verify.json` |
+| build-dataset | `D:\myProject\TheWicknessHero\vishell\data\smoke\instances_train.jsonl, instances_test.jsonl, sft_scenarios.jsonl` |
+| sft_nl2bash | `D:\myProject\TheWicknessHero\vishell\checkpoints\smoke\sft_nl2bash\final` |
+| merge-nl2bash | `D:\myProject\TheWicknessHero\vishell\models\smoke\merged_nl2bash` |
+| sft_scenarios | `D:\myProject\TheWicknessHero\vishell\checkpoints\smoke\sft_scenarios\final` |
+| merge-scenarios | `D:\myProject\TheWicknessHero\vishell\models\smoke\merged_scenarios` |
+| grpo | `D:\myProject\TheWicknessHero\vishell\checkpoints\smoke\grpo\final` |
+| merge-grpo | `D:\myProject\TheWicknessHero\vishell\models\smoke\merged_grpo` |
+| export | `D:\myProject\TheWicknessHero\vishell\models\smoke\gguf` |
+| evaluate | `D:\myProject\TheWicknessHero\vishell\results\smoke\eval_templates_summary.json, predictions_templates.jsonl` |
+
 ### Thống kê dữ liệu
-```json
-{
-  "source": "existing translated data at D:\\myProject\\TheWicknessHero\\vishell\\tests\\fixtures\\nl2bash_vi_small.jsonl",
-  "n_raw": 15,
-  "n_sft": 20
-}
-```
+- NL2Bash-vi: 15 mẫu thô → 20 mẫu SFT (nguồn: `existing translated data at D:\myProject\TheWicknessHero\vishell\tests\fixtures\nl2bash_vi_small.jsonl`)
+  - ⚠️ đây là fixture nhỏ dùng cho smoke, KHÔNG phải dữ liệu NL2Bash-vi thật
+- Template: 158 (lỗi parse: 0) — ask/ambiguous: 20, ask/irreversible: 20, execute: 76, probe: 42
+- Instance train: 709 (nhiễu: 157) — ask: 186, execute: 346, probe: 177
+- Instance test: 80 (nhiễu: 40) — ask: 16, execute: 40, probe: 24
 
 ### Kiểm chứng template
 | round | n_templates | n_passed | pass_rate | disagreement_rate |
@@ -52,15 +65,7 @@ _(chưa có giai đoạn train nào chạy)_
 _(chưa có dữ liệu)_
 
 ### Ví dụ định tính
-**execute**
-- đúng: "tạo bản sao của folder site với tên site_copy" → model chọn **execute** `cp -r site site_copy`
-- sai: "tạo bản sao của folder site với tên site_copy" → model chọn **ask** ``
-**probe**
-- đúng: "kiểm tra số dòng của data.csv trừ header" → model chọn **probe** `tail -n +2 data.csv | wc -l`
-- sai: "kiểm tra số dòng của data.csv trừ header" → model chọn **ask** ``
-**ask**
-- đúng: "đổi owner của /etc/passwd" → model chọn **ask** ``
-- sai: _(không có ví dụ)_
+_(chưa có dự đoán của model thật để trích ví dụ)_ (hiện chỉ có hệ oracle/mock — không phải model thật nên không trích ví dụ)
 
 ### Hạn chế, rủi ro, việc tiếp theo
 - classify.py là bộ lọc tĩnh dựa trên bashlex: không hiểu ngữ nghĩa lệnh (vd HTTP GET vs POST qua curl), mặc định về R2 khi không chắc — an toàn nhưng có thể quá thận trọng.
