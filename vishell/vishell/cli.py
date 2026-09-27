@@ -330,6 +330,8 @@ def step_evaluate(cfg: dict, paths: Paths) -> None:
                 all_rows.append({"system": name, "variant": "noisy" if inst.is_noisy else "clean",
                                   "instance_id": inst.instance_id, **metrics})
             continue
+        generate_fn = None  # drop the previous system's model BEFORE loading the next one:
+        _free_gpu()         # two resident 1.5B models overflow a T4 and get offloaded to CPU
         generate_fn = _resolve_system(name, cfg, paths)
         if generate_fn is None:
             continue
@@ -344,6 +346,18 @@ def step_evaluate(cfg: dict, paths: Paths) -> None:
         if c["diff"] is not None:
             print(f"[evaluate] {c['system']} - {c['baseline']} {c['metric']}: {c['diff']:+.3f} "
                   f"[{c['ci_low']:+.3f}, {c['ci_high']:+.3f}]")
+
+
+def _free_gpu() -> None:
+    import gc
+
+    gc.collect()
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except ImportError:
+        pass
 
 
 _SYSTEM_MODEL_DIR_CFG_KEY = {
@@ -386,8 +400,10 @@ def _resolve_system(name: str, cfg: dict, paths: Paths):
     except ImportError:
         print(f"[evaluate] system {name!r} needs the [train] extras (transformers/torch) — skipping here")
         return None
+    from .train.sft import pick_dtype
+
     tok = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto")
+    model = AutoModelForCausalLM.from_pretrained(model_dir, device_map="auto", dtype=pick_dtype(cfg["train"]["dtype"]))
     return hf_generate_fn(model, tok, SYSTEM_PROMPT, max_new_tokens=cfg["evaluate"]["max_new_tokens"])
 
 
