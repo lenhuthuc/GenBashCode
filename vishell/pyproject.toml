@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-train = ["unsloth>=2026.9", "trl>=0.20", "peft", "accelerate", "torch", "transformers>=4.57.3", "datasets", "torchao>0.16.0"]
+train = ["unsloth>=2026.9", "trl>=0.20", "peft", "accelerate", "torch", "transformers>=4.57.3,<5", "datasets", "torchao>0.16.0"]
 data = ["requests", "pandas"]
 demo = ["gradio>=5,<6"]
 dev = ["pytest"]
