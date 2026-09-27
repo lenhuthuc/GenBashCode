@@ -28,9 +28,16 @@
     "stash thay đổi hiện tại của {fname}",
     "tạm cất thay đổi chưa commit vào git stash",
     "lưu tạm các thay đổi bằng git stash",
-    "đưa thay đổi chưa lưu vào stash giúp tôi"
+    "đưa thay đổi chưa lưu vào stash giúp tôi",
+    "cất tạm thay đổi đang dở trong {fname} đi",
+    "git stash các thay đổi chưa commit",
+    "mình cần working tree sạch, stash thay đổi của {fname} lại",
+    "để dành thay đổi hiện tại vào stash",
+    "stash lại phần sửa trong {fname} để chuyển việc khác",
+    "đưa {fname} về bản đã commit, giữ thay đổi trong stash"
   ],
   "reference_command": "git stash -q",
+  "undo_command": "git stash pop -q",
   "wrong_commands": [
     "true",
     "git checkout -- {fname}"

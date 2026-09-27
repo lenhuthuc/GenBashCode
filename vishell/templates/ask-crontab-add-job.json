@@ -12,7 +12,13 @@
     "thêm một job vào crontab giúp tôi",
     "lên lịch chạy script bằng cron",
     "thêm cronjob mới giúp tôi",
-    "đặt lịch chạy tự động bằng crontab"
+    "đặt lịch chạy tự động bằng crontab",
+    "tạo cron chạy mỗi phút",
+    "cài lịch chạy định kỳ vào crontab của máy",
+    "thêm dòng mới vào crontab",
+    "cho script chạy tự động theo lịch bằng cron",
+    "đăng ký job định kỳ trong crontab",
+    "sửa crontab thêm tác vụ chạy hằng phút"
   ],
   "clarify_question_vi": "Thêm cronjob sẽ ảnh hưởng lịch chạy hệ thống lâu dài — bạn xác nhận muốn thêm không?",
   "reference_command": "(crontab -l 2>/dev/null; echo \"* * * * * /bin/true\") | crontab -",

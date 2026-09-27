@@ -28,9 +28,16 @@
     "di chuyển file {fname} vào thư mục {dirname}",
     "chuyển {fname} sang {dirname} giúp tôi",
     "đưa file {fname} vào folder {dirname}",
-    "move {fname} vào {dirname}"
+    "move {fname} vào {dirname}",
+    "cất {fname} vào thư mục {dirname}",
+    "mv {fname} {dirname}/",
+    "dời file {fname} vào {dirname}",
+    "cho {fname} vào folder {dirname} đi",
+    "{fname} xong rồi, chuyển nó vào {dirname}",
+    "di chuyển {fname} sang thư mục {dirname} có sẵn"
   ],
   "reference_command": "mv {fname} {dirname}/",
+  "undo_command": "mv {dirname}/{fname} .",
   "wrong_commands": [
     "true",
     "cp {fname} {dirname}/"

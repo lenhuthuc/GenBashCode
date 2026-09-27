@@ -28,9 +28,16 @@
     "đổi tên file {old} thành {new} trong git",
     "git mv {old} thành {new}",
     "rename {old} sang {new} và giữ lịch sử git",
-    "đổi tên có theo dõi git từ {old} sang {new}"
+    "đổi tên có theo dõi git từ {old} sang {new}",
+    "đổi tên {old} thành {new} bằng git mv rồi commit",
+    "rename file {old} -> {new} trong repo và commit luôn",
+    "dùng git để đổi tên {old} sang {new}, commit thay đổi",
+    "{old} cần đổi tên thành {new}, nhớ commit",
+    "git mv {old} {new} xong commit với message rename",
+    "đổi tên file đang được git theo dõi: {old} thành {new}, rồi commit"
   ],
   "reference_command": "git mv {old} {new} && git commit -q -m rename",
+  "undo_command": "git reset -q --hard HEAD~1",
   "wrong_commands": [
     "true",
     "mv {old} {new}"

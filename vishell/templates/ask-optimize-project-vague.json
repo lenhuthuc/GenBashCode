@@ -12,7 +12,13 @@
     "tối ưu lại thư mục project giúp tôi",
     "làm gọn project này lại",
     "optimize project cho tôi",
-    "dọn tối ưu lại cấu trúc project"
+    "dọn tối ưu lại cấu trúc project",
+    "tối ưu project đi",
+    "làm project gọn hơn",
+    "optimize giúp mình",
+    "cải thiện cấu trúc project",
+    "dọn và tối ưu lại project",
+    "làm cho project tốt hơn"
   ],
   "clarify_question_vi": "Bạn muốn tối ưu theo hướng nào: giảm dung lượng, gộp file trùng, hay sắp xếp lại cấu trúc thư mục?",
   "reference_command": "",

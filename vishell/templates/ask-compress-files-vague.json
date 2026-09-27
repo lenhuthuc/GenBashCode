@@ -12,7 +12,13 @@
     "nén mấy file này lại giúp tôi",
     "nén bớt dữ liệu trong này",
     "gói mấy file lại cho gọn",
-    "nén giúp tôi thư mục này"
+    "nén giúp tôi thư mục này",
+    "nén lại giúp",
+    "làm nhỏ dung lượng mấy file này",
+    "zip lại hộ mình",
+    "nén cho gọn đi",
+    "đóng gói đống này lại",
+    "compress giúp mình với"
   ],
   "clarify_question_vi": "Bạn muốn nén những file/thư mục cụ thể nào, và dùng định dạng nào (zip, tar.gz)?",
   "reference_command": "",

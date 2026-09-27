@@ -28,7 +28,13 @@
     "đếm số phần tử trong mảng {key} của data.json",
     "trường {key} trong data.json có mấy phần tử?",
     "kiểm tra độ dài mảng {key}",
-    "cho tôi biết {key} có bao nhiêu item"
+    "cho tôi biết {key} có bao nhiêu item",
+    "mảng {key} trong data.json dài bao nhiêu?",
+    "jq '.{key} | length' data.json",
+    "đếm số item trong {key} ở file data.json",
+    "{key} của data.json có mấy phần tử vậy",
+    "length của array {key} trong data.json là bao nhiêu",
+    "cho mình số lượng phần tử của trường {key} trong data.json"
   ],
   "reference_command": "jq '.{key} | length' data.json",
   "wrong_commands": [

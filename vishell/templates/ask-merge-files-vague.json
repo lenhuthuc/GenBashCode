@@ -12,7 +12,13 @@
     "gộp mấy file lại thành một giúp tôi",
     "merge các file trong này lại",
     "ghép hết file lại làm một",
-    "hợp nhất các file này giúp tôi"
+    "hợp nhất các file này giúp tôi",
+    "gộp file lại đi",
+    "merge mấy cái này",
+    "ghép lại thành một giúp",
+    "hợp nhất đống file này",
+    "nối các file lại với nhau",
+    "combine mấy file này lại"
   ],
   "clarify_question_vi": "Bạn muốn gộp những file cụ thể nào, theo thứ tự ra sao, và file kết quả tên gì?",
   "reference_command": "",

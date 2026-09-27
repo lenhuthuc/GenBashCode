@@ -28,9 +28,16 @@
     "tìm file .{ext} rồi xoá bằng xargs",
     "xoá tất cả file .{ext} thông qua find | xargs rm",
     "dùng xargs xoá hết file .{ext}",
-    "kết hợp find và xargs để xoá file .{ext}"
+    "kết hợp find và xargs để xoá file .{ext}",
+    "find các file .{ext} rồi pipe sang xargs rm",
+    "xoá file .{ext} bằng find kết hợp xargs, giữ các file khác",
+    "liệt kê file .{ext} và xoá chúng qua xargs",
+    "dọn sạch file .{ext} (dùng xargs rm -f)",
+    "remove hết *.{ext} với find | xargs",
+    "mấy file .{ext} cũ rồi, find ra rồi xargs rm đi"
   ],
   "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" | xargs rm -f",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "find . -maxdepth 1 -name \"*.txt\" | xargs rm -f"

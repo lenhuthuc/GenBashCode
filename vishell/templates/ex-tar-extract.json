@@ -28,9 +28,16 @@
     "giải nén pack.tar.gz vào thư mục {outdir}",
     "extract file pack.tar.gz ra {outdir}",
     "giải nén giúp tôi pack.tar.gz vào {outdir}",
-    "mở file nén pack.tar.gz vào thư mục {outdir}"
+    "mở file nén pack.tar.gz vào thư mục {outdir}",
+    "tar xzf pack.tar.gz -C {outdir}",
+    "bung pack.tar.gz vào {outdir}",
+    "giải nén archive pack.tar.gz, đặt nội dung vào {outdir}",
+    "extract pack.tar.gz sang thư mục {outdir} có sẵn",
+    "mở gói pack.tar.gz ra trong {outdir}",
+    "lấy file trong pack.tar.gz ra thư mục {outdir}"
   ],
   "reference_command": "tar xzf pack.tar.gz -C {outdir}",
+  "undo_command": "rm -rf {outdir}/{dirname}",
   "wrong_commands": [
     "true",
     "cp pack.tar.gz {outdir}/"

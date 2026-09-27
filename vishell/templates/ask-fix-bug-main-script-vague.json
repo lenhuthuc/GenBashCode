@@ -12,7 +12,13 @@
     "sửa lỗi trong script chính giúp tôi",
     "fix bug trong file chạy chính",
     "sửa cái lỗi trong code chính đi",
-    "script chính đang lỗi, sửa giúp"
+    "script chính đang lỗi, sửa giúp",
+    "sửa lỗi code đi",
+    "script lỗi rồi, fix giúp",
+    "có bug, sửa hộ mình",
+    "chỗ code chính bị sai, sửa lại",
+    "làm cho script chạy đúng đi",
+    "debug và sửa lỗi trong code"
   ],
   "clarify_question_vi": "File nào là 'script chính', và lỗi cụ thể là gì (thông báo lỗi, hành vi sai)?",
   "reference_command": "",

@@ -4,16 +4,37 @@
   "expected_action": "probe",
   "reversible": true,
   "params": {
-    "n": {"int": [1, 99]},
-    "prefix": {"choice": ["file", "doc"]},
-    "ext": {"choice": ["csv", "dat"]}
+    "n": {
+      "int": [
+        1,
+        99
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "file",
+        "doc"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "csv",
+        "dat"
+      ]
+    }
   },
   "setup": "touch {prefix}{n}_b.{ext} {prefix}{n}_a.{ext}",
   "requests_vi": [
     "liệt kê các file .{ext} theo thứ tự bảng chữ cái",
     "sắp xếp tên các file .{ext} ở đây",
     "cho tôi danh sách file .{ext} đã sắp xếp",
-    "hiển thị các file .{ext} theo alphabet"
+    "hiển thị các file .{ext} theo alphabet",
+    "list file .{ext} theo alphabet",
+    "in tên các file .{ext}, sắp xếp tăng dần",
+    "xem có những file .{ext} nào, sort theo tên",
+    "cho mình danh sách tên file .{ext} (chỉ tên, đã sort)",
+    "tìm file .{ext} và sắp tên theo bảng chữ cái",
+    "hiện danh sách file đuôi {ext} theo thứ tự tên"
   ],
   "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" -printf \"%f\\n\" | sort",
   "wrong_commands": [

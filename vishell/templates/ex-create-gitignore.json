@@ -28,9 +28,16 @@
     "tạo file .gitignore bỏ qua *.{ext} và thư mục {dirname}",
     "thêm .gitignore, loại trừ *.{ext} và {dirname}",
     "tạo .gitignore cho *.{ext} với {dirname}",
-    "viết .gitignore bỏ qua {dirname} và file .{ext}"
+    "viết .gitignore bỏ qua {dirname} và file .{ext}",
+    "tạo .gitignore để git không theo dõi file .{ext} và thư mục {dirname}",
+    "thêm file .gitignore với hai dòng: *.{ext} và {dirname}/",
+    "cho git bỏ qua {dirname} với mấy file .{ext} đi",
+    "viết .gitignore ignore *.{ext}, {dirname}/",
+    "repo này cần .gitignore loại {dirname} và các file đuôi {ext}",
+    "setup .gitignore: không commit file .{ext}, không commit {dirname}"
   ],
   "reference_command": "printf '*.{ext}\\n{dirname}/\\n' > .gitignore",
+  "undo_command": "rm -f .gitignore",
   "wrong_commands": [
     "true",
     "touch .gitignore"

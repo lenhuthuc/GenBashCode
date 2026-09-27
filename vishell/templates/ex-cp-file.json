@@ -28,9 +28,16 @@
     "sao chép file {src} thành {dst}",
     "copy {src} sang {dst}",
     "tạo bản sao {src} với tên {dst}",
-    "sao chép giúp tôi {src} -> {dst}"
+    "sao chép giúp tôi {src} -> {dst}",
+    "backup {src} ra {dst}",
+    "nhân bản {src} thành {dst}, giữ nguyên file gốc",
+    "làm một bản copy của {src} đặt tên là {dst}",
+    "cp {src} thành {dst} giúp mình",
+    "trước khi sửa {src} thì sao ra một bản {dst} đã",
+    "tạo file {dst} có nội dung giống hệt {src}"
   ],
   "reference_command": "cp {src} {dst}",
+  "undo_command": "rm -f {dst}",
   "wrong_commands": [
     "true",
     "mv {src} {dst}"

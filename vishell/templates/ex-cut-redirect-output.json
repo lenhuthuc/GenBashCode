@@ -28,9 +28,17 @@
     "lấy cột đầu của data.csv lưu vào {outname}",
     "trích cột 1 từ data.csv ra file {outname}",
     "cắt cột đầu tiên của data.csv thành {outname}",
-    "tạo file {outname} chứa cột 1 của data.csv"
+    "tạo file {outname} chứa cột 1 của data.csv",
+    "tách cột thứ nhất (phân cách dấu phẩy) của data.csv ra {outname}",
+    "cut -d, -f1 data.csv rồi lưu vào {outname}",
+    "chỉ giữ cột 1 của data.csv, ghi sang file {outname}",
+    "xuất cột đầu tiên trong data.csv ra {outname}",
+    "mình cần {outname} chứa giá trị cột 1 của data.csv",
+    "lấy trường đầu mỗi dòng trong data.csv, lưu ở {outname}",
+    "extract column 1 của data.csv vào {outname}"
   ],
   "reference_command": "cut -d, -f1 data.csv > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cut -d, -f2 data.csv > {outname}"

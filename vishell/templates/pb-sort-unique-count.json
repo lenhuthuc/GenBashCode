@@ -28,7 +28,13 @@
     "đếm số dòng khác nhau (không trùng) trong f.txt",
     "file f.txt có bao nhiêu giá trị duy nhất?",
     "kiểm tra số dòng không lặp lại trong f.txt",
-    "cho tôi số lượng dòng phân biệt trong f.txt"
+    "cho tôi số lượng dòng phân biệt trong f.txt",
+    "sort -u f.txt | wc -l",
+    "f.txt có mấy dòng khác nhau?",
+    "đếm giá trị unique trong f.txt",
+    "bỏ trùng thì f.txt còn bao nhiêu dòng",
+    "số dòng distinct của f.txt",
+    "thống kê số giá trị phân biệt trong f.txt"
   ],
   "reference_command": "sort -u f.txt | wc -l",
   "wrong_commands": [

@@ -1,0 +1,25 @@
+# Go/no-go experiment on one Colab T4 session (~2 h): arm A = sft_scenarios, arm B = grpo
+# (r_undo logged, weight 0), arm C = grpo_undo (r_undo weight 1). SFT and GRPO use disjoint
+# templates; all arms are scored on the same held-out test templates, and evaluate writes
+# eval_comparison.json (B - A, C - A with a template-level bootstrap 95% CI).
+# run_name stays "full" so the NL2Bash translation + sft-nl2bash already on Drive are reused.
+run_name: full
+
+train:
+  dtype: fp16
+  per_device_bs: 8
+  grad_accum: 8
+
+grpo:
+  dtype: fp16
+  num_generations: 8
+  max_steps: 300          # ~30 min per arm on T4 without vLLM (measured 5.6 s/step)
+
+templates:
+  n_test_per_template: 10 # x2 with the noisy copy -> ~480 test instances
+
+evaluate:
+  systems: [sft_scenarios, grpo, grpo_undo]   # base/sft_nl2bash cost ~8 min each and decide nothing here
+
+export:
+  enabled: false          # GGUF is for the demo, not the experiment

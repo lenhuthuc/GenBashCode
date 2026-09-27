@@ -28,9 +28,16 @@
     "tạo file {fname} với nội dung '{content}'",
     "ghi '{content}' vào file {fname}",
     "tạo giúp tôi {fname} chứa chữ '{content}'",
-    "lưu '{content}' thành file {fname}"
+    "lưu '{content}' thành file {fname}",
+    "viết chữ '{content}' vào file mới {fname}",
+    "tạo {fname}, nội dung chỉ một dòng '{content}'",
+    "echo '{content}' ra file {fname}",
+    "cho mình file {fname} có dòng '{content}'",
+    "ghi dòng '{content}' vào {fname} (tạo file nếu chưa có)",
+    "lưu câu '{content}' vào một file tên {fname}"
   ],
   "reference_command": "echo '{content}' > {fname}",
+  "undo_command": "rm -f {fname}",
   "wrong_commands": [
     "true",
     "echo other > {fname}"

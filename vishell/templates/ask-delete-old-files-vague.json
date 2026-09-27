@@ -12,7 +12,13 @@
     "xoá bớt các file cũ đi",
     "dọn file cũ không cần nữa",
     "xoá những gì không dùng đến nữa",
-    "gỡ bớt file cũ trong này"
+    "gỡ bớt file cũ trong này",
+    "xoá file cũ đi",
+    "dọn mấy file lâu rồi không dùng",
+    "bỏ bớt file cũ",
+    "file cũ nhiều quá, xoá bớt",
+    "loại mấy file không còn cần",
+    "clear file cũ giúp mình"
   ],
   "clarify_question_vi": "'Cũ' là tính theo mốc thời gian nào (vd quá 30 ngày), hay theo tên/định dạng cụ thể?",
   "reference_command": "",

@@ -22,7 +22,13 @@
     "đếm số ký tự '{ch}' trong file f.txt",
     "file f.txt có bao nhiêu ký tự '{ch}'?",
     "kiểm tra số lần xuất hiện ký tự '{ch}' trong f.txt",
-    "cho tôi số ký tự '{ch}' của f.txt"
+    "cho tôi số ký tự '{ch}' của f.txt",
+    "ký tự '{ch}' xuất hiện bao nhiêu lần trong f.txt?",
+    "tr -cd '{ch}' < f.txt | wc -c",
+    "đếm số lần có chữ '{ch}' trong f.txt",
+    "f.txt chứa mấy ký tự '{ch}'",
+    "thống kê tần suất ký tự '{ch}' ở f.txt",
+    "bao nhiêu chữ '{ch}' trong file f.txt"
   ],
   "reference_command": "tr -cd '{ch}' < f.txt | wc -c",
   "wrong_commands": [

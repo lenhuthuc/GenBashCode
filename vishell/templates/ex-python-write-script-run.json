@@ -28,9 +28,16 @@
     "chạy file calc.py và lưu kết quả vào {outname}",
     "thực thi calc.py, ghi output ra {outname}",
     "chạy script calc.py rồi lưu vào file {outname}",
-    "run calc.py và redirect kết quả vào {outname}"
+    "run calc.py và redirect kết quả vào {outname}",
+    "python3 calc.py > {outname}",
+    "chạy calc.py, kết quả in ra lưu vào {outname}",
+    "execute calc.py và ghi output vào file {outname}",
+    "tính bằng calc.py rồi lưu đáp số vào {outname}",
+    "cho calc.py chạy, kết quả ghi ra {outname}",
+    "lưu kết quả của script calc.py vào {outname}"
   ],
   "reference_command": "python3 calc.py > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cat calc.py > {outname}"

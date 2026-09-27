@@ -12,7 +12,13 @@
     "backup dữ liệu lại giúp tôi",
     "sao lưu mọi thứ trong này",
     "làm giúp tôi bản backup",
-    "backup lại project này"
+    "backup lại project này",
+    "sao lưu giúp mình với",
+    "backup đi phòng khi mất",
+    "tạo bản dự phòng cho dữ liệu",
+    "lưu lại một bản an toàn",
+    "cất một bản backup cho chắc",
+    "làm bản sao lưu đi"
   ],
   "clarify_question_vi": "Bạn muốn backup những gì (toàn bộ thư mục hay chỉ vài file), và lưu bản backup ở đâu?",
   "reference_command": "",

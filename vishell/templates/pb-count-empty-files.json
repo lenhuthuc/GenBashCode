@@ -28,7 +28,13 @@
     "đếm số file rỗng trong thư mục hiện tại",
     "có bao nhiêu file trống ở đây?",
     "kiểm tra số lượng file rỗng",
-    "tìm và đếm file không có nội dung"
+    "tìm và đếm file không có nội dung",
+    "mấy file ở đây có kích thước 0?",
+    "đếm file 0 byte trong thư mục này",
+    "find -empty rồi đếm số file",
+    "bao nhiêu file không có nội dung ở thư mục hiện tại?",
+    "thống kê số file trống",
+    "cho mình biết có bao nhiêu file rỗng"
   ],
   "reference_command": "find . -maxdepth 1 -type f -empty | wc -l",
   "wrong_commands": [

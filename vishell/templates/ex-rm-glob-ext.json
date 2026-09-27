@@ -28,9 +28,16 @@
     "xoá tất cả file .{ext} trong thư mục hiện tại",
     "dọn hết file .{ext} ở đây giúp tôi",
     "xoá sạch các file đuôi .{ext}",
-    "gỡ bỏ toàn bộ file .{ext}"
+    "gỡ bỏ toàn bộ file .{ext}",
+    "rm -f *.{ext}",
+    "file .{ext} không cần nữa, xoá hết đi, giữ file .txt",
+    "dọn sạch mọi file đuôi {ext} trong thư mục này",
+    "xoá các file *.{ext} ở đây",
+    "delete hết file .{ext}",
+    "loại bỏ toàn bộ file .{ext}, không đụng file khác"
   ],
   "reference_command": "rm -f *.{ext}",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "rm -f *.txt"

@@ -28,9 +28,16 @@
     "thêm dòng '{name},{value}' vào cuối data.csv",
     "append '{name},{value}' vào data.csv",
     "ghi thêm bản ghi {name} với giá trị {value} vào data.csv",
-    "bổ sung dòng dữ liệu {name},{value} vào data.csv"
+    "bổ sung dòng dữ liệu {name},{value} vào data.csv",
+    "thêm bản ghi mới {name} = {value} vào cuối file data.csv",
+    "ghi nối dòng {name},{value} vào data.csv",
+    "data.csv mới có header, thêm vào dòng {name},{value}",
+    "insert một row {name},{value} vào cuối data.csv",
+    "bổ sung {name} với value {value} vào bảng data.csv",
+    "cho mình thêm dòng '{name},{value}' xuống dưới data.csv"
   ],
   "reference_command": "echo '{name},{value}' >> data.csv",
+  "undo_command": "sed -i '$d' data.csv",
   "wrong_commands": [
     "true",
     "echo '{name},{value}' > data.csv"

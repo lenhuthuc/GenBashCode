@@ -28,9 +28,16 @@
     "tạo symlink {link} trỏ tới {target}",
     "tạo liên kết mềm {link} -> {target}",
     "làm giúp tôi symbolic link {link} đến file {target}",
-    "tạo link {link} tới {target}"
+    "tạo link {link} tới {target}",
+    "ln -s {target} {link}",
+    "tạo shortcut {link} trỏ về {target}",
+    "cần một symlink tên {link} tới file {target}",
+    "làm liên kết tượng trưng {link} cho {target}",
+    "tạo soft link {link} -> {target} giúp mình",
+    "cho {link} là đường tắt đến {target}"
   ],
   "reference_command": "ln -s {target} {link}",
+  "undo_command": "rm -f {link}",
   "wrong_commands": [
     "true",
     "cp {target} {link}"

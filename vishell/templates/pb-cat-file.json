@@ -28,7 +28,14 @@
     "in nội dung file note.txt",
     "cho tôi xem file note.txt chứa gì",
     "hiển thị nội dung của note.txt",
-    "đọc giúp tôi file note.txt"
+    "đọc giúp tôi file note.txt",
+    "cat note.txt",
+    "note.txt viết gì trong đó vậy?",
+    "mở note.txt ra xem",
+    "show nội dung note.txt",
+    "xem file note.txt",
+    "in toàn bộ note.txt ra màn hình",
+    "đọc note.txt cho mình với"
   ],
   "reference_command": "cat note.txt",
   "wrong_commands": [

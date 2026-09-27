@@ -12,7 +12,13 @@
     "dọn log cũ đi giúp tôi",
     "xoá bớt file log cũ",
     "log nhiều quá, dọn giúp tôi",
-    "xoá log không cần thiết nữa"
+    "xoá log không cần thiết nữa",
+    "dọn log giúp",
+    "log cũ chiếm chỗ quá, xử lý đi",
+    "bỏ bớt log đi",
+    "làm gọn log lại",
+    "clear log cũ hộ mình",
+    "log nhiều quá rồi, dọn bớt"
   ],
   "clarify_question_vi": "'Cũ' là bao lâu (vd quá 7 ngày), và có cần giữ lại log gần nhất không?",
   "reference_command": "",

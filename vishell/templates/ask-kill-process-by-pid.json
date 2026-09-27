@@ -12,7 +12,14 @@
     "kill tiến trình có PID 4821",
     "dừng process số 4821 giúp tôi",
     "tắt tiến trình PID 4821",
-    "kill -9 process 4821"
+    "kill -9 process 4821",
+    "kill -9 4821",
+    "giết process 4821",
+    "tắt ngay tiến trình 4821",
+    "force kill PID 4821",
+    "kill process 4821",
+    "dừng cưỡng bức tiến trình có pid 4821",
+    "stop PID 4821 đi"
   ],
   "clarify_question_vi": "Kill một tiến trình đang chạy không thể hoàn tác — bạn có chắc muốn dừng PID 4821 không?",
   "reference_command": "kill -9 4821",

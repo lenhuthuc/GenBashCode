@@ -28,7 +28,13 @@
     "đếm tổng số file (không tính thư mục) trong thư mục hiện tại",
     "có bao nhiêu file ở đây (không kể folder)?",
     "kiểm tra tổng số file, bỏ qua thư mục con",
-    "đếm số file thường trong thư mục này"
+    "đếm số file thường trong thư mục này",
+    "thư mục này có tổng cộng mấy file?",
+    "đếm tất cả file thường, không tính folder",
+    "find -type f rồi đếm ở thư mục hiện tại",
+    "bao nhiêu file đang nằm ở đây, mọi loại đuôi",
+    "tổng số file (bất kể đuôi) trong thư mục là bao nhiêu",
+    "cho mình con số file trong thư mục này"
   ],
   "reference_command": "find . -maxdepth 1 -type f | wc -l",
   "wrong_commands": [

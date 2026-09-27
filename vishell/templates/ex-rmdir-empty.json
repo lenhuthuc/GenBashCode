@@ -28,9 +28,16 @@
     "xoá thư mục rỗng {dirname}",
     "gỡ bỏ folder {dirname} (đang trống)",
     "xoá giúp tôi thư mục {dirname}",
-    "dọn thư mục {dirname} đi vì nó trống"
+    "dọn thư mục {dirname} đi vì nó trống",
+    "rmdir {dirname}",
+    "thư mục {dirname} trống, xoá nó",
+    "gỡ thư mục rỗng {dirname}",
+    "delete folder trống {dirname}",
+    "{dirname} không có gì bên trong, xoá đi",
+    "loại bỏ directory {dirname} vì nó rỗng"
   ],
   "reference_command": "rmdir {dirname}",
+  "undo_command": "mkdir {dirname}",
   "wrong_commands": [
     "true",
     "rm -f {dirname}"

@@ -28,9 +28,17 @@
     "giải mã base64 file {fname} thành plain.txt",
     "decode {fname} ra file plain.txt",
     "chuyển {fname} về dạng gốc lưu vào plain.txt",
-    "giải mã giúp tôi {fname} thành plain.txt"
+    "giải mã giúp tôi {fname} thành plain.txt",
+    "file {fname} đang bị mã hoá base64, giải ra rồi lưu thành plain.txt",
+    "decode base64 nội dung {fname}, kết quả ghi vào plain.txt",
+    "đọc {fname} (base64) và xuất bản gốc ra plain.txt",
+    "base64 -d cái {fname} ra plain.txt giùm",
+    "cho mình nội dung thật của {fname}, lưu ở file plain.txt",
+    "khôi phục văn bản gốc từ {fname} vào plain.txt",
+    "giải nén chuỗi base64 trong {fname} ra plain.txt"
   ],
   "reference_command": "base64 -d {fname} > plain.txt",
+  "undo_command": "rm -f plain.txt",
   "wrong_commands": [
     "true",
     "cp {fname} plain.txt"

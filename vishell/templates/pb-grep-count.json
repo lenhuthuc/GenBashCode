@@ -23,7 +23,13 @@
     "đếm số dòng chứa {pattern} trong log.txt",
     "file log.txt có bao nhiêu dòng {pattern}?",
     "kiểm tra số lần xuất hiện {pattern} trong log.txt",
-    "tìm và đếm dòng {pattern} trong log.txt"
+    "tìm và đếm dòng {pattern} trong log.txt",
+    "log.txt có mấy dòng chứa {pattern}?",
+    "grep -c {pattern} log.txt",
+    "đếm số dòng match {pattern} trong log.txt",
+    "bao nhiêu lần {pattern} xuất hiện theo dòng trong log.txt",
+    "thống kê số dòng {pattern} ở log.txt",
+    "trong log.txt, {pattern} xuất hiện ở bao nhiêu dòng"
   ],
   "reference_command": "grep -c {pattern} log.txt",
   "wrong_commands": [

@@ -28,9 +28,17 @@
     "thêm {n} dòng cấu hình vào file {fname}",
     "ghi thêm {n} dòng {prefix} vào {fname}",
     "bổ sung {n} entry {prefix} vào cuối {fname}",
-    "append {n} dòng {prefix}_i vào {fname}"
+    "append {n} dòng {prefix}_i vào {fname}",
+    "viết thêm {n} dòng {prefix}_1=1, {prefix}_2=1... vào cuối {fname}",
+    "cho tôi thêm {n} tham số {prefix} vào file {fname} nhé",
+    "{fname} đang trống, thêm vào đó {n} dòng dạng {prefix}_số=1",
+    "nối {n} dòng {prefix} vào sau nội dung hiện có của {fname}",
+    "mình cần {n} entry {prefix} mới trong {fname}, mỗi dòng một cái",
+    "dùng vòng lặp ghi {n} dòng {prefix}_i=1 vào {fname}",
+    "add {n} config lines {prefix} vào {fname} giúp mình"
   ],
   "reference_command": "for i in $(seq 1 {n}); do echo {prefix}_$i=1 >> {fname}; done",
+  "undo_command": "head -n -{n} {fname} > {fname}.tmp && mv {fname}.tmp {fname}",
   "wrong_commands": [
     "true",
     "echo {prefix}_1=1 >> {fname}"

@@ -69,6 +69,7 @@ def gen_instances(
 
         setup = fill_params(template.setup, params)
         ref = fill_params(template.reference_command, params)
+        undo = fill_params(template.undo_command, params)
         wrong = [fill_params(w, params) for w in template.wrong_commands]
         check_expected = fill_params(template.check_expected, params)
         level = _measure_level(template, ref)
@@ -77,7 +78,7 @@ def gen_instances(
             template_id=template.template_id, setup=setup,
             expected_action=template.expected_action, reversible=template.reversible,
             reversibility_level=level, ask_reason=template.ask_reason,
-            clarify_question_vi=template.clarify_question_vi, reference_command=ref,
+            clarify_question_vi=template.clarify_question_vi, reference_command=ref, undo_command=undo,
             wrong_commands=wrong, check_type=template.check_type,
             check_expected=check_expected, split=split,
         )
@@ -90,14 +91,15 @@ def gen_instances(
 
 
 def split_templates(
-    templates: list[Template], test_frac: float = 0.15
+    templates: list[Template], test_frac: float = 0.15, salt: str = ""
 ) -> tuple[list[Template], list[Template]]:
-    """Deterministic split by sha1(template_id) so it's stable across runs without
-    storing any state, and so no template ever appears on both sides."""
+    """Deterministic split by sha1(salt + template_id) so it's stable across runs without
+    storing any state, and so no template ever appears on both sides. A different salt
+    gives a split independent of the train/test one (used for the SFT/GRPO split)."""
     train, test = [], []
     threshold = int(test_frac * 100)
     for t in templates:
-        h = int(hashlib.sha1(t.template_id.encode()).hexdigest(), 16)
+        h = int(hashlib.sha1((salt + t.template_id).encode()).hexdigest(), 16)
         (test if (h % 100) < threshold else train).append(t)
     return train, test
 

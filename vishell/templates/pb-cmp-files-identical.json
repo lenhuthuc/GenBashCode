@@ -28,7 +28,13 @@
     "hai file {fname}1.txt và {fname}2.txt có giống nhau không?",
     "so sánh nội dung {fname}1.txt với {fname}2.txt",
     "kiểm tra {fname}1.txt và {fname}2.txt có khác nhau không",
-    "so sánh hai file {fname}1.txt {fname}2.txt giúp tôi"
+    "so sánh hai file {fname}1.txt {fname}2.txt giúp tôi",
+    "{fname}1.txt với {fname}2.txt có y hệt nhau không?",
+    "cmp {fname}1.txt {fname}2.txt, trả lời same hoặc different",
+    "check xem nội dung {fname}1.txt và {fname}2.txt có trùng khớp",
+    "hai file {fname}1.txt, {fname}2.txt giống hay khác?",
+    "kiểm tra {fname}2.txt có phải bản sao của {fname}1.txt không",
+    "{fname}1.txt và {fname}2.txt có khác byte nào không?"
   ],
   "reference_command": "cmp -s {fname}1.txt {fname}2.txt && echo same || echo different",
   "wrong_commands": [

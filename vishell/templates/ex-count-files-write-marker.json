@@ -28,9 +28,17 @@
     "đếm số file .{ext} rồi ghi kết quả vào {outname}",
     "tạo file {outname} chứa số lượng file .{ext}",
     "ghi số file .{ext} hiện có vào {outname}",
-    "lưu tổng số file .{ext} vào {outname}"
+    "lưu tổng số file .{ext} vào {outname}",
+    "có bao nhiêu file .{ext} ở đây? ghi con số đó vào {outname}",
+    "đếm file đuôi .{ext} trong thư mục này và lưu vào {outname}",
+    "ghi ra {outname} số lượng file .{ext} đang có",
+    "tính tổng file .{ext} rồi viết kết quả vào file {outname}",
+    "mình cần {outname} chứa đúng một số: số file .{ext}",
+    "count số file *.{ext} ở thư mục hiện tại, output ra {outname}",
+    "thống kê số file .{ext} và lưu vào {outname}"
   ],
   "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" | wc -l > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "echo 0 > {outname}"

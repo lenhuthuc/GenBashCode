@@ -28,7 +28,13 @@
     "đếm số dòng dữ liệu trong data.csv (không tính header)",
     "data.csv có bao nhiêu bản ghi?",
     "kiểm tra số dòng của data.csv trừ header",
-    "file csv này có mấy row dữ liệu?"
+    "file csv này có mấy row dữ liệu?",
+    "data.csv có bao nhiêu dòng dữ liệu, bỏ dòng tiêu đề",
+    "đếm record trong data.csv (header không tính)",
+    "tail -n +2 data.csv | wc -l",
+    "số bản ghi thực tế của data.csv là bao nhiêu?",
+    "mình cần biết data.csv chứa mấy dòng data",
+    "trừ header ra thì data.csv còn bao nhiêu row?"
   ],
   "reference_command": "tail -n +2 data.csv | wc -l",
   "wrong_commands": [

@@ -28,9 +28,16 @@
     "tạo và chuyển sang nhánh mới {branch}",
     "checkout sang branch mới {branch}",
     "tạo nhánh {branch} rồi chuyển sang nó luôn",
-    "git checkout -b {branch} giúp tôi"
+    "git checkout -b {branch} giúp tôi",
+    "mở nhánh {branch} và làm việc luôn trên đó",
+    "chuyển sang nhánh mới tên {branch} (tạo mới)",
+    "tạo branch {branch} rồi switch qua",
+    "mình cần sang nhánh {branch} để sửa, nhánh này chưa có",
+    "git switch -c {branch} giúp mình",
+    "tạo nhánh {branch} từ commit hiện tại và checkout nó"
   ],
   "reference_command": "git checkout -q -b {branch}",
+  "undo_command": "git checkout -q - && git branch -q -D {branch}",
   "wrong_commands": [
     "true",
     "git branch {branch}"

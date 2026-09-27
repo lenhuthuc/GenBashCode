@@ -28,9 +28,16 @@
     "đổi tên toàn bộ file .{ext} sang chữ thường",
     "viết thường hoá tên file {prefix} lại",
     "đổi tên file {prefix}_*.{ext} thành chữ thường hết",
-    "chuyển tên file này về lowercase"
+    "chuyển tên file này về lowercase",
+    "đổi tên các file {prefix}_*.{ext} sang chữ thường",
+    "tên file {prefix} đang viết hoa, chuyển hết về chữ thường",
+    "lowercase toàn bộ tên file {prefix}_*.{ext}",
+    "rename các file {prefix} thành tên chữ thường (cả phần đuôi)",
+    "viết thường tên file, ví dụ {prefix}_1.{ext} thành dạng chữ thường",
+    "chuẩn hoá tên file {prefix}_*.{ext} về lowercase"
   ],
   "reference_command": "for f in {prefix}_*.{ext}; do mv \"$f\" \"$(echo \"$f\" | tr 'A-Z' 'a-z')\"; done",
+  "undo_command": "for f in $(echo {prefix} | tr A-Z a-z)_*.$(echo {ext} | tr A-Z a-z); do mv \"$f\" \"$(echo \"$f\" | tr 'a-z' 'A-Z')\"; done",
   "wrong_commands": [
     "true",
     "touch lowercase_done.txt"

@@ -28,9 +28,16 @@
     "gắn tag {tag} cho commit hiện tại",
     "tạo git tag {tag}",
     "đánh dấu phiên bản {tag} cho repo này",
-    "git tag {tag} giúp tôi"
+    "git tag {tag} giúp tôi",
+    "tag commit hiện tại là {tag}",
+    "đặt nhãn phiên bản {tag} cho HEAD",
+    "tạo tag {tag} trên commit mới nhất",
+    "đánh tag {tag} để đánh dấu release",
+    "git tag {tag} cho commit này",
+    "gắn nhãn {tag} vào commit hiện tại của repo"
   ],
   "reference_command": "git tag {tag}",
+  "undo_command": "git tag -d {tag}",
   "wrong_commands": [
     "true",
     "git branch {tag}"

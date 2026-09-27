@@ -28,9 +28,16 @@
     "thêm dòng '{line}' vào cuối file {fname}",
     "append '{line}' vào {fname}",
     "ghi thêm '{line}' vào file {fname} mà không xoá nội dung cũ",
-    "bổ sung dòng '{line}' ở cuối {fname}"
+    "bổ sung dòng '{line}' ở cuối {fname}",
+    "viết thêm dòng '{line}' xuống cuối {fname}",
+    "echo '{line}' >> {fname}",
+    "log thêm '{line}' vào {fname}, giữ nguyên các dòng cũ",
+    "nối '{line}' vào cuối file {fname}",
+    "thêm một dòng mới '{line}' vào {fname}",
+    "ghi nhận '{line}' vào file {fname}"
   ],
   "reference_command": "echo '{line}' >> {fname}",
+  "undo_command": "sed -i '$d' {fname}",
   "wrong_commands": [
     "true",
     "echo '{line}' > {fname}"

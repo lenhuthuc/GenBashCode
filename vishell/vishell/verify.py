@@ -101,6 +101,12 @@ def _verify_execute_or_probe(
         if template.expected_action == "probe" and res_b["fs_changed"]:  # (f)
             reasons.append(f"{inst.instance_id}: (f) probe reference_command changed fs")
 
+        if inst.undo_command.strip():  # (g) the SFT undo target must really restore the workspace
+            res_g = backend.run({**payload, "undo": inst.undo_command})
+            if res_g.get("undo_score") != 1.0:
+                reasons.append(f"{inst.instance_id}: (g) undo_command leaves workspace different "
+                               f"(score={res_g.get('undo_score')}, lost={res_g.get('undo_lost')})")
+
         if static.level == "R1":
             rc_res = backend.run({"_mode": "restore_check", "setup": inst.setup,
                                    "command": inst.reference_command, "timeout": timeout})

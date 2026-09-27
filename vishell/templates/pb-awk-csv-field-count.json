@@ -22,7 +22,13 @@
     "đếm số dòng có trạng thái {value} trong data.csv",
     "data.csv có bao nhiêu dòng {value}?",
     "kiểm tra số bản ghi {value} trong data.csv",
-    "đếm dòng cột 2 bằng {value} trong data.csv"
+    "đếm dòng cột 2 bằng {value} trong data.csv",
+    "trong data.csv, cột thứ hai bằng {value} ở bao nhiêu dòng?",
+    "thống kê số record có status {value} trong data.csv",
+    "awk đếm dòng có trường 2 = {value} trong data.csv",
+    "mình muốn biết có mấy bản ghi {value} trong file data.csv",
+    "số lượng dòng mà cột 2 là {value} trong data.csv là bao nhiêu",
+    "lọc data.csv theo cột 2 = {value} rồi cho mình con số"
   ],
   "reference_command": "awk -F, '$2==\"{value}\"' data.csv | wc -l",
   "wrong_commands": [

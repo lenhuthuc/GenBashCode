@@ -28,9 +28,16 @@
     "tạo {n} thư mục {prefix}_1 đến {prefix}_{n}",
     "tạo hàng loạt {n} folder {prefix}",
     "làm ơn tạo {n} thư mục tên {prefix}_i",
-    "tạo {n} thư mục con tên {prefix}"
+    "tạo {n} thư mục con tên {prefix}",
+    "mkdir {n} thư mục đánh số {prefix}_1 .. {prefix}_{n}",
+    "tạo sẵn {n} folder {prefix}_1, {prefix}_2, ... để chia việc",
+    "cần {n} thư mục con dạng {prefix}_số, bắt đầu từ 1",
+    "dùng vòng lặp tạo {n} thư mục {prefix}",
+    "làm {n} folder cho {n} {prefix}, tên {prefix}_1 đến {prefix}_{n}",
+    "setup {n} thư mục {prefix}_1...{prefix}_{n} trong thư mục hiện tại"
   ],
   "reference_command": "for i in $(seq 1 {n}); do mkdir {prefix}_$i; done",
+  "undo_command": "for i in $(seq 1 {n}); do rmdir {prefix}_$i; done",
   "wrong_commands": [
     "true",
     "mkdir {prefix}_1"

@@ -28,9 +28,16 @@
     "đảo ngược từng ký tự trong f.txt, lưu vào {outname}",
     "rev file f.txt ra {outname}",
     "lật ngược ký tự của f.txt thành {outname}",
-    "đảo chữ trong f.txt ghi ra {outname}"
+    "đảo chữ trong f.txt ghi ra {outname}",
+    "viết ngược từng dòng của f.txt rồi lưu vào {outname}",
+    "rev f.txt > {outname}",
+    "đảo thứ tự ký tự mỗi dòng trong f.txt, ghi ra {outname}",
+    "cần {outname} là f.txt bị lật ngược chữ",
+    "reverse các ký tự trong f.txt, output {outname}",
+    "tạo {outname} chứa nội dung f.txt đọc từ phải sang trái"
   ],
   "reference_command": "rev f.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cp f.txt {outname}"

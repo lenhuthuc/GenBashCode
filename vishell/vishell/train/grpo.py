@@ -22,7 +22,7 @@ def train_grpo(
     train_path: str, base_model: str, out_dir: str, backend, lora_r: int, lora_alpha: int,
     lora_dropout: float, lr: float, max_steps: int, save_steps: int, num_generations: int,
     max_prompt_length: int, max_completion_length: int, decision_coef: float, seed: int,
-    temperature: float = 1.0,
+    temperature: float = 1.0, undo_coef: float = 0.0,
     dtype: str = "auto", use_vllm: bool = True, force: bool = False,
 ) -> dict:
     out = Path(out_dir)
@@ -61,6 +61,7 @@ def train_grpo(
         save_steps=save_steps, save_total_limit=3, logging_steps=1,
         bf16=(torch_dtype == torch.bfloat16), fp16=(torch_dtype == torch.float16),
         report_to="none", seed=seed, use_vllm=use_vllm,
+        reward_weights=[1.0, 1.0, undo_coef],  # r_format, r_decision, r_undo (0 = logged only)
     )
     # Decide before building the trainer: GRPOTrainer wraps `model` with LoRA in place,
     # so constructing it twice (try vLLM, fall back) stacks two adapters.

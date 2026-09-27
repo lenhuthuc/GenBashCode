@@ -28,9 +28,16 @@
     "thêm file {newfile} vào file nén pack.zip",
     "cập nhật pack.zip, thêm {newfile} vào",
     "zip thêm {newfile} vào pack.zip có sẵn",
-    "bổ sung {newfile} vào archive pack.zip"
+    "bổ sung {newfile} vào archive pack.zip",
+    "zip -q pack.zip {newfile}",
+    "cho {newfile} vào pack.zip đang có",
+    "thêm {newfile} vào archive pack.zip",
+    "update pack.zip: bổ sung file {newfile}",
+    "pack.zip còn thiếu {newfile}, thêm vào",
+    "nhét thêm {newfile} vào file zip pack.zip"
   ],
   "reference_command": "zip -q pack.zip {newfile}",
+  "undo_command": "zip -q -d pack.zip {newfile}",
   "wrong_commands": [
     "true",
     "touch pack.zip"

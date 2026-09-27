@@ -28,9 +28,16 @@
     "nén tất cả file .{ext} thành {archive}",
     "tạo file zip {archive} chứa các file .{ext}",
     "zip các file .{ext} lại thành {archive}",
-    "đóng gói file .{ext} thành {archive}"
+    "đóng gói file .{ext} thành {archive}",
+    "zip -q {archive} *.{ext}",
+    "gom các file .{ext} vào một file zip {archive}",
+    "tạo {archive} chứa mọi file .{ext}",
+    "nén các file đuôi {ext} thành archive {archive}",
+    "đóng gói tất cả *.{ext} vào {archive}",
+    "làm file zip {archive} từ các file .{ext}"
   ],
   "reference_command": "zip -q {archive} *.{ext}",
+  "undo_command": "rm -f {archive}",
   "wrong_commands": [
     "true",
     "touch {archive}"

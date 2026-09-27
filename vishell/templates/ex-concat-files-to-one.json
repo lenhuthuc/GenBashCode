@@ -28,9 +28,16 @@
     "gộp tất cả file {prefix}_*.txt thành {outname}",
     "nối các file {prefix} lại thành {outname}",
     "ghép nội dung mọi file {prefix}_*.txt vào {outname}",
-    "hợp nhất file {prefix} thành một file {outname}"
+    "hợp nhất file {prefix} thành một file {outname}",
+    "cat tất cả {prefix}_*.txt vào một file {outname}",
+    "ghép toàn bộ các file {prefix}_1.txt, {prefix}_2.txt... thành {outname}",
+    "gom nội dung các file {prefix} lại, lưu thành {outname}",
+    "tạo {outname} gồm nội dung của mọi file {prefix}_*.txt nối tiếp nhau",
+    "mình cần một file {outname} tổng hợp từ các file {prefix}",
+    "merge các file text {prefix} thành một file duy nhất tên {outname}"
   ],
   "reference_command": "cat {prefix}_*.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "touch {outname}"

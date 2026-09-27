@@ -22,7 +22,13 @@
     "đếm số dòng KHÔNG chứa {pattern} trong f.txt",
     "có bao nhiêu dòng không phải {pattern} trong f.txt?",
     "kiểm tra số dòng loại trừ {pattern} trong f.txt",
-    "đếm dòng không khớp {pattern} trong f.txt"
+    "đếm dòng không khớp {pattern} trong f.txt",
+    "grep -vc {pattern} f.txt",
+    "f.txt có mấy dòng không dính {pattern}?",
+    "đếm dòng không có {pattern} trong f.txt",
+    "bỏ các dòng {pattern} ra thì f.txt còn bao nhiêu dòng",
+    "số dòng không match {pattern} ở f.txt",
+    "thống kê dòng không chứa {pattern} trong f.txt"
   ],
   "reference_command": "grep -vc {pattern} f.txt",
   "wrong_commands": [

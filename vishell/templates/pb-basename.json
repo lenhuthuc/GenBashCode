@@ -28,7 +28,13 @@
     "lấy tên file từ đường dẫn /{dir}/{fname}",
     "cho tôi tên file (không kèm thư mục) của /{dir}/{fname}",
     "trích xuất basename của /{dir}/{fname}",
-    "đường dẫn /{dir}/{fname} thì tên file là gì?"
+    "đường dẫn /{dir}/{fname} thì tên file là gì?",
+    "basename của /{dir}/{fname} là gì",
+    "bỏ phần thư mục, chỉ lấy tên file trong /{dir}/{fname}",
+    "từ đường dẫn /{dir}/{fname}, in ra mỗi tên file",
+    "tên file cuối cùng trong path /{dir}/{fname}?",
+    "cắt đường dẫn /{dir}/{fname} lấy phần tên",
+    "mình chỉ cần tên file của /{dir}/{fname}"
   ],
   "reference_command": "basename /{dir}/{fname}",
   "wrong_commands": [

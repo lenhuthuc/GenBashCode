@@ -12,7 +12,13 @@
     "chuẩn hoá tên file trong thư mục này giúp tôi",
     "đổi tên file cho đồng nhất",
     "chuẩn hoá lại tên các file",
-    "sửa tên file cho gọn gàng thống nhất"
+    "sửa tên file cho gọn gàng thống nhất",
+    "đổi tên file cho chuẩn",
+    "tên file lộn xộn quá, sửa đi",
+    "chuẩn hoá tên giúp",
+    "rename cho đồng bộ",
+    "làm tên file gọn gàng hơn",
+    "đặt lại tên file cho thống nhất"
   ],
   "clarify_question_vi": "Bạn muốn theo quy tắc đặt tên nào (chữ thường, gạch dưới, bỏ dấu cách...)?",
   "reference_command": "",

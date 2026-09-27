@@ -28,9 +28,16 @@
     "đổi tên file {old} thành {new}",
     "đổi {old} sang {new}",
     "rename {old} thành {new} giúp tôi",
-    "đổi tên giúp tôi {old} -> {new}"
+    "đổi tên giúp tôi {old} -> {new}",
+    "mv {old} {new}",
+    "đặt lại tên {old} thành {new}",
+    "file {old} đổi tên sang {new} nhé",
+    "rename file {old} -> {new}",
+    "cho {old} mang tên mới là {new}",
+    "thay tên file {old} bằng {new}"
   ],
   "reference_command": "mv {old} {new}",
+  "undo_command": "mv {new} {old}",
   "wrong_commands": [
     "true",
     "cp {old} {new}"

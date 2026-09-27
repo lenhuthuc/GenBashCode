@@ -28,9 +28,16 @@
     "đổi tên tất cả file {old_prefix}_*.jpg thành {new_prefix}_*.jpg",
     "đổi tiền tố {old_prefix} thành {new_prefix} cho các file jpg",
     "rename hàng loạt {old_prefix} sang {new_prefix}",
-    "đổi tên toàn bộ ảnh {old_prefix} thành {new_prefix}"
+    "đổi tên toàn bộ ảnh {old_prefix} thành {new_prefix}",
+    "các ảnh đang tên {old_prefix}_1.jpg, {old_prefix}_2.jpg..., đổi hết sang {new_prefix}_1.jpg, {new_prefix}_2.jpg...",
+    "thay prefix {old_prefix} bằng {new_prefix} cho toàn bộ file .jpg",
+    "mình muốn mọi file {old_prefix}_*.jpg được đặt lại tên theo dạng {new_prefix}_số.jpg",
+    "rename tất cả ảnh jpg bắt đầu bằng {old_prefix} thành {new_prefix}",
+    "chuyển tên file ảnh từ {old_prefix}_x.jpg sang {new_prefix}_x.jpg giúp tôi",
+    "đặt lại tên loạt ảnh {old_prefix} thành {new_prefix}, đánh số từ 1"
   ],
   "reference_command": "i=0; for f in {old_prefix}_*.jpg; do i=$(expr $i + 1); mv \"$f\" \"{new_prefix}_$i.jpg\"; done",
+  "undo_command": "i=0; for f in {new_prefix}_*.jpg; do i=$(expr $i + 1); mv \"$f\" \"{old_prefix}_$i.jpg\"; done",
   "wrong_commands": [
     "true",
     "touch {new_prefix}_1.jpg"

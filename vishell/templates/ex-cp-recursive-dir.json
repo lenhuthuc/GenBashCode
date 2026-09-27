@@ -28,9 +28,17 @@
     "sao chép toàn bộ thư mục {src} thành {dst}",
     "copy thư mục {src} sang {dst}",
     "tạo bản sao của folder {src} với tên {dst}",
-    "nhân bản thư mục {src} thành {dst}"
+    "nhân bản thư mục {src} thành {dst}",
+    "copy cả thư mục {src} (kể cả file bên trong) sang {dst}",
+    "sao nguyên folder {src} ra thành {dst}",
+    "cp -r {src} thành {dst}",
+    "backup thư mục {src} thành {dst}",
+    "làm một bản sao đầy đủ của {src} tên là {dst}",
+    "nhân bản cây thư mục {src} sang {dst}, giữ {src} như cũ",
+    "tạo thư mục {dst} giống hệt {src}"
   ],
   "reference_command": "cp -r {src} {dst}",
+  "undo_command": "rm -rf {dst}",
   "wrong_commands": [
     "true",
     "mv {src} {dst}"

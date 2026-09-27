@@ -28,7 +28,13 @@
     "cho tôi xem {n} dòng đầu của f.txt",
     "hiển thị {n} dòng đầu tiên trong f.txt",
     "xem trước {n} dòng của file f.txt",
-    "in ra {n} dòng đầu của f.txt"
+    "in ra {n} dòng đầu của f.txt",
+    "head -n {n} f.txt",
+    "show {n} dòng đầu f.txt",
+    "f.txt bắt đầu bằng gì? cho xem {n} dòng",
+    "in {n} dòng trên cùng của f.txt",
+    "hiện {n} dòng đầu tiên file f.txt",
+    "đọc thử {n} dòng đầu của f.txt"
   ],
   "reference_command": "head -n {n} f.txt",
   "wrong_commands": [

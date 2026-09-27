@@ -29,7 +29,13 @@
     "file {fname} đang có quyền gì?",
     "kiểm tra quyền truy cập của {fname}",
     "cho tôi biết permission của {fname} là bao nhiêu",
-    "xem mode file {fname}"
+    "xem mode file {fname}",
+    "quyền của {fname} dạng số là bao nhiêu?",
+    "stat -c %a {fname}",
+    "xem permission octal của {fname}",
+    "{fname} đang chmod mấy?",
+    "check mode (dạng 3 chữ số) của file {fname}",
+    "cho mình biết {fname} có quyền 644 hay 755 hay gì khác"
   ],
   "reference_command": "stat -c %a {fname}",
   "wrong_commands": [

@@ -28,9 +28,16 @@
     "giải nén file {fname}.gz",
     "gunzip {fname}.gz giúp tôi",
     "mở file nén {fname}.gz ra",
-    "giải nén {fname}.gz thành file gốc"
+    "giải nén {fname}.gz thành file gốc",
+    "gunzip file {fname}.gz để lấy lại {fname}",
+    "xả nén {fname}.gz",
+    "file {fname}.gz đang nén, bung nó ra",
+    "decompress {fname}.gz giúp mình",
+    "giải nén gzip file {fname}.gz, không giữ file .gz",
+    "mình cần đọc {fname}, hiện nó đang ở dạng {fname}.gz"
   ],
   "reference_command": "gunzip {fname}.gz",
+  "undo_command": "gzip {fname}",
   "wrong_commands": [
     "true",
     "rm {fname}.gz"

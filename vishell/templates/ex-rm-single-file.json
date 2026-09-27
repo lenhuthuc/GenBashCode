@@ -28,9 +28,16 @@
     "xoá file {fname}",
     "xoá giúp tôi file {fname}",
     "gỡ bỏ file {fname} khỏi thư mục này",
-    "xoá {fname} đi"
+    "xoá {fname} đi",
+    "rm {fname}",
+    "file {fname} không dùng nữa, xoá đi",
+    "delete {fname} giúp mình",
+    "xoá bỏ file {fname} trong thư mục này",
+    "loại {fname} ra khỏi đây",
+    "mình muốn {fname} biến mất, xoá nó"
   ],
   "reference_command": "rm {fname}",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "ls {fname}"

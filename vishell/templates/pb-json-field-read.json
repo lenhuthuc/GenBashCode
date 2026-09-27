@@ -28,7 +28,13 @@
     "lấy giá trị trường {key} trong data.json",
     "trong data.json thì {key} là gì?",
     "trích xuất field {key} từ file json",
-    "cho tôi giá trị của {key} trong data.json"
+    "cho tôi giá trị của {key} trong data.json",
+    "jq -r .{key} data.json",
+    "{key} trong data.json đang là gì?",
+    "đọc field {key} của data.json",
+    "xem giá trị key {key} ở file data.json",
+    "in ra giá trị {key} từ data.json",
+    "data.json có {key} bằng bao nhiêu"
   ],
   "reference_command": "jq -r .{key} data.json",
   "wrong_commands": [

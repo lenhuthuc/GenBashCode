@@ -12,7 +12,13 @@
     "có gì đó bị lỗi, kiểm tra giúp tôi",
     "sao cái này chạy không được, xem giúp",
     "check giúp tôi tại sao bị lỗi",
-    "hình như có bug, tìm giúp tôi"
+    "hình như có bug, tìm giúp tôi",
+    "không chạy được, xem giúp",
+    "bị lỗi rồi, kiểm tra đi",
+    "có vấn đề gì đó, check thử",
+    "hỏng gì đó rồi, xem sao",
+    "sao nó không hoạt động nhỉ, kiểm tra giùm",
+    "debug giúp mình cái lỗi này"
   ],
   "clarify_question_vi": "Bạn có thể mô tả cụ thể hiện tượng lỗi (thông báo lỗi, khi nào xảy ra) hoặc file/lệnh liên quan không?",
   "reference_command": "",

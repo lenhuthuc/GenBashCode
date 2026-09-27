@@ -22,9 +22,16 @@
     "lọc các dòng nhóm 'a' trong data.csv ra {outname}",
     "trích các dòng bắt đầu bằng 'a,' vào {outname}",
     "lọc dữ liệu nhóm a từ data.csv thành {outname}",
-    "tách các bản ghi 'a' trong data.csv ra {outname}"
+    "tách các bản ghi 'a' trong data.csv ra {outname}",
+    "grep các dòng bắt đầu bằng 'a,' trong data.csv ra {outname}",
+    "lấy các record có cột 1 bằng a từ data.csv, lưu {outname}",
+    "tách nhóm a khỏi data.csv sang file {outname}",
+    "cần {outname} chỉ chứa dòng nhóm a của data.csv",
+    "filter data.csv theo giá trị a ở cột đầu, ghi ra {outname}",
+    "xuất các dòng thuộc nhóm 'a' của data.csv vào {outname}"
   ],
   "reference_command": "grep \"^a,\" data.csv > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "grep \"^b,\" data.csv > {outname}"

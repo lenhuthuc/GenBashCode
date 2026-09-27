@@ -28,7 +28,13 @@
     "repo này có bao nhiêu commit?",
     "đếm số lượng commit trong git log",
     "kiểm tra lịch sử commit có mấy lần",
-    "xem tổng số commit của repo hiện tại"
+    "xem tổng số commit của repo hiện tại",
+    "git log có mấy commit?",
+    "đếm commit trong repo này",
+    "lịch sử git dài bao nhiêu commit rồi",
+    "git log --oneline | wc -l",
+    "repo hiện tại đã commit bao nhiêu lần",
+    "cho mình tổng số commit trên nhánh hiện tại"
   ],
   "reference_command": "git log --oneline | wc -l",
   "wrong_commands": [

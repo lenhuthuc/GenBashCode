@@ -12,7 +12,13 @@
     "restart lại giúp tôi",
     "khởi động lại cái đó đi",
     "restart hộ tôi cái dịch vụ",
-    "bật lại giúp tôi"
+    "bật lại giúp tôi",
+    "khởi động lại đi",
+    "restart hộ",
+    "tắt rồi bật lại giúp",
+    "reset lại cái đó",
+    "chạy lại cái dịch vụ đó",
+    "bật lại giùm mình"
   ],
   "clarify_question_vi": "Bạn muốn khởi động lại tiến trình/dịch vụ nào cụ thể?",
   "reference_command": "",

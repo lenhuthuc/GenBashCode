@@ -28,7 +28,13 @@
     "đếm tổng số dòng của {prefix}1.{ext} và {prefix}2.{ext}",
     "tổng số dòng trong hai file {prefix}1.{ext}, {prefix}2.{ext} là bao nhiêu?",
     "cộng dồn số dòng của {prefix}1.{ext} và {prefix}2.{ext}",
-    "kiểm tra tổng dòng của hai file log này"
+    "kiểm tra tổng dòng của hai file log này",
+    "{prefix}1.{ext} cộng {prefix}2.{ext} có tổng mấy dòng?",
+    "gộp đếm số dòng của {prefix}1.{ext} và {prefix}2.{ext}",
+    "cat {prefix}1.{ext} {prefix}2.{ext} | wc -l",
+    "tổng line count của hai file {prefix}1.{ext} và {prefix}2.{ext}",
+    "hai file {prefix}1.{ext}, {prefix}2.{ext} cộng lại được bao nhiêu dòng",
+    "cho mình tổng số dòng của cả {prefix}1.{ext} lẫn {prefix}2.{ext}"
   ],
   "reference_command": "cat {prefix}1.{ext} {prefix}2.{ext} | wc -l",
   "wrong_commands": [

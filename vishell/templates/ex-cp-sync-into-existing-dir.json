@@ -28,9 +28,17 @@
     "đồng bộ thư mục {src} sang {dst}",
     "sao chép nội dung {src} vào {dst} đã có sẵn",
     "sao chép đồng bộ {src} sang {dst}",
-    "sync nội dung {src} sang {dst}"
+    "sync nội dung {src} sang {dst}",
+    "chép hết file trong {src} vào thư mục {dst} (đã tạo sẵn)",
+    "đưa toàn bộ nội dung của {src} sang {dst}, giữ nguyên thuộc tính file",
+    "copy -a nội dung {src} vào {dst}",
+    "thư mục {dst} đang trống, đổ hết file của {src} vào đó",
+    "sync file từ {src} qua {dst} giúp mình",
+    "làm cho {dst} có đủ các file như trong {src}",
+    "cp toàn bộ file bên trong {src} sang {dst}"
   ],
   "reference_command": "cp -a {src}/. {dst}/",
+  "undo_command": "rm -rf {dst} && mkdir {dst}",
   "wrong_commands": [
     "true",
     "mkdir -p {dst}/{src}"

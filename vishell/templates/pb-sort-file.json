@@ -4,16 +4,37 @@
   "expected_action": "probe",
   "reversible": true,
   "params": {
-    "n": {"int": [1, 99]},
-    "prefix": {"choice": ["item", "row"]},
-    "ext": {"choice": ["log", "dat"]}
+    "n": {
+      "int": [
+        1,
+        99
+      ]
+    },
+    "prefix": {
+      "choice": [
+        "item",
+        "row"
+      ]
+    },
+    "ext": {
+      "choice": [
+        "log",
+        "dat"
+      ]
+    }
   },
   "setup": "printf '{prefix}{n}_c\\n{prefix}{n}_a\\n{prefix}{n}_b\\n' > f.{ext}",
   "requests_vi": [
     "sắp xếp nội dung file f.{ext} theo thứ tự alphabet",
     "hiển thị f.{ext} đã sắp xếp",
     "cho tôi nội dung f.{ext} theo thứ tự bảng chữ cái",
-    "sort file f.{ext} giúp tôi xem thử"
+    "sort file f.{ext} giúp tôi xem thử",
+    "sort f.{ext}",
+    "xem f.{ext} sau khi sắp xếp (không sửa file)",
+    "in f.{ext} theo alphabet",
+    "hiện nội dung f.{ext} đã sort",
+    "cho mình xem các dòng f.{ext} theo thứ tự tăng dần",
+    "đọc f.{ext} nhưng sắp xếp lại các dòng"
   ],
   "reference_command": "sort f.{ext}",
   "wrong_commands": [

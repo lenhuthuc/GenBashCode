@@ -19,13 +19,13 @@ _DEFAULT_CONFIG = PROJECT_ROOT / "configs" / "default.yaml"
 
 STEPS = [
     "data-nl2bash", "verify", "build-dataset", "sft-nl2bash", "merge-nl2bash",
-    "sft-scenarios", "merge-scenarios", "grpo", "merge-grpo", "export",
+    "sft-scenarios", "merge-scenarios", "grpo", "merge-grpo", "grpo-undo", "merge-grpo-undo", "export",
     "evaluate", "report", "demo",
 ]
 # GPU/heavy-dependency steps: skipped in `pipeline` when train.enabled=false (used by
 # the laptop smoke run, which only exercises data/verify/eval-harness/report).
 GPU_STEPS = {"sft-nl2bash", "merge-nl2bash", "sft-scenarios", "merge-scenarios",
-             "grpo", "merge-grpo", "export"}
+             "grpo", "merge-grpo", "grpo-undo", "merge-grpo-undo", "export"}
 
 
 def _deep_update(base: dict, override: dict) -> dict:
@@ -167,8 +167,22 @@ def step_verify(cfg: dict, paths: Paths) -> None:
           f"(disagreement rate {report['disagreement_rate']:.2%})")
 
 
+def step_diversity(cfg: dict, paths: Paths) -> None:
+    from .data.templates import load_templates
+    from .diversity import run_diversity
+
+    dc = cfg["diversity"]
+    templates, _ = load_templates(PROJECT_ROOT / cfg["templates"]["dir"])
+    result = run_diversity(templates, dc, _resolve_data_path(dc["vncorenlp_dir"]))
+    _write_json(paths.results / "diversity.json", result)
+    s = result["summary"]
+    print(f"[diversity] {s['n_pass']}/{s['n_templates']} templates pass "
+          f"(semantic threshold {result['semantic_threshold']:.3f}, mean requests {s['mean_requests']:.1f}, "
+          f"mean good-pair frac {s['mean_good_pair_frac']:.2f}) -> {paths.results / 'diversity.json'}")
+
+
 def step_build_dataset(cfg: dict, paths: Paths) -> None:
-    from .data.templates import build_dataset, load_templates
+    from .data.templates import build_dataset, load_templates, split_templates
 
     templates, _ = load_templates(PROJECT_ROOT / cfg["templates"]["dir"])
     verify_path = paths.results / "verify.json"
@@ -181,7 +195,15 @@ def step_build_dataset(cfg: dict, paths: Paths) -> None:
         n_test_per_template=cfg["templates"]["n_test_per_template"], noise_ratio=cfg["data"]["noise_ratio"],
         test_frac=cfg["templates"]["test_frac"],
     )
+    # SFT and GRPO get disjoint templates: GRPO on requests SFT memorised has nothing to explore.
+    train_ids = {i.template_id for i in train}
+    grpo_side, _ = split_templates([t for t in templates if t.template_id in train_ids],
+                                   cfg["templates"]["grpo_frac"], salt="grpo:")
+    grpo_ids = {t.template_id for t in grpo_side}
+    grpo = [i for i in train if i.template_id in grpo_ids]
+    train = [i for i in train if i.template_id not in grpo_ids]
     _write_jsonl(paths.data / "instances_train.jsonl", [i.model_dump() for i in train])
+    _write_jsonl(paths.data / "instances_grpo.jsonl", [i.model_dump() for i in grpo])
     _write_jsonl(paths.data / "instances_test.jsonl", [i.model_dump() for i in test])
 
     scenarios_sft = [
@@ -190,14 +212,16 @@ def step_build_dataset(cfg: dict, paths: Paths) -> None:
         for i in train
     ]
     _write_jsonl(paths.data / "sft_scenarios.jsonl", scenarios_sft)
-    print(f"[build-dataset] {len(train)} train, {len(test)} test instances from {len(templates)} templates")
+    print(f"[build-dataset] {len(train)} SFT / {len(grpo)} GRPO / {len(test)} test instances "
+          f"from {len(templates)} templates ({len(train_ids) - len(grpo_ids)} / {len(grpo_ids)} / rest)")
 
 
 def _target_json(instance) -> str:
     from .schema import ModelOutput
     if instance.expected_action == "ask":
         return ModelOutput(action="ask", command="", question=instance.clarify_question_vi or "").model_dump_json()
-    return ModelOutput(action=instance.expected_action, command=instance.reference_command, question="").model_dump_json()
+    return ModelOutput(action=instance.expected_action, command=instance.reference_command,
+                       undo=instance.undo_command, question="").model_dump_json()
 
 
 def step_sft(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
@@ -238,7 +262,7 @@ def step_merge(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
     from .train.merge import merge_adapter
 
     base_model = cfg["models"]["base_model"] if stage == "nl2bash" else str(paths.models / f"merged_{_prev_stage(stage)}")
-    adapter_dir = str(paths.checkpoints / f"sft_{stage}" / "final") if stage != "grpo" else str(paths.checkpoints / "grpo" / "final")
+    adapter_dir = str(paths.checkpoints / (stage if stage.startswith("grpo") else f"sft_{stage}") / "final")
     if stage == "nl2bash":
         # step_sft skips training when a pre-trained sft_v1 exists, so merge that adapter
         sft_v1 = _resolve_data_path(cfg["models"]["sft_v1_dir"])
@@ -250,27 +274,32 @@ def step_merge(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
 
 
 def _prev_stage(stage: str) -> str:
-    return {"scenarios": "nl2bash", "grpo": "scenarios"}[stage]
+    return {"scenarios": "nl2bash", "grpo": "scenarios", "grpo_undo": "scenarios"}[stage]
 
 
-def step_grpo(cfg: dict, paths: Paths, force: bool) -> None:
+def step_grpo(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
+    """stage "grpo" = arm B (r_undo logged, weight 0); "grpo_undo" = arm C (weight grpo.undo_coef).
+    Both start from the same merged_scenarios, so the only difference between them is r_undo."""
     from .train.grpo import train_grpo
 
     backend = make_backend(cfg)
     gc = cfg["grpo"]
     result = train_grpo(
-        train_path=str(paths.data / "instances_train.jsonl"), base_model=str(paths.models / "merged_scenarios"),
-        out_dir=str(paths.checkpoints / "grpo"), backend=backend, lora_r=cfg["train"]["lora_r"],
+        train_path=str(paths.data / "instances_grpo.jsonl"), base_model=str(paths.models / "merged_scenarios"),
+        out_dir=str(paths.checkpoints / stage), backend=backend, lora_r=cfg["train"]["lora_r"],
         lora_alpha=cfg["train"]["lora_alpha"], lora_dropout=cfg["train"]["lora_dropout"], lr=gc["lr"],
         max_steps=gc["max_steps"], save_steps=gc["save_steps"], num_generations=gc["num_generations"], temperature=gc["temperature"],
         max_prompt_length=gc["max_prompt_length"], max_completion_length=gc["max_completion_length"],
         decision_coef=cfg["reward"]["decision_coef"], seed=cfg["seed"], dtype=gc["dtype"],
-        use_vllm=gc["use_vllm"], force=force,
+        use_vllm=gc["use_vllm"], force=force, undo_coef=gc["undo_coef"] if stage == "grpo_undo" else 0.0,
     )
-    print(f"[grpo] {result}")
+    print(f"[{stage}] {result}")
 
 
 def step_export(cfg: dict, paths: Paths, force: bool) -> None:
+    if not cfg.get("export", {}).get("enabled", True):
+        print("[export] export.enabled=false, skipping")
+        return
     from .train.export import export_gguf
     result = export_gguf(str(paths.models / "merged_grpo"), str(paths.models / "gguf"), force=force)
     print(f"[export] {result}")
@@ -278,8 +307,8 @@ def step_export(cfg: dict, paths: Paths, force: bool) -> None:
 
 def step_evaluate(cfg: dict, paths: Paths) -> None:
     from .evaluate import (
-        evaluate_instance, evaluate_system_on_templates, mock_generate, oracle_generate,
-        summarize_template_eval,
+        compare_to_baseline, evaluate_instance, evaluate_system_on_templates, mock_generate,
+        oracle_generate, summarize_template_eval,
     )
     from .schema import Instance
 
@@ -308,11 +337,18 @@ def step_evaluate(cfg: dict, paths: Paths) -> None:
     _write_jsonl(paths.results / "predictions_templates.jsonl", all_rows)
     summary = summarize_template_eval(all_rows)
     _write_json(paths.results / "eval_templates_summary.json", summary)
+    comparison = compare_to_baseline(all_rows, cfg["evaluate"]["baseline_system"])
+    _write_json(paths.results / "eval_comparison.json", comparison)
     print(f"[evaluate] {len(summary)} (system, variant) rows written")
+    for c in comparison:
+        if c["diff"] is not None:
+            print(f"[evaluate] {c['system']} - {c['baseline']} {c['metric']}: {c['diff']:+.3f} "
+                  f"[{c['ci_low']:+.3f}, {c['ci_high']:+.3f}]")
 
 
 _SYSTEM_MODEL_DIR_CFG_KEY = {
     "sft_nl2bash": "merged_nl2bash", "sft_scenarios": "merged_scenarios", "grpo": "merged_grpo",
+    "grpo_undo": "merged_grpo_undo",
 }
 
 
@@ -390,8 +426,10 @@ _STEP_FUNCS = {
     "merge-nl2bash": lambda cfg, paths, force: step_merge("nl2bash", cfg, paths, force),
     "sft-scenarios": lambda cfg, paths, force: step_sft("scenarios", cfg, paths, force),
     "merge-scenarios": lambda cfg, paths, force: step_merge("scenarios", cfg, paths, force),
-    "grpo": lambda cfg, paths, force: step_grpo(cfg, paths, force),
+    "grpo": lambda cfg, paths, force: step_grpo("grpo", cfg, paths, force),
     "merge-grpo": lambda cfg, paths, force: step_merge("grpo", cfg, paths, force),
+    "grpo-undo": lambda cfg, paths, force: step_grpo("grpo_undo", cfg, paths, force),
+    "merge-grpo-undo": lambda cfg, paths, force: step_merge("grpo_undo", cfg, paths, force),
     "export": lambda cfg, paths, force: step_export(cfg, paths, force),
     "evaluate": lambda cfg, paths, force: step_evaluate(cfg, paths),
     "report": lambda cfg, paths, force: step_report(cfg, paths),
@@ -411,7 +449,7 @@ def run_step(name: str, cfg: dict, paths: Paths, force: bool = False) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="python -m vishell")
-    parser.add_argument("step", choices=STEPS + ["pipeline"])
+    parser.add_argument("step", choices=STEPS + ["pipeline", "diversity"])
     parser.add_argument("--config", default=None)
     parser.add_argument("--set", action="append", default=[], dest="overrides")
     parser.add_argument("--force", action="store_true")
@@ -420,6 +458,9 @@ def main(argv: list[str] | None = None) -> None:
     cfg = load_config(args.config, args.overrides)
     paths = make_paths(cfg)
 
+    if args.step == "diversity":  # analysis, always rerun: no .done marker
+        step_diversity(cfg, paths)
+        return
     if args.step == "pipeline":
         for name in STEPS:
             if name == "demo":

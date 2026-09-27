@@ -12,7 +12,13 @@
     "sắp xếp lại các file cho gọn giúp tôi",
     "tổ chức lại thư mục này",
     "sắp xếp file theo loại giúp tôi",
-    "dọn cho có tổ chức chút"
+    "dọn cho có tổ chức chút",
+    "sắp xếp file lại",
+    "tổ chức file cho gọn",
+    "phân loại file giúp",
+    "dọn cho có trật tự",
+    "xếp file vào chỗ hợp lý",
+    "organize thư mục giúp mình"
   ],
   "clarify_question_vi": "Bạn muốn sắp xếp theo tiêu chí nào (loại file, ngày tạo, tên), và có tạo thư mục con không?",
   "reference_command": "",

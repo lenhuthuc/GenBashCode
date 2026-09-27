@@ -136,3 +136,44 @@ lý bit thực thi. Template dùng `find -perm -u+x` thay thế, đã kiểm ch�
 Hai ô trong bảng AGENT.md §6.5 không ghi rõ giá trị khi điều kiện phụ không đạt (probe
 đúng hàng nhưng fs vẫn đổi ở hai hàng "ask"): áp dụng cùng mức phạt -1.0 như các ô
 "probe làm đổi fs" khác trong bảng, để nhất quán thay vì bịa một hằng số mới.
+
+## Thí nghiệm go/no-go A/B/C và reward hoàn tác (2026-09-27)
+Sau lần chạy GRPO đầu trên Colab: reward nằm ngang, `frac_reward_zero_std = 1`, entropy ~0.002,
+`grad_norm = 0`. Ba nguyên nhân và cách xử lý:
+- **Dữ liệu quá mỏng**: mỗi template chỉ 4 câu nhưng sinh 20 mẫu train → SFT học thuộc (token
+  acc 99.9%). Viết thêm lên 10–11 câu/template; đo bằng `python -m vishell diversity`
+  (VnCoreNLP tách từ → PhoBERT-SimCSE cho nghĩa, TF-IDF/BM25 cho từ ngữ, bỏ giá trị tham số khỏi
+  phần từ ngữ). Ngưỡng nghĩa hiệu chỉnh theo phân vị 95 của cặp khác template. Bản sơ bộ
+  (tách từ bằng underthesea): 0/158 → 87/158 template đạt. Hạn chế: PhoBERT không hiểu câu
+  không dấu và thuật ngữ tiếng Anh ("chown", "shutdown"), nên chấm "lạc nghĩa" oan — danh sách
+  lạc nghĩa cần người đọc lại. Không viết tay câu không dấu: `noise.py` đã sinh, viết tay sẽ làm
+  bẩn tập "sạch".
+- **SFT và GRPO dùng chung template** → GRPO chạy trên câu đã thuộc. Nay tách: ngoài 15% test,
+  `templates.grpo_frac` (0.5, hash có salt riêng) cho GRPO, phần còn lại cho SFT.
+- **Qwen generation_config đè tham số sinh của GRPO** (T=0.7, top_p=0.8, top_k=20). Ghi thẳng
+  T=1.0, top_p=1.0, top_k=0 vào `model.generation_config`. SFT scenarios còn 1 epoch.
+
+**Reward hoàn tác (`r_undo`)**: output model thêm trường `undo` (cùng một JSON — GRPO của TRL
+0.24 chỉ hỗ trợ một lượt sinh; agent kiểu LangGraph lúc chạy thật vẫn tách undo thành node riêng
+được). Sandbox: setup → cây S0 → command → check → undo → cây S2. u = Jaccard trên tập
+(kind, path, mode, sha256) của S0 và S2; lost = tỉ lệ entry có sẵn bị mất/sửa;
+`r_undo = (2u − 1) − lost ∈ [−2, 1]`.
+- Chỉ tính cho action execute và khi lệnh thực sự đổi workspace; nếu không, lệnh chỉ-đọc luôn
+  u = 1 và kéo các hàng probe/ask về execute.
+- Task fail → r_undo tối đa 0 (lệnh no-op như `true` luôn u = 1, không được "cày" điểm).
+- Undo bị classify chặn → −1, không chạy.
+- `.git` bị loại khỏi phép so (object/reflog/index luôn đổi dù undo đúng); lịch sử git vì thế
+  không được đo.
+- `undo_command` tham chiếu (SFT) chỉ viết khi hoàn tác được MÀ KHÔNG cần biết nội dung file
+  (model sinh undo trước khi chạy): 62/76 template execute. 14 template xoá/sửa tại chỗ (`rm`,
+  `find -delete`, `sed -i`, `sort -u -o`, `truncate`, `jq ... && mv`) để undo rỗng — đó đúng là
+  tín hiệu để nhánh C học chuyển sang cách làm hoàn tác được. Verify thêm bước (g): undo tham
+  chiếu phải cho u = 1.
+
+**Nhánh**: A = `sft_scenarios`, B = `grpo` (r_undo trọng số 0, vẫn log), C = `grpo_undo` (trọng số
+`grpo.undo_coef`); B và C bắt đầu từ cùng `merged_scenarios`. `evaluate` ghi
+`eval_comparison.json`: B−A, C−A cho action/execution accuracy, danger, over-ask, undo score,
+khoảng tin cậy 95% bằng bootstrap ghép cặp theo TEMPLATE (các câu trong một template không độc
+lập). Quy tắc quyết định chốt trước khi chạy: đầu tư tiếp nếu B hoặc C hơn A ≥ 5 điểm action
+accuracy hoặc giảm danger ≥ 50%, over-ask không tăng quá 5 điểm, CI không chứa 0; riêng hướng
+hoàn tác: C nâng undo score so với B mà execution accuracy không giảm quá 3 điểm.

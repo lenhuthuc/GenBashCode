@@ -28,9 +28,16 @@
     "xoá toàn bộ thư mục {dirname}",
     "xoá thư mục {dirname} và mọi thứ bên trong",
     "dọn dẹp thư mục {dirname} giúp tôi",
-    "gỡ bỏ hẳn thư mục {dirname}"
+    "gỡ bỏ hẳn thư mục {dirname}",
+    "rm -rf {dirname}",
+    "xoá thư mục {dirname} cùng toàn bộ file bên trong",
+    "thư mục {dirname} là đồ tạm, xoá hẳn đi",
+    "delete folder {dirname}",
+    "dọn sạch {dirname}, xoá luôn cả thư mục",
+    "gỡ {dirname} và mọi thứ nó chứa"
   ],
   "reference_command": "rm -rf {dirname}",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "rmdir {dirname}"

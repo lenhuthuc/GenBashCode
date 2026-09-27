@@ -28,9 +28,16 @@
     "join left.txt và right.txt theo khoá chung, lưu ra {outname}",
     "kết hợp left.txt với right.txt theo cột đầu, ghi ra {outname}",
     "ghép left.txt và right.txt theo key vào {outname}",
-    "join hai file left.txt right.txt thành {outname}"
+    "join hai file left.txt right.txt thành {outname}",
+    "nối left.txt và right.txt theo cột khoá đầu tiên, kết quả vào {outname}",
+    "dùng join ghép left.txt với right.txt, output {outname}",
+    "kết hợp hai file left.txt, right.txt theo id, lưu thành {outname}",
+    "join left.txt right.txt > {outname}",
+    "gộp thông tin left.txt và right.txt dựa trên cột 1 vào {outname}",
+    "mình cần {outname} có đủ cột của left.txt và right.txt, khớp theo khoá"
   ],
   "reference_command": "join left.txt right.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cat left.txt right.txt > {outname}"

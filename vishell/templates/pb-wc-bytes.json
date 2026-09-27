@@ -16,7 +16,13 @@
     "file f.txt nặng bao nhiêu byte?",
     "đếm số byte của f.txt",
     "kiểm tra kích thước file f.txt theo byte",
-    "cho tôi biết dung lượng byte của f.txt"
+    "cho tôi biết dung lượng byte của f.txt",
+    "wc -c < f.txt",
+    "f.txt bao nhiêu byte?",
+    "size f.txt tính theo byte",
+    "đo dung lượng f.txt",
+    "cho mình số byte của file f.txt",
+    "kích thước f.txt là bao nhiêu byte"
   ],
   "reference_command": "wc -c < f.txt",
   "wrong_commands": [

@@ -28,9 +28,16 @@
     "tạo thư mục {dirname} rồi chuyển hết file .{ext} vào đó",
     "gom tất cả file .{ext} vào thư mục mới {dirname}",
     "tạo folder {dirname} và di chuyển các file .{ext} vào",
-    "sắp xếp file .{ext} vào thư mục {dirname}"
+    "sắp xếp file .{ext} vào thư mục {dirname}",
+    "tạo {dirname}/ rồi dời mọi file .{ext} vào đó",
+    "cho hết file .{ext} vào một thư mục mới tên {dirname}",
+    "mkdir {dirname} và mv *.{ext} vào {dirname}",
+    "gom file .{ext} đang nằm lung tung vào folder {dirname}",
+    "dọn thư mục: file .{ext} chuyển hết vào {dirname}",
+    "tạo thư mục {dirname}, chuyển toàn bộ file đuôi {ext} vào trong"
   ],
   "reference_command": "mkdir {dirname} && mv *.{ext} {dirname}/",
+  "undo_command": "mv {dirname}/*.{ext} . && rmdir {dirname}",
   "wrong_commands": [
     "true",
     "mkdir {dirname}"

@@ -28,9 +28,16 @@
     "đổi tên chéo (hoán đổi) hai file {a} và {b}",
     "swap tên file {a} với {b}",
     "hoán đổi nội dung/tên giữa {a} và {b}",
-    "đổi tên {a} thành {b} và ngược lại"
+    "đổi tên {a} thành {b} và ngược lại",
+    "đổi chỗ tên hai file {a} và {b} cho nhau",
+    "swap {a} và {b}",
+    "hoán đổi {a} với {b} (dùng file tạm)",
+    "{a} và {b} bị đặt tên ngược, đổi lại cho đúng",
+    "trao đổi tên giữa {a} và {b}",
+    "làm cho {a} mang nội dung của {b} và ngược lại bằng cách đổi tên"
   ],
   "reference_command": "mv {a} tmp_swap.txt && mv {b} {a} && mv tmp_swap.txt {b}",
+  "undo_command": "mv {a} tmp_swap.txt && mv {b} {a} && mv tmp_swap.txt {b}",
   "wrong_commands": [
     "true",
     "mv {a} {b}"

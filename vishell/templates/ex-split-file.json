@@ -28,9 +28,16 @@
     "chia file big.txt thành các phần {lines_per} dòng mỗi phần, tiền tố {prefix}",
     "split file big.txt thành nhiều file nhỏ {lines_per} dòng, tên bắt đầu {prefix}",
     "tách big.txt thành các file con {lines_per} dòng, prefix {prefix}",
-    "chia nhỏ big.txt mỗi phần {lines_per} dòng, đặt tên {prefix}"
+    "chia nhỏ big.txt mỗi phần {lines_per} dòng, đặt tên {prefix}",
+    "split -l {lines_per} big.txt {prefix}",
+    "cắt big.txt thành nhiều file, mỗi file {lines_per} dòng, tên bắt đầu bằng {prefix}",
+    "big.txt dài quá, chia thành các file {lines_per} dòng với prefix {prefix}",
+    "chia big.txt ra từng đoạn {lines_per} dòng, đặt tên {prefix}aa, {prefix}ab...",
+    "tách file big.txt theo {lines_per} dòng một phần, prefix {prefix}",
+    "chunk big.txt thành các phần {lines_per} dòng, tên file bắt đầu {prefix}"
   ],
   "reference_command": "split -l {lines_per} big.txt {prefix}",
+  "undo_command": "rm -f {prefix}??",
   "wrong_commands": [
     "true",
     "cp big.txt {prefix}aa"

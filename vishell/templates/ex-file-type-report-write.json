@@ -28,9 +28,17 @@
     "kiểm tra loại file {fname} rồi ghi kết quả vào {outname}",
     "xác định file type của {fname}, lưu vào {outname}",
     "chạy file(1) trên {fname} và ghi ra {outname}",
-    "phân loại {fname} rồi lưu kết quả vào {outname}"
+    "phân loại {fname} rồi lưu kết quả vào {outname}",
+    "{fname} là loại file gì? ghi câu trả lời vào {outname}",
+    "dùng lệnh file để nhận dạng {fname}, kết quả lưu ở {outname}",
+    "kiểm tra định dạng của {fname} rồi xuất ra {outname}",
+    "cho mình biết kiểu của {fname}, viết vào file {outname}",
+    "file -b {fname} > {outname}",
+    "nhận diện loại nội dung {fname} và lưu thông tin vào {outname}",
+    "xem {fname} thuộc loại gì rồi ghi vào {outname}"
   ],
   "reference_command": "file -b {fname} > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "echo unknown > {outname}"

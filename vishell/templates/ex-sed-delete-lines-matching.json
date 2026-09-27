@@ -28,9 +28,16 @@
     "xoá các dòng chứa {pattern} trong file f.txt",
     "loại bỏ dòng {pattern} khỏi f.txt",
     "dọn các dòng {pattern} ra khỏi f.txt",
-    "xoá dòng có chữ {pattern} trong f.txt"
+    "xoá dòng có chữ {pattern} trong f.txt",
+    "sed -i '/{pattern}/d' f.txt",
+    "bỏ mọi dòng có {pattern} trong f.txt, giữ các dòng khác",
+    "f.txt nhiều log {pattern} quá, xoá hết các dòng đó",
+    "lọc sạch dòng {pattern} khỏi f.txt, ghi đè luôn",
+    "remove các dòng match {pattern} trong f.txt",
+    "xoá những dòng chứa từ {pattern} ở file f.txt"
   ],
   "reference_command": "sed -i '/{pattern}/d' f.txt",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "sed -i '/INFO/d' f.txt"

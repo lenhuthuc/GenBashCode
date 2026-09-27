@@ -28,9 +28,16 @@
     "cập nhật trường {key} trong data.json thành '{new_val}'",
     "sửa data.json, đổi {key} thành '{new_val}'",
     "thay đổi giá trị {key} trong data.json sang '{new_val}'",
-    "chỉnh data.json để {key} là '{new_val}'"
+    "chỉnh data.json để {key} là '{new_val}'",
+    "đổi {key} trong data.json từ '{old_val}' sang '{new_val}'",
+    "dùng jq set .{key} = '{new_val}' và ghi đè data.json",
+    "cập nhật data.json: {key} giờ là '{new_val}'",
+    "set field {key} của data.json thành '{new_val}'",
+    "trong data.json, {key} đang là '{old_val}', sửa lại thành '{new_val}'",
+    "ghi đè giá trị {key} trong file data.json bằng '{new_val}'"
   ],
   "reference_command": "jq '.{key} = \"{new_val}\"' data.json > tmp.json && mv tmp.json data.json",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "jq '.{key}' data.json"

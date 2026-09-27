@@ -28,9 +28,16 @@
     "nén file {fname} bằng gzip",
     "gzip file {fname} giúp tôi",
     "nén {fname} lại cho gọn",
-    "compress file {fname} bằng gzip"
+    "compress file {fname} bằng gzip",
+    "nén gzip {fname} thành {fname}.gz",
+    "gzip cái {fname} đi cho nhẹ",
+    "{fname} to quá, nén nó bằng gzip",
+    "chuyển {fname} thành file nén .gz",
+    "nén file {fname}, không cần giữ bản gốc",
+    "tạo {fname}.gz từ {fname} bằng gzip"
   ],
   "reference_command": "gzip {fname}",
+  "undo_command": "gunzip {fname}.gz",
   "wrong_commands": [
     "true",
     "touch {fname}.gz"

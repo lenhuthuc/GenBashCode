@@ -28,7 +28,13 @@
     "tổng kích thước byte của {prefix}1.{ext} và {prefix}2.{ext} là bao nhiêu?",
     "đếm tổng số byte của hai file {prefix}1.{ext}, {prefix}2.{ext}",
     "cộng dung lượng {prefix}1.{ext} và {prefix}2.{ext} giúp tôi",
-    "kiểm tra tổng byte của hai file này"
+    "kiểm tra tổng byte của hai file này",
+    "{prefix}1.{ext} và {prefix}2.{ext} tổng cộng nặng bao nhiêu byte?",
+    "cat {prefix}1.{ext} {prefix}2.{ext} | wc -c",
+    "cộng số byte của {prefix}1.{ext} với {prefix}2.{ext}",
+    "tổng dung lượng hai file {prefix}1.{ext}, {prefix}2.{ext}",
+    "đo tổng kích thước {prefix}1.{ext} và {prefix}2.{ext}",
+    "hai file {prefix}1.{ext} {prefix}2.{ext} chiếm bao nhiêu byte"
   ],
   "reference_command": "cat {prefix}1.{ext} {prefix}2.{ext} | wc -c",
   "wrong_commands": [

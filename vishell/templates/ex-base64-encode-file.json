@@ -28,9 +28,17 @@
     "mã hoá base64 file {fname} thành {fname}.b64",
     "encode base64 {fname} ra file mới",
     "chuyển {fname} sang base64 lưu vào {fname}.b64",
-    "tạo bản base64 của {fname}"
+    "tạo bản base64 của {fname}",
+    "mã hoá nội dung {fname} sang base64 và lưu thành {fname}.b64",
+    "cần bản base64 của {fname}, đặt tên {fname}.b64",
+    "chạy base64 trên {fname}, output ghi ra {fname}.b64",
+    "convert {fname} sang base64 giúp mình, file kết quả là {fname}.b64",
+    "đóng gói {fname} dạng base64 vào file {fname}.b64",
+    "tạo {fname}.b64 là bản encode base64 của {fname}",
+    "encode {fname} thành chuỗi base64 rồi ghi vào {fname}.b64"
   ],
   "reference_command": "base64 {fname} > {fname}.b64",
+  "undo_command": "rm -f {fname}.b64",
   "wrong_commands": [
     "true",
     "cp {fname} {fname}.b64"

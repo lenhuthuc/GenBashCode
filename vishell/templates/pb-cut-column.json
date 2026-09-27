@@ -28,7 +28,13 @@
     "lấy cột đầu tiên trong file data.csv, phân tách bằng '{delim}'",
     "trích xuất cột đầu của data.csv (delimiter '{delim}')",
     "hiển thị cột đầu tiên từ data.csv",
-    "cho tôi cột đầu trong file csv này"
+    "cho tôi cột đầu trong file csv này",
+    "cut -d'{delim}' -f1 data.csv",
+    "in cột 1 của data.csv, dấu phân cách là '{delim}'",
+    "xem giá trị cột đầu tiên mỗi dòng trong data.csv",
+    "data.csv tách bằng '{delim}', cho mình cột thứ nhất",
+    "hiện cột đầu của data.csv lên màn hình",
+    "trích field 1 (delimiter '{delim}') từ data.csv"
   ],
   "reference_command": "cut -d'{delim}' -f1 data.csv",
   "wrong_commands": [

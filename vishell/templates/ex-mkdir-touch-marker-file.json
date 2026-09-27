@@ -28,9 +28,16 @@
     "tạo thư mục {dirname} và đánh dấu hoàn tất bằng file {marker}",
     "tạo folder {dirname}, thêm file {marker} bên trong để đánh dấu xong",
     "tạo thư mục {dirname} kèm marker {marker}",
-    "tạo {dirname} rồi tạo file {marker} trong đó"
+    "tạo {dirname} rồi tạo file {marker} trong đó",
+    "tạo {dirname}/{marker}",
+    "mkdir {dirname} rồi touch file {marker} trong đó",
+    "đánh dấu {dirname} đã xong bằng file {marker} bên trong",
+    "tạo thư mục {dirname} có sẵn file rỗng {marker}",
+    "cần folder {dirname} với file cờ {marker}",
+    "tạo thư mục {dirname}, đặt file {marker} vào để báo hiệu"
   ],
   "reference_command": "mkdir {dirname} && touch {dirname}/{marker}",
+  "undo_command": "rm -r {dirname}",
   "wrong_commands": [
     "true",
     "mkdir {dirname}"

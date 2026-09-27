@@ -28,9 +28,16 @@
     "xoá file {fname} khỏi git",
     "gỡ {fname} ra khỏi repo và xoá luôn",
     "git rm {fname} giúp tôi",
-    "xoá {fname} và commit ngay"
+    "xoá {fname} và commit ngay",
+    "bỏ {fname} khỏi repo và commit việc xoá",
+    "git rm {fname} rồi commit",
+    "xoá hẳn {fname} khỏi git, commit với message remove",
+    "{fname} không dùng nữa, xoá nó khỏi repo",
+    "remove {fname} khỏi version control và commit",
+    "gỡ file {fname} ra khỏi git rồi tạo commit"
   ],
   "reference_command": "git rm -q {fname} && git commit -q -m remove",
+  "undo_command": "git reset -q --hard HEAD~1",
   "wrong_commands": [
     "true",
     "rm {fname}"

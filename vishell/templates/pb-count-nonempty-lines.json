@@ -28,7 +28,13 @@
     "đếm số dòng không rỗng trong f.txt",
     "file f.txt có bao nhiêu dòng có nội dung?",
     "kiểm tra số dòng khác trống trong f.txt",
-    "đếm dòng không blank trong f.txt"
+    "đếm dòng không blank trong f.txt",
+    "f.txt có bao nhiêu dòng không trống?",
+    "grep -c '.' f.txt",
+    "đếm số dòng có chữ trong f.txt",
+    "bỏ dòng rỗng ra thì f.txt còn mấy dòng",
+    "thống kê dòng non-empty của f.txt",
+    "số dòng thực sự có nội dung trong f.txt là bao nhiêu"
   ],
   "reference_command": "grep -c '.' f.txt",
   "wrong_commands": [

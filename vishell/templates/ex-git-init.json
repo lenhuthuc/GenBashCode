@@ -28,9 +28,16 @@
     "khởi tạo git repo trong thư mục này với nhánh {branch}",
     "git init cho thư mục hiện tại, nhánh mặc định {branch}",
     "tạo repo git mới ở đây, branch {branch}",
-    "khởi tạo version control git ở nhánh {branch}"
+    "khởi tạo version control git ở nhánh {branch}",
+    "biến thư mục này thành git repo, nhánh chính tên {branch}",
+    "init git ở đây với default branch là {branch}",
+    "cho thư mục hiện tại dùng git, nhánh đầu tiên đặt tên {branch}",
+    "git init -b {branch}",
+    "thư mục này chưa có git, tạo repo mới với nhánh {branch}",
+    "bắt đầu quản lý phiên bản bằng git, nhánh {branch}"
   ],
   "reference_command": "git init -q -b {branch}",
+  "undo_command": "rm -rf .git",
   "wrong_commands": [
     "true",
     "mkdir .git"

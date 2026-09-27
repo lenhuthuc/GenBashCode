@@ -28,9 +28,16 @@
     "tạo thêm file {new_name} mà không đụng vào các file .{ext} khác",
     "thêm file mới {new_name}, giữ nguyên các file .{ext} cũ",
     "tạo {new_name} bên cạnh các file hiện có",
-    "tạo file {new_name} mới trong thư mục này"
+    "tạo file {new_name} mới trong thư mục này",
+    "touch {new_name}, đừng đụng các file existing_*.{ext}",
+    "thêm file rỗng {new_name}",
+    "tạo {new_name} mới, các file cũ để nguyên",
+    "cần thêm một file {new_name} trong thư mục này",
+    "bổ sung file {new_name}, không xoá hay sửa file .{ext} nào",
+    "tạo file {new_name} cạnh mấy file existing"
   ],
   "reference_command": "touch {new_name}",
+  "undo_command": "rm -f {new_name}",
   "wrong_commands": [
     "true",
     "rm existing_1.{ext}"

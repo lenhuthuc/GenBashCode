@@ -28,9 +28,16 @@
     "đảo ngược thứ tự dòng của f.txt, lưu ra {outname}",
     "tac file f.txt ra {outname}",
     "lật ngược nội dung f.txt thành {outname}",
-    "in ngược các dòng f.txt vào {outname}"
+    "in ngược các dòng f.txt vào {outname}",
+    "tac f.txt > {outname}",
+    "đảo ngược thứ tự dòng: dòng cuối f.txt lên đầu, lưu {outname}",
+    "cần {outname} là f.txt in từ dưới lên",
+    "reverse thứ tự các dòng f.txt ra file {outname}",
+    "lật f.txt theo chiều dọc rồi ghi vào {outname}",
+    "ghi f.txt theo thứ tự ngược vào {outname}"
   ],
   "reference_command": "tac f.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cp f.txt {outname}"

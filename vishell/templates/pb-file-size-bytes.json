@@ -22,7 +22,13 @@
     "file {fname} có kích thước bao nhiêu byte?",
     "kiểm tra dung lượng của {fname}",
     "cho tôi biết size của {fname}",
-    "xem kích thước file {fname}"
+    "xem kích thước file {fname}",
+    "{fname} nặng bao nhiêu byte?",
+    "stat -c %s {fname}",
+    "xem dung lượng file {fname} tính bằng byte",
+    "size của {fname} là bao nhiêu",
+    "đo kích thước {fname}",
+    "cho mình số byte của file {fname}"
   ],
   "reference_command": "stat -c %s {fname}",
   "wrong_commands": [

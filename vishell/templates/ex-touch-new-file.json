@@ -28,9 +28,16 @@
     "tạo file {fname}",
     "tạo giúp tôi một file rỗng tên {fname}",
     "tạo file mới {fname}",
-    "làm ơn tạo file {fname}"
+    "làm ơn tạo file {fname}",
+    "touch {fname}",
+    "cần một file rỗng {fname}",
+    "tạo file đánh dấu {fname}",
+    "thêm file trống tên {fname} vào đây",
+    "tạo sẵn {fname} (không cần nội dung)",
+    "cho mình file {fname}"
   ],
   "reference_command": "touch {fname}",
+  "undo_command": "rm -f {fname}",
   "wrong_commands": [
     "true",
     "echo x"

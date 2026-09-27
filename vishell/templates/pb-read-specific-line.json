@@ -28,7 +28,13 @@
     "cho tôi xem dòng số {line_no} của f.txt",
     "in ra dòng thứ {line_no} trong f.txt",
     "lấy nội dung dòng {line_no} của file f.txt",
-    "xem dòng {line_no} trong f.txt"
+    "xem dòng {line_no} trong f.txt",
+    "sed -n {line_no}p f.txt",
+    "dòng {line_no} của f.txt viết gì?",
+    "show riêng dòng {line_no} trong f.txt",
+    "đọc dòng thứ {line_no} file f.txt",
+    "in đúng dòng số {line_no} của f.txt",
+    "f.txt dòng {line_no} là gì"
   ],
   "reference_command": "sed -n {line_no}p f.txt",
   "wrong_commands": [

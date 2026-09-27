@@ -28,9 +28,16 @@
     "tạo thư mục {dirname}",
     "tạo giúp tôi folder tên {dirname}",
     "tạo một thư mục mới tên {dirname}",
-    "làm ơn tạo thư mục {dirname}"
+    "làm ơn tạo thư mục {dirname}",
+    "mkdir {dirname}",
+    "cần một thư mục {dirname} ở đây",
+    "tạo folder {dirname} để chứa kết quả",
+    "thêm thư mục mới {dirname}",
+    "làm thư mục {dirname} trong thư mục hiện tại",
+    "tạo sẵn directory {dirname}"
   ],
   "reference_command": "mkdir {dirname}",
+  "undo_command": "rmdir {dirname}",
   "wrong_commands": [
     "true",
     "touch {dirname}"

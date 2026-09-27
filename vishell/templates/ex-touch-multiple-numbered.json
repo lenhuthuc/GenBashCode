@@ -28,9 +28,16 @@
     "tạo {n} file {prefix}_1..{prefix}_{n}.{ext}",
     "tạo giúp tôi {n} file rỗng tên {prefix}",
     "tạo hàng loạt {n} file .{ext} đặt tên {prefix}",
-    "làm ơn tạo {n} file {prefix} đuôi .{ext}"
+    "làm ơn tạo {n} file {prefix} đuôi .{ext}",
+    "touch {prefix}_1.{ext} đến {prefix}_{n}.{ext}",
+    "tạo {n} file rỗng {prefix}_số.{ext}",
+    "cần {n} file {prefix} đánh số từ 1, đuôi {ext}",
+    "sinh sẵn {n} file .{ext} tên {prefix}_1 ... {prefix}_{n}",
+    "dùng vòng lặp tạo {n} file {prefix}_i.{ext}",
+    "làm {n} file trống cho {n} {prefix}, định dạng .{ext}"
   ],
   "reference_command": "for i in $(seq 1 {n}); do touch {prefix}_$i.{ext}; done",
+  "undo_command": "for i in $(seq 1 {n}); do rm {prefix}_$i.{ext}; done",
   "wrong_commands": [
     "true",
     "touch {prefix}_1.{ext}"

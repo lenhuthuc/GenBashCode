@@ -28,9 +28,16 @@
     "ghép cột col1.txt và col2.txt thành {outname}",
     "paste hai file col1.txt col2.txt ra {outname}",
     "gộp col1.txt với col2.txt theo cột, lưu {outname}",
-    "kết hợp col1.txt và col2.txt thành {outname}"
+    "kết hợp col1.txt và col2.txt thành {outname}",
+    "đặt col1.txt và col2.txt cạnh nhau thành hai cột trong {outname}",
+    "paste col1.txt col2.txt > {outname}",
+    "ghép song song col1.txt với col2.txt, lưu {outname}",
+    "tạo file {outname} có cột 1 từ col1.txt, cột 2 từ col2.txt",
+    "gộp hai file cột col1.txt, col2.txt theo từng dòng vào {outname}",
+    "nối ngang col1.txt và col2.txt ra {outname}"
   ],
   "reference_command": "paste col1.txt col2.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cat col1.txt col2.txt > {outname}"

@@ -28,9 +28,16 @@
     "chạy gen.py để tạo file out.json",
     "thực thi script gen.py sinh ra out.json",
     "chạy giúp tôi gen.py để có file out.json",
-    "run gen.py tạo output json"
+    "run gen.py tạo output json",
+    "python3 gen.py",
+    "chạy script python gen.py để nó xuất out.json",
+    "execute gen.py để sinh file out.json",
+    "cần file out.json, chạy gen.py đi",
+    "cho gen.py chạy một lần để tạo out.json",
+    "chạy gen.py bằng python3"
   ],
   "reference_command": "python3 gen.py",
+  "undo_command": "rm -f out.json",
   "wrong_commands": [
     "true",
     "touch out.json"

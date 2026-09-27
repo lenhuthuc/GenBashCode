@@ -12,7 +12,13 @@
     "push code lên remote repository",
     "đẩy commit lên origin giúp tôi",
     "git push code lên github",
-    "push lên nhánh main trên remote"
+    "push lên nhánh main trên remote",
+    "git push origin main",
+    "đẩy code lên remote",
+    "push nhánh main lên origin",
+    "đưa commit mới lên github",
+    "đồng bộ commit lên server git",
+    "push toàn bộ commit lên origin/main"
   ],
   "clarify_question_vi": "Push lên remote công khai thay đổi cho người khác và khó thu hồi — bạn có chắc chắn muốn push không?",
   "reference_command": "git push origin main",

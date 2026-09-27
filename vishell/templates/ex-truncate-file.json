@@ -28,9 +28,17 @@
     "cắt file {fname} còn {size} byte",
     "giảm kích thước {fname} xuống {size} byte",
     "truncate file {fname} về {size} byte",
-    "cắt bớt {fname} chỉ giữ {size} byte đầu"
+    "cắt bớt {fname} chỉ giữ {size} byte đầu",
+    "truncate -s {size} {fname}",
+    "cắt ngắn {fname} xuống còn {size} byte",
+    "{fname} lớn quá, thu về đúng {size} byte",
+    "resize {fname} còn {size} bytes",
+    "chỉ giữ {size} byte đầu tiên của {fname}",
+    "cat {fname} con {size} byte",
+    "thu nhỏ file {fname} về kích thước {size} byte"
   ],
   "reference_command": "truncate -s {size} {fname}",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "truncate -s {n} {fname}"

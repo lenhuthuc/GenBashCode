@@ -28,7 +28,13 @@
     "tìm các file chứa {pattern}",
     "file nào có chữ {pattern}?",
     "liệt kê file chứa từ khoá {pattern}",
-    "kiểm tra file nào ghi {pattern}"
+    "kiểm tra file nào ghi {pattern}",
+    "có mấy file chứa {pattern}?",
+    "grep -l {pattern} rồi đếm số file",
+    "đếm file nào có nhắc đến {pattern}",
+    "bao nhiêu file txt ở đây chứa chuỗi {pattern}",
+    "tìm file có {pattern} và cho mình số lượng",
+    "số file có chữ {pattern} bên trong là bao nhiêu"
   ],
   "reference_command": "grep -l {pattern} has_*.txt clean_*.txt 2>/dev/null | wc -l",
   "wrong_commands": [

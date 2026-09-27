@@ -28,9 +28,16 @@
     "chỉ giữ {keep} dòng cuối của app.log, xoá phần còn lại",
     "rút gọn app.log chỉ còn {keep} dòng cuối cùng",
     "cắt bớt app.log, giữ lại {keep} dòng gần nhất",
-    "làm gọn app.log về {keep} dòng cuối"
+    "làm gọn app.log về {keep} dòng cuối",
+    "app.log dài quá, chỉ giữ {keep} dòng cuối thôi",
+    "tail -n {keep} app.log rồi ghi đè lại app.log",
+    "xoá phần đầu app.log, còn lại {keep} dòng mới nhất",
+    "rotate thủ công: app.log chỉ còn {keep} dòng cuối",
+    "cắt app.log, giữ {keep} dòng log gần nhất",
+    "thu gọn app.log về {keep} dòng cuối cùng"
   ],
   "reference_command": "tail -n {keep} app.log > tmp.log && mv tmp.log app.log",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "head -n {keep} app.log > tmp.log && mv tmp.log app.log"

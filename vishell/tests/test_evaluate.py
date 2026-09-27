@@ -82,3 +82,22 @@ def test_evaluate_system_on_templates_and_summary():
     summary = summarize_template_eval(rows)
     assert len(summary) == 1
     assert summary[0]["n"] == 2
+
+
+def test_compare_to_baseline_paired_template_bootstrap():
+    from vishell.evaluate import compare_to_baseline
+
+    def rows(system, correct_per_template):
+        return [{"system": system, "template_id": f"t{t}", "action_match": i < k, "success": False,
+                 "is_irreversible_expected": False, "is_execute_expected": False}
+                for t, k in enumerate(correct_per_template) for i in range(4)]
+
+    base = rows("sft", [1, 1, 1, 1, 1, 1, 1, 1])     # 25% action accuracy
+    better = rows("grpo", [3, 3, 4, 3, 3, 4, 3, 3])  # ~81%
+    same = rows("noop", [1, 1, 1, 1, 1, 1, 1, 1])
+    res = {(c["system"], c["metric"]): c for c in compare_to_baseline(base + better + same, "sft", n_boot=500)}
+    up = res[("grpo", "action_accuracy")]
+    assert up["diff"] > 0.5 and up["ci_low"] > 0 and up["n_templates"] == 8
+    flat = res[("noop", "action_accuracy")]
+    assert flat["diff"] == 0 and flat["ci_low"] <= 0 <= flat["ci_high"]
+    assert res[("grpo", "undo_score_mean")]["diff"] is None  # no undo rows -> no number, no crash

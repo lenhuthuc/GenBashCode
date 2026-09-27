@@ -28,9 +28,16 @@
     "xoá dòng số {line_no} trong file f.txt",
     "loại bỏ dòng thứ {line_no} khỏi f.txt",
     "xoá giúp tôi dòng {line_no} của f.txt",
-    "gỡ dòng {line_no} ra khỏi file f.txt"
+    "gỡ dòng {line_no} ra khỏi file f.txt",
+    "sed -i '{line_no}d' f.txt",
+    "bỏ dòng thứ {line_no} của f.txt, sửa thẳng vào file",
+    "f.txt: xoá dòng {line_no}, các dòng khác giữ nguyên",
+    "delete line {line_no} trong f.txt giúp mình",
+    "dòng {line_no} trong f.txt bị thừa, xoá nó đi",
+    "cắt bỏ đúng dòng số {line_no} ở file f.txt"
   ],
   "reference_command": "sed -i '{line_no}d' f.txt",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "sed -i '$d' f.txt"

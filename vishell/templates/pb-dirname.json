@@ -28,7 +28,13 @@
     "lấy đường dẫn thư mục chứa file /{dir}/{fname}",
     "cho tôi biết /{dir}/{fname} nằm trong thư mục nào",
     "trích xuất dirname của /{dir}/{fname}",
-    "thư mục cha của /{dir}/{fname} là gì?"
+    "thư mục cha của /{dir}/{fname} là gì?",
+    "dirname của /{dir}/{fname} là gì",
+    "bỏ tên file, chỉ lấy phần thư mục của /{dir}/{fname}",
+    "file /{dir}/{fname} nằm ở folder nào",
+    "in ra thư mục chứa /{dir}/{fname}",
+    "đường dẫn thư mục của /{dir}/{fname}?",
+    "cắt /{dir}/{fname} lấy phần directory"
   ],
   "reference_command": "dirname /{dir}/{fname}",
   "wrong_commands": [

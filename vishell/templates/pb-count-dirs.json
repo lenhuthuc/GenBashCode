@@ -22,7 +22,13 @@
     "đếm số thư mục con trong thư mục hiện tại",
     "có bao nhiêu thư mục con ở đây?",
     "kiểm tra số lượng subfolder",
-    "cho tôi biết có mấy thư mục con"
+    "cho tôi biết có mấy thư mục con",
+    "ở thư mục hiện tại có mấy folder con?",
+    "đếm directory trực tiếp bên trong thư mục này",
+    "bao nhiêu thư mục con cấp 1 ở đây?",
+    "find các thư mục con rồi đếm",
+    "số lượng thư mục (không tính file) ở đây là bao nhiêu",
+    "cho mình con số folder con"
   ],
   "reference_command": "find . -mindepth 1 -maxdepth 1 -type d | wc -l",
   "wrong_commands": [

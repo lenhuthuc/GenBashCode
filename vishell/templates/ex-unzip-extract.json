@@ -28,9 +28,16 @@
     "giải nén pack.zip vào thư mục {outdir}",
     "unzip file pack.zip ra {outdir}",
     "giải nén giúp tôi pack.zip vào {outdir}",
-    "mở file zip pack.zip vào thư mục {outdir}"
+    "mở file zip pack.zip vào thư mục {outdir}",
+    "unzip -q pack.zip -d {outdir}",
+    "bung file pack.zip vào {outdir}",
+    "extract pack.zip sang thư mục {outdir}",
+    "giải nén các file trong pack.zip ra {outdir}",
+    "lấy nội dung pack.zip đặt vào {outdir}",
+    "mở pack.zip, file giải nén để trong {outdir}"
   ],
   "reference_command": "unzip -q pack.zip -d {outdir}",
+  "undo_command": "rm -rf {outdir} && mkdir {outdir}",
   "wrong_commands": [
     "true",
     "cp pack.zip {outdir}/"

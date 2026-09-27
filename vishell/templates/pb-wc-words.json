@@ -23,7 +23,13 @@
     "đếm số từ trong file f.txt",
     "file f.txt có bao nhiêu từ?",
     "kiểm tra số lượng từ của f.txt",
-    "cho tôi số từ trong f.txt"
+    "cho tôi số từ trong f.txt",
+    "wc -w < f.txt",
+    "f.txt có mấy từ?",
+    "word count của f.txt là bao nhiêu",
+    "đếm từ trong f.txt giúp mình",
+    "tổng số từ trong f.txt",
+    "thống kê số word của file f.txt"
   ],
   "reference_command": "wc -w < f.txt",
   "wrong_commands": [

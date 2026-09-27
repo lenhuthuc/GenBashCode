@@ -12,7 +12,14 @@
     "dừng hết các tiến trình python đang chạy",
     "kill toàn bộ process python giúp tôi",
     "tắt hết tiến trình python",
-    "killall python cho tôi"
+    "killall python cho tôi",
+    "killall python3",
+    "dừng mọi process python3",
+    "kill hết python3 đang chạy",
+    "tắt toàn bộ tiến trình python3 trên máy",
+    "kill het python3",
+    "giết tất cả process python",
+    "stop hết các script python đang chạy"
   ],
   "clarify_question_vi": "Dừng hàng loạt tiến trình có thể ảnh hưởng việc khác đang chạy — bạn có chắc muốn killall python không?",
   "reference_command": "killall python3",

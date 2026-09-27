@@ -33,6 +33,15 @@ templates:
   n_train_per_template: 20
   n_test_per_template: 5
   test_frac: 0.15
+  grpo_frac: 0.5          # of the non-test templates, this share goes to GRPO, the rest to SFT
+
+diversity:               # python -m vishell diversity (needs Java for VnCoreNLP; CPU is enough)
+  embed_model: VoVanPhuc/sup-SimCSE-VietNamese-phobert-base
+  vncorenlp_dir: models/vncorenlp
+  sem_percentile: 95      # same meaning = closer than 95% of cross-template pairs
+  max_lexical: 0.5        # TF-IDF cosine and normalised BM25 must both be <= this
+  min_good_pair_frac: 0.6 # template passes if >= 60% of its request pairs are good paraphrases
+  min_requests: 10        # and it has at least this many distinct requests
 
 verify:
   n_instances: 5
@@ -66,6 +75,7 @@ grpo:
   use_vllm: true
   num_generations: 8
   temperature: 1.0       # sampling variety is GRPO's only learning signal
+  undo_coef: 1.0         # r_undo weight in the grpo-undo arm (the grpo arm always uses 0)
   max_prompt_length: 256
   max_completion_length: 128
   lr: 1.0e-5
@@ -73,7 +83,8 @@ grpo:
   save_steps: 50
 
 evaluate:
-  systems: [base, sft_nl2bash, sft_scenarios, grpo]
+  systems: [base, sft_nl2bash, sft_scenarios, grpo, grpo_undo]
+  baseline_system: sft_scenarios       # arm A; eval_comparison.json = every other system minus this
   api_base_env: VISHELL_API_BASE       # only run "api_large" system if this env var is set
   max_new_tokens: 128
 

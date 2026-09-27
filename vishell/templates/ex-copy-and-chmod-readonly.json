@@ -28,9 +28,17 @@
     "sao chép {fname} thành {dst} rồi đặt chỉ đọc",
     "tạo bản {dst} từ {fname} và khoá quyền ghi",
     "copy {fname} sang {dst} rồi chmod chỉ đọc",
-    "nhân bản {fname} thành {dst} và làm read-only"
+    "nhân bản {fname} thành {dst} và làm read-only",
+    "tạo bản sao {dst} từ {fname}, bản sao chỉ được đọc (444)",
+    "copy {fname} thành {dst} và chmod 444 cho {dst}",
+    "cần một bản {dst} giống {fname} nhưng không cho ai sửa",
+    "nhân đôi {fname} ra {dst} rồi khoá quyền ghi của {dst}",
+    "sao chép {fname} sang {dst}, sau đó đặt {dst} ở chế độ read-only",
+    "làm bản {dst} của {fname} để lưu trữ, quyền chỉ đọc",
+    "cp {fname} {dst} xong thì bỏ quyền ghi trên {dst}"
   ],
   "reference_command": "cp {fname} {dst} && chmod 444 {dst}",
+  "undo_command": "rm -f {dst}",
   "wrong_commands": [
     "true",
     "cp {fname} {dst}"

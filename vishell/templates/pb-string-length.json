@@ -28,7 +28,13 @@
     "chuỗi '{word}' dài bao nhiêu ký tự?",
     "đếm số ký tự của chuỗi '{word}'",
     "kiểm tra độ dài chuỗi '{word}'",
-    "cho tôi biết '{word}' có mấy ký tự"
+    "cho tôi biết '{word}' có mấy ký tự",
+    "'{word}' có bao nhiêu ký tự?",
+    "đếm độ dài chuỗi {word}",
+    "length của '{word}' là bao nhiêu",
+    "printf '{word}' | wc -c",
+    "chuỗi {word} dài mấy chữ cái",
+    "tính số ký tự trong '{word}'"
   ],
   "reference_command": "printf '{word}' | wc -c",
   "wrong_commands": [

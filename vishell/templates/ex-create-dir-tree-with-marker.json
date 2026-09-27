@@ -28,9 +28,16 @@
     "tạo hai thư mục {a} và {b}, mỗi thư mục có file {marker}",
     "tạo cấu trúc thư mục {a}, {b} kèm file {marker} bên trong",
     "làm ơn tạo folder {a} và {b}, thêm file {marker} vào mỗi cái",
-    "tạo {a}/{marker} và {b}/{marker}"
+    "tạo {a}/{marker} và {b}/{marker}",
+    "tạo package {a} và {b}, mỗi cái có sẵn file {marker}",
+    "mkdir {a} {b} rồi touch {marker} trong từng thư mục",
+    "dựng khung hai thư mục {a}, {b}, bên trong mỗi thư mục có {marker}",
+    "cần hai folder {a} và {b}, đặt file {marker} vào cả hai",
+    "khởi tạo {a} và {b} với file đánh dấu {marker}",
+    "mình đang setup project, tạo giúp {a}/ và {b}/ có {marker} bên trong"
   ],
   "reference_command": "mkdir -p {a} {b} && touch {a}/{marker} {b}/{marker}",
+  "undo_command": "rm -rf {a} {b}",
   "wrong_commands": [
     "true",
     "mkdir -p {a} {b}"

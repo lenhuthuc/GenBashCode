@@ -12,7 +12,13 @@
     "gửi webhook thông báo đến hệ thống bên ngoài",
     "gọi webhook báo trạng thái build",
     "gửi notification qua webhook giúp tôi",
-    "trigger webhook thông báo hoàn tất"
+    "trigger webhook thông báo hoàn tất",
+    "curl -X POST http://hooks.example.com/notify",
+    "bắn webhook sang hooks.example.com",
+    "báo cho hệ thống ngoài biết đã xong qua webhook",
+    "post thông báo tới webhook notify",
+    "gửi sự kiện hoàn tất tới webhook bên ngoài",
+    "notify qua webhook giúp mình"
   ],
   "clarify_question_vi": "Gửi webhook sẽ gọi ra hệ thống ngoài và không thể thu hồi — bạn xác nhận muốn gửi không?",
   "reference_command": "curl -X POST http://hooks.example.com/notify",

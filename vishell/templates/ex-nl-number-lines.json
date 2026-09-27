@@ -28,9 +28,16 @@
     "đánh số dòng cho f.txt, lưu ra {outname}",
     "thêm số thứ tự vào từng dòng f.txt ra {outname}",
     "nl file f.txt ghi kết quả vào {outname}",
-    "đánh số các dòng của f.txt thành {outname}"
+    "đánh số các dòng của f.txt thành {outname}",
+    "đánh số thứ tự từng dòng của f.txt (kể cả dòng trống), ghi vào {outname}",
+    "nl -ba f.txt > {outname}",
+    "tạo {outname} là f.txt có kèm số dòng",
+    "thêm cột số dòng cho f.txt, xuất ra {outname}",
+    "cần bản f.txt có số dòng ở đầu, lưu thành {outname}",
+    "number các dòng trong f.txt rồi lưu sang {outname}"
   ],
   "reference_command": "nl -ba f.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cp f.txt {outname}"

@@ -28,7 +28,13 @@
     "kiểm tra giá trị biến môi trường {name}",
     "biến {name} đang được đặt là gì?",
     "cho tôi xem giá trị của {name}",
-    "in ra biến môi trường {name}"
+    "in ra biến môi trường {name}",
+    "{name} đang có giá trị bao nhiêu?",
+    "printenv {name}",
+    "xem biến môi trường {name} được set gì",
+    "echo biến {name} ra cho mình",
+    "đọc giá trị env {name}",
+    "kiểm tra {name} trong environment"
   ],
   "reference_command": "{name}={value} bash -c 'printenv {name}'",
   "wrong_commands": [

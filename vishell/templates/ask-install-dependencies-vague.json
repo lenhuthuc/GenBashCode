@@ -12,7 +12,13 @@
     "cài đặt mấy thư viện cần thiết giúp tôi",
     "cài dependencies cho project này",
     "setup môi trường giúp tôi",
-    "cài đặt các gói cần dùng"
+    "cài đặt các gói cần dùng",
+    "cài thư viện đi",
+    "setup dependencies giúp",
+    "cài mấy cái cần thiết cho project",
+    "cài môi trường để chạy được",
+    "install hết dependencies",
+    "chuẩn bị môi trường cho project"
   ],
   "clarify_question_vi": "Bạn cần cài những package cụ thể nào (có file requirements/package.json không), và cài phạm vi local hay toàn hệ thống?",
   "reference_command": "",

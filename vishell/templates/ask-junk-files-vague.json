@@ -12,7 +12,13 @@
     "xử lý mấy file rác trong này đi",
     "dọn file rác giúp tôi",
     "có mấy file thừa xoá giúp tôi",
-    "clear giúp tôi mấy file không cần"
+    "clear giúp tôi mấy file không cần",
+    "xoá file rác đi",
+    "dọn rác trong này",
+    "mấy file thừa, xử lý giúp",
+    "clear rác đi",
+    "bỏ mấy file linh tinh đi",
+    "dọn sạch file vô dụng"
   ],
   "clarify_question_vi": "Bạn coi những file/định dạng nào là 'rác' cần xoá?",
   "reference_command": "",

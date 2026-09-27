@@ -12,7 +12,13 @@
     "tăng dung lượng ổ đĩa lên giúp tôi",
     "làm sao có thêm chỗ trống trên đĩa",
     "ổ đĩa đầy quá, giải quyết giúp tôi",
-    "cần thêm dung lượng, xử lý giúp"
+    "cần thêm dung lượng, xử lý giúp",
+    "hết dung lượng rồi, xử lý đi",
+    "giải phóng ổ đĩa giúp",
+    "cần thêm chỗ trống",
+    "ổ đầy, làm gì đó đi",
+    "tăng không gian đĩa hộ mình",
+    "làm sao để còn chỗ trống, xử lý giúp"
   ],
   "clarify_question_vi": "Bạn muốn giải phóng dung lượng bằng cách xoá file cụ thể nào, hay đang muốn resize/gắn thêm ổ đĩa?",
   "reference_command": "",

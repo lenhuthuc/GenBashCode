@@ -28,9 +28,16 @@
     "tìm và xoá tất cả file .{ext}",
     "xoá mọi file .{ext} bằng find",
     "dùng find để xoá hết file .{ext}",
-    "tìm file .{ext} rồi xoá luôn"
+    "tìm file .{ext} rồi xoá luôn",
+    "xoá hết file đuôi .{ext}, các file khác giữ nguyên",
+    "dọn sạch file .{ext} trong thư mục này",
+    "find -name '*.{ext}' -delete giúp mình",
+    "mấy file .{ext} không cần nữa, xoá đi",
+    "remove toàn bộ file *.{ext}",
+    "tìm mọi file .{ext} ở thư mục hiện tại rồi xoá"
   ],
   "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" -delete",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "find . -maxdepth 1 -name \"*.txt\" -delete"

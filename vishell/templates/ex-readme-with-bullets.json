@@ -28,9 +28,16 @@
     "tạo file README.md với tiêu đề '{title}' và {n} gạch đầu dòng {item}",
     "viết README.md gồm heading '{title}' và {n} bullet {item}",
     "tạo README.md cho project '{title}' với {n} dòng {item}",
-    "sinh README.md tiêu đề '{title}', liệt kê {n} {item}"
+    "sinh README.md tiêu đề '{title}', liệt kê {n} {item}",
+    "tạo README.md: dòng đầu '# {title}', sau đó {n} dòng '- {item} i'",
+    "viết README cho '{title}' gồm {n} gạch đầu dòng {item} đánh số",
+    "sinh README.md có tiêu đề {title} và danh sách {n} {item}",
+    "cần README.md với heading '{title}' cùng {n} mục {item} 1..{n}",
+    "làm file README.md tiêu đề '{title}', {n} bullet '{item} số'",
+    "tạo README.md markdown: # {title} rồi liệt kê {item} 1 đến {n}"
   ],
   "reference_command": "{ echo '# {title}'; for i in $(seq 1 {n}); do echo \"- {item} $i\"; done; } > README.md",
+  "undo_command": "rm -f README.md",
   "wrong_commands": [
     "true",
     "echo '# {title}' > README.md"

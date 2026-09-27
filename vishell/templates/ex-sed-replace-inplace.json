@@ -28,9 +28,16 @@
     "thay thế '{old_word}' bằng '{new_word}' trong file f.txt",
     "sửa toàn bộ '{old_word}' thành '{new_word}' trong f.txt",
     "đổi '{old_word}' thành '{new_word}' trực tiếp trong file f.txt",
-    "tìm và thay thế '{old_word}' bằng '{new_word}' trong f.txt"
+    "tìm và thay thế '{old_word}' bằng '{new_word}' trong f.txt",
+    "sed -i 's/{old_word}/{new_word}/g' f.txt",
+    "trong f.txt, chỗ nào có {old_word} thì đổi thành {new_word}",
+    "replace tất cả {old_word} bằng {new_word} trong f.txt",
+    "thay {old_word} -> {new_word} trong toàn bộ f.txt",
+    "f.txt còn chữ {old_word}, sửa hết sang {new_word}",
+    "đổi mọi lần xuất hiện của '{old_word}' thành '{new_word}' ở f.txt"
   ],
   "reference_command": "sed -i 's/{old_word}/{new_word}/g' f.txt",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "sed 's/{old_word}/{new_word}/g' f.txt"

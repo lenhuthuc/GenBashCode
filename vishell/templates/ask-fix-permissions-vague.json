@@ -12,7 +12,13 @@
     "sửa lại quyền file cho đúng giúp tôi",
     "quyền file này sai, sửa lại đi",
     "chỉnh permission cho hợp lý",
-    "sửa quyền truy cập giúp tôi"
+    "sửa quyền truy cập giúp tôi",
+    "sửa quyền đi",
+    "permission sai, fix giúp",
+    "chỉnh quyền cho đúng",
+    "phân quyền lại giùm",
+    "set lại quyền truy cập cho hợp lý",
+    "quyền bị lung tung, sửa lại"
   ],
   "clarify_question_vi": "Bạn muốn sửa quyền của file/thư mục nào, và mức quyền mong muốn là gì (vd 644, 755)?",
   "reference_command": "",

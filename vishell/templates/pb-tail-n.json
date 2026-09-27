@@ -28,7 +28,13 @@
     "cho tôi xem {n} dòng cuối của f.txt",
     "hiển thị {n} dòng cuối cùng trong f.txt",
     "in ra {n} dòng cuối của file f.txt",
-    "xem {n} dòng cuối f.txt"
+    "xem {n} dòng cuối f.txt",
+    "tail -n {n} f.txt",
+    "show {n} dòng cuối f.txt",
+    "f.txt kết thúc bằng gì? cho xem {n} dòng cuối",
+    "in {n} dòng dưới cùng của f.txt",
+    "đọc {n} dòng cuối cùng file f.txt",
+    "hiện {n} dòng cuối của f.txt"
   ],
   "reference_command": "tail -n {n} f.txt",
   "wrong_commands": [

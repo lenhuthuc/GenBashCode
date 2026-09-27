@@ -12,7 +12,13 @@
     "chạy lại pipeline giúp tôi",
     "chạy lại toàn bộ quy trình",
     "rerun cái job đó đi",
-    "chạy lại job xử lý dữ liệu"
+    "chạy lại job xử lý dữ liệu",
+    "chạy lại đi",
+    "rerun giúp mình",
+    "chạy lại quy trình đó",
+    "làm lại job lúc nãy",
+    "trigger lại cái pipeline",
+    "chạy lại từ đầu giùm"
   ],
   "clarify_question_vi": "Bạn muốn chạy lại script/pipeline nào, và có cần chạy lại từ đầu hay chỉ bước bị lỗi?",
   "reference_command": "",

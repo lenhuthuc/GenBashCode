@@ -28,9 +28,16 @@
     "lấy {n} dòng đầu của full.txt lưu thành {outname}",
     "tạo file {outname} chứa {n} dòng đầu của full.txt",
     "trích {n} dòng đầu tiên của full.txt ra file {outname}",
-    "ghi {n} dòng đầu full.txt vào {outname}"
+    "ghi {n} dòng đầu full.txt vào {outname}",
+    "copy {n} dòng đầu tiên của full.txt sang {outname}",
+    "head -n {n} full.txt rồi lưu vào {outname}",
+    "cần file {outname} chỉ gồm {n} dòng đầu full.txt",
+    "xem trước {n} dòng đầu của full.txt, ghi ra {outname}",
+    "cắt {n} dòng đầu của full.txt sang file mới {outname}",
+    "tạo {outname} là {n} dòng đầu của full.txt"
   ],
   "reference_command": "head -n {n} full.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "tail -n {n} full.txt > {outname}"

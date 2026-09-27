@@ -28,9 +28,17 @@
     "tìm các dòng chỉ có trong a.txt (không có trong b.txt) rồi lưu vào {outname}",
     "so sánh a.txt và b.txt, lưu phần riêng của a.txt vào {outname}",
     "lấy nội dung a.txt không trùng với b.txt, ghi vào {outname}",
-    "diff a.txt b.txt, phần chỉ ở a.txt lưu ra {outname}"
+    "diff a.txt b.txt, phần chỉ ở a.txt lưu ra {outname}",
+    "những dòng nào có trong a.txt mà b.txt không có? ghi ra {outname}",
+    "lọc các dòng riêng của a.txt so với b.txt, lưu vào {outname}",
+    "dùng comm lấy phần chỉ xuất hiện ở a.txt rồi ghi vào {outname}",
+    "xuất danh sách dòng của a.txt không nằm trong b.txt ra file {outname}",
+    "cần file {outname} chứa các dòng a.txt có nhưng b.txt thiếu",
+    "tìm phần khác biệt một chiều từ a.txt sang b.txt, lưu kết quả ở {outname}",
+    "hai file a.txt và b.txt đã sort, lấy dòng unique của a.txt vào {outname}"
   ],
   "reference_command": "comm -23 a.txt b.txt > {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cp a.txt {outname}"

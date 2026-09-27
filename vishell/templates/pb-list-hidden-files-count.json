@@ -28,7 +28,13 @@
     "đếm số file ẩn trong thư mục hiện tại",
     "có bao nhiêu file ẩn (bắt đầu bằng dấu chấm) ở đây?",
     "kiểm tra số lượng dotfile",
-    "tìm file ẩn và đếm giúp tôi"
+    "tìm file ẩn và đếm giúp tôi",
+    "mấy file ẩn ở đây?",
+    "đếm file bắt đầu bằng dấu chấm trong thư mục này",
+    "bao nhiêu dotfile ở thư mục hiện tại",
+    "find file ẩn rồi đếm",
+    "số lượng file hidden là bao nhiêu",
+    "cho mình biết có bao nhiêu file ẩn (không tính thư mục)"
   ],
   "reference_command": "find . -maxdepth 1 -name \".*\" -type f | wc -l",
   "wrong_commands": [

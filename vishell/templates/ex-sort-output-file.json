@@ -28,9 +28,16 @@
     "sắp xếp raw.txt rồi lưu thành {outname}",
     "sort file raw.txt và ghi kết quả vào {outname}",
     "tạo file {outname} chứa nội dung raw.txt đã sắp xếp",
-    "sắp xếp giúp tôi raw.txt ra {outname}"
+    "sắp xếp giúp tôi raw.txt ra {outname}",
+    "sort raw.txt -o {outname}",
+    "sắp xếp các dòng raw.txt theo thứ tự chữ cái, lưu vào {outname}",
+    "cần bản đã sort của raw.txt tên {outname}",
+    "xếp raw.txt theo alphabet rồi ghi ra {outname}",
+    "tạo {outname} = raw.txt đã sắp xếp, giữ raw.txt nguyên",
+    "order lại các dòng của raw.txt, kết quả ở {outname}"
   ],
   "reference_command": "sort raw.txt -o {outname}",
+  "undo_command": "rm -f {outname}",
   "wrong_commands": [
     "true",
     "cp raw.txt {outname}"

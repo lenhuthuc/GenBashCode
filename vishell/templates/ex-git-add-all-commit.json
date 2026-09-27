@@ -28,9 +28,16 @@
     "commit tất cả file .{ext} với message '{msg}'",
     "git add hết rồi commit '{msg}'",
     "add toàn bộ thay đổi và commit '{msg}'",
-    "commit mọi file mới với nội dung '{msg}'"
+    "commit mọi file mới với nội dung '{msg}'",
+    "stage toàn bộ file rồi commit với message '{msg}'",
+    "commit hết các file .{ext} vừa tạo, message '{msg}'",
+    "git add -A xong commit '{msg}'",
+    "lưu mọi thay đổi vào git, commit message là '{msg}'",
+    "đưa tất cả file mới vào repo bằng một commit '{msg}'",
+    "mình muốn working tree sạch, commit toàn bộ với '{msg}'"
   ],
   "reference_command": "git add -A && git commit -q -m '{msg}'",
+  "undo_command": "git update-ref -d HEAD",
   "wrong_commands": [
     "true",
     "git add f_1.{ext} && git commit -q -m '{msg}'"

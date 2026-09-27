@@ -12,7 +12,13 @@
     "khởi động lại máy giúp tôi",
     "reboot lại hệ thống",
     "restart lại toàn bộ máy tính",
-    "khởi động lại server đi"
+    "khởi động lại server đi",
+    "reboot",
+    "khởi động lại máy ngay",
+    "restart máy chủ đi",
+    "reboot server giúp mình",
+    "cho máy restart lại",
+    "khởi động lại hệ điều hành"
   ],
   "clarify_question_vi": "Khởi động lại máy sẽ ngắt mọi tiến trình đang chạy — bạn có chắc chắn muốn reboot không?",
   "reference_command": "reboot",

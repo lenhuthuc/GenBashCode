@@ -28,9 +28,17 @@
     "đổi quyền file {fname} thành {mode}",
     "cấp quyền {mode} cho {fname}",
     "chmod {fname} thành {mode} giúp tôi",
-    "đặt permission {mode} cho file {fname}"
+    "đặt permission {mode} cho file {fname}",
+    "set quyền {mode} cho {fname}",
+    "cho file {fname} quyền {mode} giúp mình",
+    "thay permission của {fname} sang {mode}",
+    "{fname} đang là 644, đổi thành {mode}",
+    "chỉnh mode của {fname} về {mode}",
+    "tôi cần {fname} có quyền {mode} để chạy",
+    "phân quyền {mode} cho script {fname}"
   ],
   "reference_command": "chmod {mode} {fname}",
+  "undo_command": "chmod 644 {fname}",
   "wrong_commands": [
     "true",
     "chmod 644 {fname}"

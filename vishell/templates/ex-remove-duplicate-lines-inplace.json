@@ -28,9 +28,16 @@
     "loại bỏ dòng trùng lặp trong f.txt (sửa trực tiếp)",
     "xoá dòng lặp trong f.txt luôn tại chỗ",
     "dedupe file f.txt giúp tôi",
-    "làm sạch f.txt, bỏ dòng trùng"
+    "làm sạch f.txt, bỏ dòng trùng",
+    "xoá các dòng bị lặp trong f.txt, ghi đè luôn f.txt",
+    "sort -u f.txt và lưu đè vào f.txt",
+    "f.txt có nhiều dòng trùng, giữ mỗi dòng một lần thôi",
+    "bỏ trùng trong f.txt ngay tại file",
+    "unique hoá nội dung f.txt",
+    "loại bỏ bản ghi trùng lặp trong f.txt, sửa trực tiếp file"
   ],
   "reference_command": "sort -u f.txt -o f.txt",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "sort f.txt -o f.txt"

@@ -28,9 +28,16 @@
     "tạo file {fname} chứa {n} biến môi trường {prefix}_i=i",
     "sinh file {fname} với {n} dòng {prefix}",
     "tạo giúp tôi {fname} chứa {n} entry {prefix}",
-    "viết {n} biến {prefix} vào file {fname}"
+    "viết {n} biến {prefix} vào file {fname}",
+    "tạo {fname} có {n} dòng {prefix}_1=1 đến {prefix}_{n}={n}",
+    "sinh {n} biến môi trường {prefix}_i=i và ghi vào {fname}",
+    "viết file cấu hình {fname} gồm {n} biến {prefix}",
+    "cần file env {fname} khai báo {prefix}_1 tới {prefix}_{n}",
+    "ghi {n} cặp {prefix}_số=số vào file {fname}",
+    "setup {fname} với {n} biến {prefix} đánh số từ 1"
   ],
   "reference_command": "for i in $(seq 1 {n}); do echo {prefix}_$i=$i >> {fname}; done",
+  "undo_command": "rm -f {fname}",
   "wrong_commands": [
     "true",
     "touch {fname}"

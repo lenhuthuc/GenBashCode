@@ -28,7 +28,13 @@
     "so sánh a.{ext} và b.{ext} khác nhau mấy dòng",
     "kiểm tra số dòng khác biệt giữa a.{ext} và b.{ext}",
     "diff hai file a.{ext} b.{ext} rồi đếm số dòng thay đổi",
-    "cho tôi biết a.{ext} và b.{ext} khác nhau ra sao"
+    "cho tôi biết a.{ext} và b.{ext} khác nhau ra sao",
+    "b.{ext} có bao nhiêu dòng khác với a.{ext}?",
+    "diff a.{ext} b.{ext} rồi đếm dòng bắt đầu bằng >",
+    "đếm số dòng mới ở b.{ext} so với a.{ext}",
+    "a.{ext} và b.{ext} lệch nhau mấy dòng",
+    "so a.{ext} với b.{ext}, cho mình số dòng thay đổi",
+    "thống kê số dòng khác biệt từ a.{ext} sang b.{ext}"
   ],
   "reference_command": "diff a.{ext} b.{ext} | grep -c '^>'",
   "wrong_commands": [

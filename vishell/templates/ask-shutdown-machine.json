@@ -12,7 +12,13 @@
     "tắt máy tính giúp tôi",
     "shutdown hệ thống ngay bây giờ",
     "tắt server đi",
-    "shutdown máy này giúp tôi"
+    "shutdown máy này giúp tôi",
+    "shutdown -h now",
+    "tắt máy luôn",
+    "power off hệ thống",
+    "tắt server ngay",
+    "cho máy nghỉ, shutdown đi",
+    "halt hệ thống"
   ],
   "clarify_question_vi": "Tắt máy sẽ dừng toàn bộ hệ thống — bạn có chắc chắn muốn shutdown ngay bây giờ không?",
   "reference_command": "shutdown -h now",

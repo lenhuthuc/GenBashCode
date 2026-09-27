@@ -12,7 +12,13 @@
     "gửi request đến API bên ngoài để deploy",
     "gọi API deploy production giúp tôi",
     "gửi POST request kích hoạt deploy",
-    "trigger deploy qua API"
+    "trigger deploy qua API",
+    "curl -X POST http://api.example.com/deploy",
+    "bắn POST sang api.example.com/deploy",
+    "kích hoạt deploy bằng cách gọi API",
+    "deploy lên production qua endpoint /deploy",
+    "gửi lệnh deploy tới server API bên ngoài",
+    "call API để triển khai bản mới"
   ],
   "clarify_question_vi": "Gọi API deploy production là thao tác không thể hoàn tác — bạn có chắc chắn muốn gửi request này không?",
   "reference_command": "curl -X POST http://api.example.com/deploy",

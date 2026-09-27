@@ -28,7 +28,13 @@
     "kiểm tra trạng thái git của thư mục này",
     "xem git status hiện tại",
     "repo này có thay đổi gì chưa commit không?",
-    "git đang ở trạng thái nào?"
+    "git đang ở trạng thái nào?",
+    "git status --porcelain",
+    "working tree có sạch không?",
+    "có file nào sửa mà chưa commit không?",
+    "xem repo có thay đổi đang chờ commit",
+    "đếm số file thay đổi chưa commit",
+    "repo đang clean hay dirty?"
   ],
   "reference_command": "git status --porcelain | wc -l",
   "wrong_commands": [

@@ -28,9 +28,16 @@
     "xoá khoảng trắng cuối dòng trong f.txt",
     "loại bỏ trailing whitespace của f.txt",
     "làm sạch khoảng trắng thừa cuối mỗi dòng f.txt",
-    "cắt bớt space cuối dòng trong f.txt"
+    "cắt bớt space cuối dòng trong f.txt",
+    "xoá hết dấu cách thừa ở cuối mỗi dòng trong f.txt",
+    "trim khoảng trắng cuối dòng f.txt, sửa trực tiếp",
+    "f.txt có space thừa cuối dòng, dọn đi",
+    "remove trailing spaces trong f.txt",
+    "sed bỏ khoảng trắng cuối dòng của f.txt",
+    "làm gọn f.txt: không để khoảng trắng ở cuối dòng nào"
   ],
   "reference_command": "sed -i 's/[ \\t]*$//' f.txt",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "cat f.txt"

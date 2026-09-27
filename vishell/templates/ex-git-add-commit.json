@@ -28,9 +28,17 @@
     "commit file {fname} với message '{msg}'",
     "thêm và commit {fname}, nội dung message '{msg}'",
     "git add {fname} rồi commit với '{msg}'",
-    "lưu thay đổi {fname} vào git với message '{msg}'"
+    "lưu thay đổi {fname} vào git với message '{msg}'",
+    "stage {fname} rồi commit, message '{msg}'",
+    "commit riêng file {fname} với lời nhắn '{msg}'",
+    "đưa {fname} vào git và commit '{msg}'",
+    "tạo commit đầu tiên chứa {fname}, message '{msg}'",
+    "git add rồi commit {fname} ('{msg}')",
+    "commit file {fname} message {msg}",
+    "lưu {fname} vào lịch sử git với commit '{msg}'"
   ],
   "reference_command": "git add {fname} && git commit -q -m '{msg}'",
+  "undo_command": "git update-ref -d HEAD",
   "wrong_commands": [
     "true",
     "git add {fname}"

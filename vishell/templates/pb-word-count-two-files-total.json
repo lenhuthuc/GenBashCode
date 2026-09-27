@@ -28,7 +28,13 @@
     "đếm tổng số từ trong a.{ext} và b.{ext}",
     "tổng số từ của hai file a.{ext}, b.{ext} là bao nhiêu?",
     "cộng dồn số từ trong a.{ext} và b.{ext}",
-    "kiểm tra tổng từ của hai file này"
+    "kiểm tra tổng từ của hai file này",
+    "cat a.{ext} b.{ext} | wc -w",
+    "a.{ext} và b.{ext} cộng lại có mấy từ?",
+    "đếm tổng từ của hai file a.{ext}, b.{ext}",
+    "word count gộp của a.{ext} với b.{ext}",
+    "cả a.{ext} lẫn b.{ext} có tổng bao nhiêu từ",
+    "thống kê tổng số từ trong a.{ext} và b.{ext}"
   ],
   "reference_command": "cat a.{ext} b.{ext} | wc -w",
   "wrong_commands": [

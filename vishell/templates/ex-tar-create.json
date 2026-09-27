@@ -28,9 +28,16 @@
     "nén thư mục {dirname} thành {archive}",
     "tạo file nén {archive} từ thư mục {dirname}",
     "đóng gói {dirname} thành {archive}",
-    "nén giúp tôi {dirname} ra {archive}"
+    "nén giúp tôi {dirname} ra {archive}",
+    "tar czf {archive} {dirname}",
+    "đóng gói thư mục {dirname} thành file tar.gz tên {archive}",
+    "backup {dirname} thành {archive}",
+    "tạo archive {archive} từ {dirname}",
+    "nén {dirname} bằng tar gzip, output {archive}",
+    "làm file {archive} chứa toàn bộ {dirname}"
   ],
   "reference_command": "tar czf {archive} {dirname}",
+  "undo_command": "rm -f {archive}",
   "wrong_commands": [
     "true",
     "touch {archive}"

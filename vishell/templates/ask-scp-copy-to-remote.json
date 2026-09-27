@@ -12,7 +12,14 @@
     "copy file này lên máy chủ từ xa qua scp",
     "scp file lên remote server giúp tôi",
     "gửi file qua scp đến server khác",
-    "đẩy file này sang máy chủ khác"
+    "đẩy file này sang máy chủ khác",
+    "scp file.txt user@remote:/data/",
+    "gửi file.txt sang remote:/data",
+    "copy file.txt lên máy remote",
+    "chuyển file.txt qua server khác bằng scp",
+    "scp file.txt len remote",
+    "đẩy file.txt vào /data trên máy remote",
+    "upload file.txt lên remote bằng scp"
   ],
   "clarify_question_vi": "Gửi file qua mạng đến server khác là thao tác không thể thu hồi — bạn có chắc muốn scp không?",
   "reference_command": "scp file.txt user@remote:/data/",

@@ -28,9 +28,16 @@
     "xoá các thư mục rỗng",
     "dọn dẹp mọi thư mục trống trong thư mục hiện tại",
     "xoá hết folder rỗng giúp tôi",
-    "tìm và xoá thư mục không có nội dung"
+    "tìm và xoá thư mục không có nội dung",
+    "xoá các folder trống ở thư mục hiện tại, folder có file thì giữ",
+    "remove mấy thư mục empty đi",
+    "dọn các thư mục không chứa gì",
+    "tìm thư mục rỗng ngay trong thư mục này rồi xoá",
+    "chỉ xoá thư mục trống, đừng đụng thư mục có dữ liệu",
+    "clean up empty directories ở đây"
   ],
   "reference_command": "find . -mindepth 1 -maxdepth 1 -type d -empty -delete",
+  "undo_command": "",
   "wrong_commands": [
     "true",
     "find . -mindepth 1 -maxdepth 1 -type d | xargs echo"

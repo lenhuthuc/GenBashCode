@@ -23,7 +23,13 @@
     "đếm số file .{ext} trong thư mục hiện tại",
     "có bao nhiêu file .{ext} ở đây?",
     "tìm và đếm file đuôi .{ext}",
-    "kiểm tra số lượng file .{ext}"
+    "kiểm tra số lượng file .{ext}",
+    "mấy file đuôi .{ext} trong thư mục này?",
+    "find -name '*.{ext}' rồi đếm",
+    "đếm file *.{ext} ở thư mục hiện tại",
+    "số lượng file .{ext} là bao nhiêu",
+    "thống kê file .{ext} đang có",
+    "có tất cả bao nhiêu file .{ext} ở đây?"
   ],
   "reference_command": "find . -maxdepth 1 -name \"*.{ext}\" | wc -l",
   "wrong_commands": [

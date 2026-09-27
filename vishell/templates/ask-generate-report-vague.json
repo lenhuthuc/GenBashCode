@@ -12,7 +12,13 @@
     "tạo báo cáo giúp tôi",
     "làm giúp tôi một cái report",
     "xuất báo cáo từ dữ liệu này",
-    "tạo report tổng hợp giúp tôi"
+    "tạo report tổng hợp giúp tôi",
+    "làm report đi",
+    "cần một bản báo cáo",
+    "tổng hợp báo cáo giúp",
+    "xuất report hộ mình",
+    "viết báo cáo từ đống dữ liệu này",
+    "generate report giúp"
   ],
   "clarify_question_vi": "Bạn muốn báo cáo dựa trên dữ liệu/file nào, và cần những nội dung/định dạng gì?",
   "reference_command": "",

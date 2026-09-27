@@ -28,7 +28,13 @@
     "đếm số symlink trong thư mục hiện tại",
     "có bao nhiêu liên kết mềm (symlink) ở đây?",
     "kiểm tra số lượng symbolic link",
-    "tìm và đếm symlink giúp tôi"
+    "tìm và đếm symlink giúp tôi",
+    "mấy file ở đây là symlink?",
+    "find -type l rồi đếm",
+    "đếm số link mềm trong thư mục này",
+    "có bao nhiêu shortcut dạng symbolic link ở đây",
+    "thống kê số symlink ở thư mục hiện tại",
+    "cho mình biết số lượng liên kết tượng trưng"
   ],
   "reference_command": "find . -maxdepth 1 -type l | wc -l",
   "wrong_commands": [

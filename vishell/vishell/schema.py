@@ -34,6 +34,7 @@ class Template(BaseModel):
     ask_reason: AskReason = None
     clarify_question_vi: Optional[str] = None
     reference_command: str = ""
+    undo_command: str = ""  # restores the workspace after reference_command; "" = nothing to undo / not possible
     wrong_commands: list[str] = Field(default_factory=list)
     check_type: CheckType
     check_expected: str
@@ -63,6 +64,7 @@ class Instance(BaseModel):
     ask_reason: AskReason = None
     clarify_question_vi: Optional[str] = None
     reference_command: str = ""
+    undo_command: str = ""
     wrong_commands: list[str] = Field(default_factory=list)
     check_type: CheckType
     check_expected: str
@@ -71,6 +73,7 @@ class Instance(BaseModel):
 class ModelOutput(BaseModel):
     action: Action
     command: str = ""
+    undo: str = ""  # bash that puts the workspace back as it was before `command`
     question: str = ""
 
 

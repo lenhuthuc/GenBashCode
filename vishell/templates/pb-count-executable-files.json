@@ -28,7 +28,13 @@
     "đếm số file có quyền thực thi trong thư mục hiện tại",
     "có bao nhiêu file executable ở đây?",
     "kiểm tra số lượng file được cấp quyền chạy",
-    "tìm file thực thi được và đếm giúp tôi"
+    "tìm file thực thi được và đếm giúp tôi",
+    "mấy file ở đây chạy được (có quyền x)?",
+    "đếm file có bit thực thi cho owner",
+    "find file có quyền execute rồi đếm",
+    "bao nhiêu script có quyền chạy trong thư mục này",
+    "thống kê số file executable",
+    "có bao nhiêu file mình chạy trực tiếp được?"
   ],
   "reference_command": "find . -maxdepth 1 -type f -perm -u+x | wc -l",
   "wrong_commands": [

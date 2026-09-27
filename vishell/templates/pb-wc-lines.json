@@ -16,7 +16,13 @@
     "đếm số dòng của file f.txt",
     "file f.txt có bao nhiêu dòng?",
     "cho tôi biết số dòng trong f.txt",
-    "kiểm tra số dòng của f.txt"
+    "kiểm tra số dòng của f.txt",
+    "wc -l < f.txt",
+    "f.txt dài bao nhiêu dòng?",
+    "đếm line trong f.txt",
+    "số dòng f.txt là bao nhiêu",
+    "cho mình line count của f.txt",
+    "thống kê số dòng của file f.txt"
   ],
   "reference_command": "wc -l < f.txt",
   "wrong_commands": [

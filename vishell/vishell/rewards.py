@@ -17,7 +17,7 @@ from .classify import classify
 from .schema import Instance, ModelOutput, parse_output
 
 Row = str  # "execute" | "probe" | "ask_ambiguous" | "ask_irreversible"
-ExecFn = Callable[[str], dict]  # command -> {"rc", "check_passed", "fs_changed", ...}
+ExecFn = Callable[[str, str], dict]  # (command, undo) -> {"rc", "check_passed", "fs_changed", "undo_score", ...}
 
 # --- fixed-value cells (no command is ever run for these) --------------------------
 _FIXED: dict[tuple[Row, str], float] = {
@@ -64,6 +64,18 @@ _RUN_CELL: dict[tuple[Row, str], Callable[[dict], float]] = {
     ("ask_irreversible", "probe"): _ask_row_probe,
 }
 
+def undo_reward(res: dict) -> float:
+    """(2u - 1) - lost, in [-2, 1]: u = Jaccard of the workspace before the command vs after
+    its undo, lost = share of pre-existing entries gone/altered. Only for an execute that changed
+    the workspace (nothing to undo otherwise, and a free bonus there would pull probe/ask rows
+    towards execute); capped at 0 when the task failed, so a no-op can't farm it."""
+    if not res.get("fs_changed") or "undo_score" not in res:
+        return 0.0
+    r = (2 * res["undo_score"] - 1) - res["undo_lost"]
+    return r if res["check_passed"] else min(r, 0.0)
+
+
+BLOCKED_UNDO_PENALTY = -1.0
 BLOCKED_PENALTY = -1.0
 BLOCKED_PENALTY_IRREVERSIBLE = -2.0  # "ô không đảo ngược vẫn -2.0"
 
@@ -92,6 +104,7 @@ class ScoreResult:
     ran_command: bool = False
     exec_result: Optional[dict] = None
     detail: str = ""
+    r_undo: float = 0.0
 
 
 def score_decision(
@@ -118,13 +131,17 @@ def score_decision(
         val = _FIXED[(row, action)]
         return ScoreResult(0.0, val * coef, val * coef, row, action, False, None, "fixed cell")
 
-    res = exec_fn(output.command)
+    undo_blocked = action == "execute" and bool(output.undo.strip()) and classify(output.undo).category == "blocked"
+    res = exec_fn(output.command, "" if undo_blocked or action != "execute" else output.undo)
     val = cell(res) * coef
-    return ScoreResult(0.0, val, val, row, action, True, res, "ran in sandbox")
+    result = ScoreResult(0.0, val, val, row, action, True, res, "ran in sandbox")
+    if action == "execute":
+        result.r_undo = BLOCKED_UNDO_PENALTY if undo_blocked else undo_reward(res)
+    return result
 
 
 def score(
-    instance: Instance, raw_text: str, exec_fn: ExecFn, coef: float = 1.0
+    instance: Instance, raw_text: str, exec_fn: ExecFn, coef: float = 1.0, undo_coef: float = 0.0
 ) -> ScoreResult:
     """Full reward: r_format first (bad JSON short-circuits everything else to 0)."""
     output, err = parse_output(raw_text)
@@ -134,7 +151,7 @@ def score(
     row = row_for(instance.expected_action, instance.reversible, instance.ask_reason)
     result = score_decision(row, output, exec_fn, coef)
     result.r_format = 0.0
-    result.total = result.r_decision
+    result.total = result.r_decision + undo_coef * result.r_undo
     return result
 
 
@@ -142,9 +159,9 @@ def make_exec_fn(instance: Instance, backend, timeout: float = 10) -> ExecFn:
     """Build the ExecFn `score()` needs from an Instance and a sandbox backend
     (LocalBackend/DockerBackend from sandbox.backends)."""
 
-    def _run(command: str) -> dict:
+    def _run(command: str, undo: str = "") -> dict:
         return backend.run({
-            "setup": instance.setup, "command": command,
+            "setup": instance.setup, "command": command, "undo": undo,
             "check_type": instance.check_type, "check_expected": instance.check_expected,
             "timeout": timeout,
         })
@@ -153,9 +170,10 @@ def make_exec_fn(instance: Instance, backend, timeout: float = 10) -> ExecFn:
 
 
 def make_grpo_reward_fns(backend, coef: float = 1.0, timeout: float = 10, max_workers: int = 8):
-    """TRL GRPOTrainer reward functions `[r_format, r_decision]`, each `(prompts, completions,
+    """TRL GRPOTrainer reward functions `[r_format, r_decision, r_undo]`, each `(prompts, completions,
     **kwargs) -> list[float]`. TRL logs every function separately (rewards/r_format,
-    rewards/r_decision) and sums them, which is how AGENT.md 6.5 wants the components tracked.
+    rewards/r_decision) and sums them, which is how AGENT.md 6.5 wants the components tracked. r_undo is returned raw;
+    its weight (0 = logged only: the no-undo ablation arm) goes in GRPOConfig.reward_weights.
 
     TRL forwards every other dataset column as a kwarg of matching length, so the dataset
     from data/templates.py must carry an `instance` column (an Instance or its dict).
@@ -195,4 +213,7 @@ def make_grpo_reward_fns(backend, coef: float = 1.0, timeout: float = 10, max_wo
     def r_decision(prompts, completions, **kwargs) -> list[float]:
         return [r.r_decision for r in _score_all(completions, kwargs["instance"])]
 
-    return [r_format, r_decision]
+    def r_undo(prompts, completions, **kwargs) -> list[float]:
+        return [r.r_undo for r in _score_all(completions, kwargs["instance"])]
+
+    return [r_format, r_decision, r_undo]

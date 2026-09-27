@@ -28,7 +28,13 @@
     "đếm số dòng dài hơn 10 ký tự trong f.txt",
     "có bao nhiêu dòng dài trong f.txt?",
     "kiểm tra số dòng có độ dài trên 10 trong f.txt",
-    "tìm các dòng dài (>10 ký tự) và đếm"
+    "tìm các dòng dài (>10 ký tự) và đếm",
+    "f.txt có mấy dòng vượt quá 10 ký tự?",
+    "awk 'length > 10' f.txt | wc -l",
+    "đếm dòng có độ dài lớn hơn 10 trong f.txt",
+    "bao nhiêu dòng trong f.txt dài hơn 10 chữ",
+    "thống kê số dòng dài (trên 10 ký tự) của f.txt",
+    "số dòng có hơn 10 ký tự trong file f.txt là bao nhiêu"
   ],
   "reference_command": "awk 'length > 10' f.txt | wc -l",
   "wrong_commands": [

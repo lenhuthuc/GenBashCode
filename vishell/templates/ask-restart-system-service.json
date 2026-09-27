@@ -12,7 +12,14 @@
     "restart lại dịch vụ web server giúp tôi",
     "khởi động lại nginx service",
     "restart service nginx đi",
-    "restart lại webserver hộ tôi"
+    "restart lại webserver hộ tôi",
+    "systemctl restart nginx",
+    "restart nginx",
+    "khởi động lại dịch vụ nginx",
+    "reload lại web server nginx bằng systemctl",
+    "restart nginx service",
+    "cho nginx chạy lại từ đầu",
+    "restart service web server"
   ],
   "clarify_question_vi": "Restart service hệ thống có thể gây gián đoạn — bạn có chắc chắn muốn restart nginx không?",
   "reference_command": "systemctl restart nginx",

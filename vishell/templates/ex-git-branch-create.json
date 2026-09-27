@@ -28,9 +28,16 @@
     "tạo nhánh git mới tên {branch}",
     "tạo branch {branch} trong repo này",
     "git tạo giúp tôi nhánh {branch}",
-    "làm ơn tạo nhánh {branch}"
+    "làm ơn tạo nhánh {branch}",
+    "tạo nhánh {branch} nhưng vẫn ở nhánh hiện tại",
+    "git branch {branch}",
+    "mở thêm branch {branch} từ commit hiện tại, chưa cần chuyển sang",
+    "thêm nhánh mới {branch} cho repo",
+    "cần một nhánh {branch} để làm tính năng mới, tạo giúp",
+    "tạo nhánh {branch}, đừng checkout"
   ],
   "reference_command": "git branch {branch}",
+  "undo_command": "git branch -d {branch}",
   "wrong_commands": [
     "true",
     "git checkout -b {branch}"

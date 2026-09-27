@@ -4,9 +4,10 @@ sandbox (Docker container or `unshare`d subprocess) — it must work standalone.
 
 Protocol: reads one JSON object from stdin, writes one JSON object to stdout.
 Input:  {"setup": str, "command": str, "check_type": str, "check_expected": str,
-         "timeout": float}
+         "timeout": float, "undo": str (optional)}
 Output: {"setup_rc", "rc", "stdout", "stderr", "fs_changed", "check_passed",
-         "timed_out", "duration", "boundary_violation"}
+         "timed_out", "duration", "boundary_violation"} plus, when "undo" is given,
+        {"undo_rc", "undo_score", "undo_lost"} (see undo_metrics).
 """
 from __future__ import annotations
 
@@ -62,10 +63,12 @@ def _env(workdir: str) -> dict:
     }
 
 
-def hash_tree(root: str) -> str:
-    """Hash of every (relpath, mode, content) under root, order-independent of walk order."""
+def tree_entries(root: str, skip_git: bool = False) -> list[tuple]:
+    """Every (kind, relpath, mode, content-sha256) under root, sorted."""
     entries = []
     for dirpath, dirnames, filenames in os.walk(root):
+        if skip_git and ".git" in dirnames:
+            dirnames.remove(".git")
         dirnames.sort()
         rel_dir = os.path.relpath(dirpath, root)
         for d in dirnames:
@@ -84,8 +87,25 @@ def hash_tree(root: str) -> str:
                 mode, content_hash = "ERR", str(e)
             entries.append(("file", rel, mode, content_hash))
     entries.sort()
-    blob = json.dumps(entries, sort_keys=True).encode("utf-8")
+    return entries
+
+
+def hash_tree(root: str) -> str:
+    """Hash of every (relpath, mode, content) under root, order-independent of walk order."""
+    blob = json.dumps(tree_entries(root), sort_keys=True).encode("utf-8")
     return hashlib.sha256(blob).hexdigest()
+
+
+def undo_metrics(before: list, after: list) -> tuple[float, float]:
+    """(score, lost) comparing the tree before the command with the tree after its undo.
+    score = Jaccard of the (kind, path, mode, hash) entry sets, 1.0 = restored exactly.
+    lost = share of entries that existed before and are now gone or altered: pre-existing
+    data destroyed, which the reward punishes on top of a low score."""
+    b, a = {tuple(e) for e in before}, {tuple(e) for e in after}
+    union = b | a
+    score = len(b & a) / len(union) if union else 1.0
+    lost = len(b - a) / len(b) if b else 0.0
+    return score, lost
 
 
 def _run(cmd: str, cwd: str, timeout: float) -> tuple[int, str, str, bool]:
@@ -156,6 +176,9 @@ def run_episode(payload: dict) -> dict:
                 }
 
         hash_before = hash_tree(workdir)
+        # ponytail: .git is left out of the undo comparison (object/reflog/index churn makes a
+        # correct git undo never score 1); git history changes are therefore not measured.
+        tree_before = tree_entries(workdir, skip_git=True)
         rc, stdout, stderr, timed_out = _run(command, workdir, timeout)
         hash_after = hash_tree(workdir)
         fs_changed = hash_before != hash_after
@@ -168,11 +191,17 @@ def run_episode(payload: dict) -> dict:
         except Exception:
             check_passed = False
 
-        return {
+        result = {
             "setup_rc": setup_rc, "rc": rc, "stdout": _truncate(stdout), "stderr": _truncate(stderr),
             "fs_changed": fs_changed, "check_passed": check_passed, "timed_out": timed_out,
             "duration": time.time() - t0, "boundary_violation": boundary_violation,
         }
+        undo = payload.get("undo")
+        if undo is not None:  # after the check, which may inspect the post-command tree
+            undo_rc = _run(undo, workdir, timeout)[0] if undo.strip() else 0
+            score, lost = undo_metrics(tree_before, tree_entries(workdir, skip_git=True))
+            result.update(undo_rc=undo_rc, undo_score=score, undo_lost=lost)
+        return result
     finally:
         shutil.rmtree(workdir, ignore_errors=True)
 
