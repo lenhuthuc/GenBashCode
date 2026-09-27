@@ -10,7 +10,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-train = ["unsloth>=2026.9", "trl>=0.20", "peft", "accelerate", "torch", "transformers>=4.57.3,<5", "datasets", "torchao>0.16.0"]
+# Exact set verified end-to-end (SFT + GRPO) on Colab T4, 2026-09-27. Upgrade as a unit:
+# unsloth caps transformers/trl, and trl 0.24 breaks on transformers 5.x.
+train = [
+  "unsloth==2026.9.11", "unsloth_zoo==2026.9.7", "trl==0.24.0", "transformers==4.57.6",
+  "peft==0.20.0", "accelerate==1.14.0", "datasets==4.3.0", "tokenizers==0.22.2",
+  "huggingface_hub==0.36.2", "torch==2.11.0", "torchao==0.18.0",
+]
 data = ["requests", "pandas"]
 demo = ["gradio>=5,<6"]
 dev = ["pytest"]
