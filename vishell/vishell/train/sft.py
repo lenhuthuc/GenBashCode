@@ -53,8 +53,8 @@ def read_jsonl(path: str | Path) -> list[dict]:
 
 
 class VramTimeCallback:
-    """Prints VRAM/step-time/ETA — plain callback object, registered via `add_callback`
-    so it works whether TRL wants a TrainerCallback subclass or a duck-typed one."""
+    """Prints VRAM/step-time/ETA. Mixed with TrainerCallback at registration (Trainer calls
+    every on_* hook); kept import-free so this module loads without transformers."""
 
     def __init__(self):
         self._t0 = None
@@ -94,7 +94,7 @@ def train_sft(
     import torch
     from datasets import Dataset
     from peft import LoraConfig, PeftModel
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForCausalLM, AutoTokenizer, TrainerCallback
     from trl import SFTConfig, SFTTrainer
 
     torch_dtype = pick_dtype(dtype)
@@ -138,7 +138,7 @@ def train_sft(
     trainer_kwargs = dict(model=model, args=sft_args, train_dataset=train_ds, eval_dataset=val_ds,
                           processing_class=tok, tokenizer=tok, peft_config=None if from_adapter else peft_cfg)
     trainer = SFTTrainer(**filter_kwargs(SFTTrainer, trainer_kwargs))
-    trainer.add_callback(VramTimeCallback())
+    trainer.add_callback(type("VramTime", (VramTimeCallback, TrainerCallback), {})())
 
     trainer.train(resume_from_checkpoint=str(resume_from) if resume_from else None)
     trainer.save_model(str(final))
