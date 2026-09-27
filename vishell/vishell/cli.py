@@ -438,9 +438,10 @@ _STEP_FUNCS = {
 
 
 def run_step(name: str, cfg: dict, paths: Paths, force: bool = False) -> None:
-    # GPU steps skip themselves by checking their real outputs; a stale .done marker would
-    # skip them even after those outputs were deleted.
-    if not force and name not in GPU_STEPS and paths.is_done(name):
+    # GPU steps skip themselves by checking their real outputs, and build-dataset is deterministic
+    # and takes a second; a stale .done marker would skip them after their outputs were deleted
+    # (or never copied to a new Drive).
+    if not force and name not in GPU_STEPS and name != "build-dataset" and paths.is_done(name):
         print(f"[{name}] already done, skipping (--force to rerun)")
         return
     _STEP_FUNCS[name](cfg, paths, force)
