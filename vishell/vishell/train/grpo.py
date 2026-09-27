@@ -34,6 +34,7 @@ def train_grpo(
     from peft import LoraConfig
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from trl import GRPOConfig, GRPOTrainer
+    from trl.import_utils import is_vllm_available
 
     torch_dtype = pick_dtype(dtype)
     rows = [_to_grpo_row(Instance.model_validate(r)) for r in read_jsonl(train_path)]
@@ -57,20 +58,16 @@ def train_grpo(
         bf16=(torch_dtype == torch.bfloat16), fp16=(torch_dtype == torch.float16),
         report_to="none", seed=seed, use_vllm=use_vllm,
     )
-    try:
-        grpo_args = GRPOConfig(**filter_kwargs(GRPOConfig, base_kwargs))
-        trainer = GRPOTrainer(**filter_kwargs(GRPOTrainer, dict(
-            model=model, args=grpo_args, train_dataset=train_ds, processing_class=tok,
-            reward_funcs=reward_fns, peft_config=peft_cfg,
-        )))
-    except Exception as e:
-        print(f"[grpo] use_vllm={use_vllm} generation setup failed ({e}); retrying with use_vllm=False")
+    # Decide before building the trainer: GRPOTrainer wraps `model` with LoRA in place,
+    # so constructing it twice (try vLLM, fall back) stacks two adapters.
+    if use_vllm and not is_vllm_available():
+        print("[grpo] vLLM not installed; generating with use_vllm=False")
         base_kwargs["use_vllm"] = False
-        grpo_args = GRPOConfig(**filter_kwargs(GRPOConfig, base_kwargs))
-        trainer = GRPOTrainer(**filter_kwargs(GRPOTrainer, dict(
-            model=model, args=grpo_args, train_dataset=train_ds, processing_class=tok,
-            reward_funcs=reward_fns, peft_config=peft_cfg,
-        )))
+    grpo_args = GRPOConfig(**filter_kwargs(GRPOConfig, base_kwargs))
+    trainer = GRPOTrainer(**filter_kwargs(GRPOTrainer, dict(
+        model=model, args=grpo_args, train_dataset=train_ds, processing_class=tok,
+        reward_funcs=reward_fns, peft_config=peft_cfg,
+    )))
 
     trainer.train(resume_from_checkpoint=str(resume_from) if resume_from else None)
     trainer.save_model(str(final))
