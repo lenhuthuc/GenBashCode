@@ -22,6 +22,7 @@ def train_grpo(
     train_path: str, base_model: str, out_dir: str, backend, lora_r: int, lora_alpha: int,
     lora_dropout: float, lr: float, max_steps: int, save_steps: int, num_generations: int,
     max_prompt_length: int, max_completion_length: int, decision_coef: float, seed: int,
+    temperature: float = 1.0,
     dtype: str = "auto", use_vllm: bool = True, force: bool = False,
 ) -> dict:
     out = Path(out_dir)
@@ -44,6 +45,9 @@ def train_grpo(
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     model = AutoModelForCausalLM.from_pretrained(base_model, attn_implementation="sdpa", dtype=torch_dtype)
+    # Qwen ships temperature=0.7/top_p=0.8/repetition_penalty=1.1, and generate() silently swaps
+    # those in for GRPO's sampling args -> near-identical completions, zero reward std, no gradient.
+    model.generation_config.update(temperature=temperature, top_p=1.0, top_k=0, repetition_penalty=1.0)
 
     peft_cfg = LoraConfig(r=lora_r, lora_alpha=lora_alpha, lora_dropout=lora_dropout,
                           target_modules="all-linear", task_type="CAUSAL_LM")
@@ -52,7 +56,7 @@ def train_grpo(
     resume_from = latest_checkpoint(out)
     base_kwargs = dict(
         output_dir=str(out), learning_rate=lr, max_steps=max_steps,
-        num_generations=num_generations, max_prompt_length=max_prompt_length,
+        num_generations=num_generations, temperature=temperature, top_p=1.0, max_prompt_length=max_prompt_length,
         max_completion_length=max_completion_length, save_strategy="steps",
         save_steps=save_steps, save_total_limit=3, logging_steps=1,
         bf16=(torch_dtype == torch.bfloat16), fp16=(torch_dtype == torch.float16),

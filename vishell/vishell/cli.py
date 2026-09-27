@@ -226,7 +226,7 @@ def step_sft(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
     result = train_sft(
         train_path=str(data_path), val_path=str(val_path), base_model=base_model, out_dir=str(out_dir),
         system_prompt=SYSTEM_PROMPT, lora_r=tc["lora_r"], lora_alpha=tc["lora_alpha"],
-        lora_dropout=tc["lora_dropout"], epochs=tc["epochs"], lr=tc["lr"], max_len=tc["max_len"],
+        lora_dropout=tc["lora_dropout"], epochs=tc["scenarios_epochs"] if stage == "scenarios" else tc["epochs"], lr=tc["lr"], max_len=tc["max_len"],
         per_device_bs=tc["per_device_bs"], grad_accum=tc["grad_accum"], max_steps=tc["max_steps"],
         save_steps=tc["save_steps"], eval_steps=tc["eval_steps"], seed=cfg["seed"], dtype=tc["dtype"],
         force=force, from_adapter=from_adapter,
@@ -262,7 +262,7 @@ def step_grpo(cfg: dict, paths: Paths, force: bool) -> None:
         train_path=str(paths.data / "instances_train.jsonl"), base_model=str(paths.models / "merged_scenarios"),
         out_dir=str(paths.checkpoints / "grpo"), backend=backend, lora_r=cfg["train"]["lora_r"],
         lora_alpha=cfg["train"]["lora_alpha"], lora_dropout=cfg["train"]["lora_dropout"], lr=gc["lr"],
-        max_steps=gc["max_steps"], save_steps=gc["save_steps"], num_generations=gc["num_generations"],
+        max_steps=gc["max_steps"], save_steps=gc["save_steps"], num_generations=gc["num_generations"], temperature=gc["temperature"],
         max_prompt_length=gc["max_prompt_length"], max_completion_length=gc["max_completion_length"],
         decision_coef=cfg["reward"]["decision_coef"], seed=cfg["seed"], dtype=gc["dtype"],
         use_vllm=gc["use_vllm"], force=force,
