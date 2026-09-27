@@ -29,7 +29,11 @@ class LocalBackend:
 
     def __init__(self, timeout: float = 30):
         self.timeout = timeout
-        self._has_unshare = shutil.which("unshare") is not None
+        # The binary existing isn't enough: Kaggle ships `unshare` but forbids user
+        # namespaces ("Operation not permitted"), so probe that it actually works.
+        self._has_unshare = shutil.which("unshare") is not None and subprocess.run(
+            ["unshare", "-rn", "true"], capture_output=True
+        ).returncode == 0
 
     def run(self, payload: dict) -> dict:
         global _UNSHARE_WARNED
@@ -46,6 +50,8 @@ class LocalBackend:
             cmd, input=json.dumps(payload), capture_output=True, text=True,
             timeout=self.timeout + 15,
         )
+        if not proc.stdout.strip():
+            raise RuntimeError(f"sandbox runner produced no output (rc={proc.returncode}): {proc.stderr}")
         return json.loads(proc.stdout)
 
     def run_many(self, payloads: list[dict], max_workers: int = 8) -> list[dict]:
