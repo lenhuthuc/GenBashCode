@@ -3,7 +3,9 @@
 The generator is only a text source (`generate(request) -> str`, which should sample so
 retries differ). Nothing it says is trusted except the command text, and that text goes
 through analyze(); labels, JSON fields like "action"/"risk", or comments cannot change a
-decision. Final risk is always the analyzer's risk of the returned command.
+decision. Final risk is the analyzer's risk of the returned command, unless `root` is given:
+then envcheck adjusts it from the files the command touches there (secrets block, owner/mode
+raise, untracked raises, a workspace snapshot lowers one level).
 """
 from __future__ import annotations
 
@@ -13,6 +15,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Literal, Optional
 
 from ..analyzer import Analysis, analyze, rank
+from ..envcheck import EnvResult, assess
 
 Decision = Literal["run", "confirm", "regenerate", "ask_clarification", "block"]
 Relation = Literal["consistent", "actual_riskier", "expected_riskier"]
@@ -43,9 +46,12 @@ class Result:
     analysis: Optional[Analysis] = None
     reason: str = ""
     attempts: list[Attempt] = field(default_factory=list)
+    env: Optional[EnvResult] = None
 
     @property
     def risk(self) -> Optional[str]:
+        if self.env is not None:
+            return self.env.risk
         return self.analysis.risk if self.analysis else None
 
     @property
@@ -103,8 +109,30 @@ def judge(pred: Optional[Prediction], a: Analysis) -> tuple[Decision, Optional[R
     return ("confirm" if rank(a.risk) >= rank("dangerous") else "run"), rel
 
 
+def with_env(res: Result, root: Optional[str], **env_kw) -> Result:
+    """Re-decide a run/confirm result from the files its command touches under `root`."""
+    if root is None or res.command is None or res.decision not in ("run", "confirm"):
+        return res
+    e = assess(res.command, res.analysis, root, **env_kw)
+    res.env = e
+    if e.block:
+        res.decision = "block"
+    elif res.decision == "run" and (e.bulk or rank(e.risk) >= rank("dangerous")):
+        res.decision = "confirm"
+    elif res.decision == "confirm" and not e.bulk and rank(e.risk) < rank("dangerous")             and "no consistent candidate" not in res.reason:
+        res.decision = "run"  # dangerous only by path rules, and the snapshot covers it
+    res.reason += "; env: " + "; ".join(e.reasons)
+    return res
+
+
 def decide(request: str, generate: Callable[[str], str],
-           classify: Optional[Callable[[str], Prediction]] = None, k: int = 3) -> Result:
+           classify: Optional[Callable[[str], Prediction]] = None, k: int = 3,
+           root: Optional[str] = None, **env_kw) -> Result:
+    return with_env(_decide(request, generate, classify, k), root, **env_kw)
+
+
+def _decide(request: str, generate: Callable[[str], str],
+            classify: Optional[Callable[[str], Prediction]], k: int) -> Result:
     pred = classify(request) if classify is not None else None
     if pred is not None and pred.ambiguous:
         return Result("ask_clarification", reason="request classified as ambiguous")

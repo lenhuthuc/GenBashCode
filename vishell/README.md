@@ -40,6 +40,14 @@ python -m vishell.eval [--templates predictions_templates.jsonl]               #
 
 `analyzer/` (bashlex + `rules.yaml`) -> effects/scope/risk; `policy/` -> run/confirm/regenerate/
 ask_clarification/block. Risk cuối luôn là risk của AST; phân loại request chỉ có thể làm chặt hơn.
+`envcheck/` (khi gọi `decide(..., root=<workspace>)`): nhìn file thật mà lệnh đụng tới — có secret
+(detect-secrets) thì block; owner khác/mode 600/không ghi được thì ít nhất dangerous; ngoài git +1; có snapshot −1;
+dry run trong sandbox (`backend=`) đổi quá `max_changed` file thì confirm. Cần `pip install -e .[env]`.
+
+```bash
+python scripts/envsignals.py rules --dry-run    # (b) luật path vs (c) path + tín hiệu môi trường, Linux
+python scripts/envsignals.py run <tên> <model>  # (a) model tự quyết (GPU), rồi: table <tên>
+```
 
 ## Cấu trúc
 

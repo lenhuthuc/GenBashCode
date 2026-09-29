@@ -40,6 +40,7 @@ class Action:
     effect: str
     scopes: frozenset
     risk: str
+    targets: tuple = ()  # static target paths as written (dynamic ones are left out): envcheck stats them
 
 
 @dataclass
@@ -122,6 +123,10 @@ def _positionals(texts_words: list[_Word]) -> list[_Word]:
     return out
 
 
+def _static(words: list[_Word]) -> tuple:
+    return tuple(w.text for w in words if not w.dynamic)
+
+
 def _find_roots(args: list[_Word]) -> list[_Word]:
     lead = []
     for w in args:
@@ -201,12 +206,13 @@ class _Walker:
         effect = {">": "overwrite", ">|": "overwrite", "&>": "overwrite", ">>": "write"}.get(node.type)
         if effect is None:
             return  # input redirections only read
-        scopes = self.scope_of(_Word(out.word, "$" in out.word or "`" in out.word))
+        w = _Word(out.word, "$" in out.word or "`" in out.word)
+        scopes = self.scope_of(w)
         if scopes is not None:
-            self.add("redirect", effect, scopes)
+            self.add("redirect", effect, scopes, targets=_static([w]))
 
     # -- simple commands
-    def simple(self, words: list[_Word], net_input: bool, extra: frozenset) -> None:
+    def simple(self, words: list[_Word], net_input: bool, extra: frozenset, roots: tuple = ()) -> None:
         if not words:
             return
         name = os.path.basename(words[0].text)
@@ -232,7 +238,7 @@ class _Walker:
             if wrap.get("stdin_targets"):
                 extra = extra | {"unknown"}
             if i < len(words):
-                self.simple(words[i:], net_input, extra)
+                self.simple(words[i:], net_input, extra, roots)
             elif not wrap.get("adds"):
                 self.add(name, "read", frozenset())  # bare `env` / `nice`: prints state
             return
@@ -269,6 +275,7 @@ class _Walker:
 
         if name == "find":  # -exec/-ok segments are separate commands run on every match under find's paths
             found = set(extra) | {"recursive"}
+            roots = roots + _static(_find_roots(words[1:]))
             for w in _find_roots(words[1:]):
                 found |= self.scope_of(w) or set()
             kept, i = [], 0
@@ -276,7 +283,7 @@ class _Walker:
                 if texts[i] in ("-exec", "-execdir", "-ok", "-okdir"):
                     end = next((k for k in range(i + 1, len(words)) if texts[k] in (";", "\\;", "+")), len(words))
                     sub = [w for w in words[i + 1:end] if w.text != "{}"]  # `{}` = a match: scope is `found`
-                    self.simple(sub, False, frozenset(found))
+                    self.simple(sub, False, frozenset(found), roots)
                     i = end + 1
                 else:
                     kept.append(words[i])
@@ -287,9 +294,9 @@ class _Walker:
         if rule is None:
             self.floor(RULES["unknown_tool_risk"], f"unknown tool: {name}")
             return
-        self.apply(name, rule, words[1:], extra)
+        self.apply(name, rule, words[1:], extra, roots)
 
-    def apply(self, name: str, rule: dict, args: list[_Word], extra: frozenset) -> None:
+    def apply(self, name: str, rule: dict, args: list[_Word], extra: frozenset, roots: tuple = ()) -> None:
         texts = [w.text for w in args]
         pos = _positionals(args)
         subs = rule.get("subcommands", {})
@@ -323,7 +330,7 @@ class _Walker:
         if not scopes:
             scopes.add("single")
         for e in effects:
-            self.add(name, e, frozenset(scopes), min_risk)
+            self.add(name, e, frozenset(scopes), min_risk, roots + _static(targets))
 
     # -- helpers
     def scope_of(self, w: _Word) -> Optional[set[str]]:
@@ -352,11 +359,12 @@ class _Walker:
     def floor(self, risk: str, why: str) -> None:
         self.floors.append((risk, why))
 
-    def add(self, tool: str, effect: str, scopes: frozenset, min_risk: Optional[str] = None) -> None:
+    def add(self, tool: str, effect: str, scopes: frozenset, min_risk: Optional[str] = None,
+            targets: tuple = ()) -> None:
         r = rank(RULES["effect_risk"][effect])
         if effect in RULES["scoped_effects"]:
             r += sum(RULES["scope_bump"][s] for s in scopes)
         r = min(r, len(LEVELS) - 1)
         if min_risk:
             r = max(r, rank(min_risk))
-        self.actions.append(Action(tool, effect, frozenset(scopes), LEVELS[r]))
+        self.actions.append(Action(tool, effect, frozenset(scopes), LEVELS[r], targets))

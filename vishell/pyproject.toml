@@ -20,6 +20,8 @@ train = [
 data = ["requests", "pandas"]
 # Request classifier (XLM-R); same pins as `train` so both run in one Colab env.
 classifier = ["transformers==4.57.6", "tokenizers==0.22.2", "torch==2.11.0", "sentencepiece", "scikit-learn"]
+# envcheck: secret scan (regex + entropy) of the files a command touches
+env = ["detect-secrets>=1.5"]
 demo = ["gradio>=5,<6"]
 diversity = ["py_vncorenlp", "scikit-learn"]
 dev = ["pytest"]

@@ -4,19 +4,23 @@ sandbox (Docker container or `unshare`d subprocess) — it must work standalone.
 
 Protocol: reads one JSON object from stdin, writes one JSON object to stdout.
 Input:  {"setup": str, "command": str, "check_type": str, "check_expected": str,
-         "timeout": float, "undo": str (optional)}
-Output: {"setup_rc", "rc", "stdout", "stderr", "fs_changed", "check_passed",
+         "timeout": float, "undo": str (optional), "archive": base64 tar.gz (optional,
+         unpacked into the workspace before setup: envcheck's dry run of a real workspace)}
+Output: {"setup_rc", "rc", "stdout", "stderr", "fs_changed", "changed", "check_passed",
          "timed_out", "duration", "boundary_violation"} plus, when "undo" is given,
         {"undo_rc", "undo_score", "undo_lost"} (see undo_metrics).
 """
 from __future__ import annotations
 
+import base64
 import hashlib
+import io
 import json
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
 
@@ -163,6 +167,12 @@ def run_episode(payload: dict) -> dict:
         timeout = float(payload.get("timeout", 10))
         check_type = payload["check_type"]
         check_expected = payload.get("check_expected", "")
+        if payload.get("archive"):
+            with tarfile.open(fileobj=io.BytesIO(base64.b64decode(payload["archive"]))) as tf:
+                if hasattr(tarfile, "data_filter"):
+                    tf.extractall(workdir, filter="data")
+                else:
+                    tf.extractall(workdir)
 
         setup_rc = 0
         if setup.strip():
@@ -182,6 +192,8 @@ def run_episode(payload: dict) -> dict:
         rc, stdout, stderr, timed_out = _run(command, workdir, timeout)
         hash_after = hash_tree(workdir)
         fs_changed = hash_before != hash_after
+        changed = sorted({e[1] for e in set(tree_before) ^ set(tree_entries(workdir, skip_git=True))
+                          if e[0] == "file"})
 
         low_err = stderr.lower()
         boundary_violation = any(p in low_err for p in _BOUNDARY_PATTERNS) and rc != 0
@@ -193,7 +205,8 @@ def run_episode(payload: dict) -> dict:
 
         result = {
             "setup_rc": setup_rc, "rc": rc, "stdout": _truncate(stdout), "stderr": _truncate(stderr),
-            "fs_changed": fs_changed, "check_passed": check_passed, "timed_out": timed_out,
+            "fs_changed": fs_changed, "changed": [os.path.normpath(c) for c in changed],
+            "check_passed": check_passed, "timed_out": timed_out,
             "duration": time.time() - t0, "boundary_violation": boundary_violation,
         }
         undo = payload.get("undo")
