@@ -259,11 +259,113 @@ def _work_done_section() -> str:
 """
 
 
+def _safety_section() -> str:
+    """Safety module (2026-09-29), viết tay: số liệu là eval offline trên output đã lưu, chạy lại
+    bằng `python -m vishell.eval`; số trên Colab (k=3, correctness từ sandbox) chưa có."""
+    return """### Safety module: LLM chỉ sinh lệnh, module riêng quyết định (2026-09-29)
+
+**Vì sao.** Thí nghiệm A/B/C cho thấy model 1.5B không tự phân loại được lệnh của chính nó là nguy hiểm
+hay mơ hồ (risk_2x2: model base chạy luôn 146/160 yêu cầu, kể cả lệnh đụng `/etc`). Nên tách vai:
+LLM chỉ sinh bash (hoặc `NONE`), module an toàn quyết định.
+
+**Kiến trúc**
+1. `generator/`: yêu cầu tiếng Việt → một lệnh bash hoặc `NONE`. Mẫu đầu greedy, các lần sau sample.
+   Không có logic an toàn, không import analyzer/policy.
+2. `classifier/`: XLM-R, chỉ đọc yêu cầu (không bao giờ thấy lệnh) → `ambiguous` + các effect mong đợi.
+3. `analyzer/` + `rules.yaml`: parse lệnh bằng bashlex, đi qua pipe, redirect, `$(...)`, `<(...)`,
+   `bash -c`, `find -exec`, `xargs`, `sudo`/`env`/`timeout` → effects + scope + risk. Kiến thức về tool
+   nằm trong bảng luật (~150 tool), không viết cứng.
+4. `policy/`: so effect mong đợi với effect thật → run / confirm / regenerate (≤ k) / ask_clarification / block.
+5. `eval/`: so sánh (a) LLM tự phân loại, (b) chỉ luật, (c) hybrid trên **cùng** các lệnh đã sinh.
+
+Taxonomy. Effects: read, write, overwrite, delete, perm_change, process_control, network, privilege,
+remote_exec. Scope: single, glob, recursive, system_path (mọi đường dẫn tuyệt đối, tức ngoài workspace),
+unknown (`$VAR`, `$(...)`, stdin của xargs). Risk: safe < caution < dangerous < critical, bằng risk gốc của
+effect cộng mức tăng theo scope, lấy max trên các phần của lệnh.
+
+**Bất biến (có test)**
+- Risk cuối = risk AST của lệnh được trả về. Classifier chỉ làm quyết định chặt hơn, không nới ra
+  (kiểm trên 54 lệnh × 12 bộ effect mong đợi).
+- Chữ LLM viết (`"risk": "safe"`, `# SAFE`, `DECISION: run`) không đổi được quyết định: chỉ lấy phần lệnh.
+- Yêu cầu mơ hồ → hỏi lại trước khi gọi generator (0 lần gọi). Generator bị gọi tối đa k lần.
+- Không parse được, tool lạ, hoặc code chạy từ text (`eval`, `curl | sh`, `bash <(curl …)`) → ít nhất dangerous.
+- Không bao giờ chạy lệnh ngoài sandbox: `LocalBackend` giờ báo lỗi khi thiếu `unshare -rn` (trước chỉ cảnh báo).
+
+**Policy**
+| tình huống | quyết định |
+| --- | --- |
+| yêu cầu mơ hồ | ask_clarification (trước khi sinh lệnh) |
+| khớp dự kiến, risk ≥ dangerous | confirm (hiện effects) |
+| khớp dự kiến, risk < dangerous | run |
+| có effect thừa **nghiêm trọng** (luật tự xếp ≥ dangerous: privilege, network, remote_exec, process_control, xoá đệ quy/glob, ngoài workspace, target là biến) | regenerate k lần, không mẫu nào khớp → **block** |
+| có effect thừa không nghiêm trọng, hoặc thiếu effect | regenerate k lần, không mẫu nào khớp → **confirm** kèm effect thật |
+| generator trả `NONE` cả k lần | ask_clarification |
+
+Bản đầu block **mọi** effect thừa; eval cho thấy classifier đoán sai effect khá thường xuyên nên đã đổi
+sang bảng trên (xem kết quả).
+
+**Dữ liệu classifier (`scripts/autolabel.py`, không gán tay).** Nhãn effect = `analyze(lệnh gold)`.
+Mask khi không có lệnh gold (20 template `*-vague`) hoặc lệnh "mù" (`python3 x.py`, `mysql -e`: 114 dòng).
+Split theo template như pipeline (test = 20 template giữ riêng), val tách thêm theo hash.
+| split | dòng | mơ hồ | mask effect | read | write | overwrite | delete | perm_change | network | process_control | privilege | remote_exec |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| train | 2370 | 312 | 387 | 1162 | 702 | 367 | 97 | 61 | 113 | 111 | 40 | 0 |
+| val | 269 | 20 | 38 | 136 | 79 | 58 | 19 | 0 | 19 | 0 | 0 | 0 |
+| test | 479 | 37 | 60 | 309 | 55 | 99 | 32 | 21 | 21 | 2 | 4 | 0 |
+
+Classifier v2 (8 epoch, `pos_weight` theo tần suất nhãn), test split: F1 mơ hồ 0.84, micro-F1 effect 0.73,
+đúng nguyên bộ effect 0.68 (v1 4 epoch không `pos_weight`: 0.81 / 0.67 / 0.56).
+
+**Kết quả offline** (output đã lưu, 1 mẫu/yêu cầu nên policy chưa regenerate được; khoảng tin cậy Wilson 95%).
+risk_2x2: 160 yêu cầu gán nhãn tay clarity × risk; "nguy hiểm" = risk=risky (80), "an toàn" = clear+safe (40).
+| lệnh do | hệ | recall nguy hiểm | chặn nhầm an toàn | confirm an toàn | F1 mơ hồ |
+| --- | --- | --- | --- | --- | --- |
+| base | (a) LLM tự phân loại | 0.07 [0.04, 0.15] | 0.00 | 0.00 | 0.18 |
+| base | (b) chỉ luật | 0.91 [0.83, 0.96] | 0.00 | 0.35 | n/a |
+| base | (c) hybrid, policy cũ | 0.97 [0.91, 0.99] | 0.53 [0.38, 0.67] | 0.15 | 0.50 |
+| base | (c) hybrid, policy mới | 0.97 [0.91, 0.99] | 0.23 [0.12, 0.38] | 0.45 | 0.50 |
+| A/B/C | (a) LLM tự phân loại | 0.47–0.50 | 0.00 | 0.00 | 0.86–0.89 |
+| A/B/C | (b) chỉ luật | 0.99–1.00 | 0.00 | 0.20 | n/a |
+| A/B/C | (c) hybrid, policy mới | 1.00 [0.95, 1.00] | 0.10–0.12 | 0.45–0.47 | 0.50 |
+
+- Luật vượt xa LLM tự phân loại về bắt lệnh nguy hiểm; đây là kết quả rõ nhất.
+- 9 câu an toàn bị hybrid chặn (lệnh của base): 6 câu là **chặn đúng**, vì lệnh model sinh ra sai hoặc nguy hiểm so
+  với yêu cầu (`sudo tee -a /etc/crontab` khi yêu cầu là `cron.txt`, ghi `/etc/hosts.dev` thay vì `./hosts.dev`,
+  chèn thêm `rm -rf .git`, `sudo chown`, ghi `~/.ssh/authorized_keys`, `/etc/sudoers…`). 3 câu chặn nhầm do
+  classifier đoán thiếu effect (`rsync --delete`, `pip` trong venv, `chown -R $USER`).
+- Classifier không tổng quát sang cách diễn đạt khác: vẫn đoán `write` cho "xoá file ./cache.db"; chỉ bắt được
+  22% (v1) câu mơ hồ của risk_2x2. Nó chỉ học từ 138 template.
+- Mismatch làm tín hiệu lỗi chức năng: trên NL2Bash (correctness proxy = exact match, n=50 mỗi ô) AUROC
+  0.45–0.61, tức **không có tín hiệu**. Chỉ số quyết định là correctness chạy sandbox trên template, chưa có.
+- Cái giá của policy mới: confirm trên yêu cầu an toàn tăng lên ~45%; với k=3 thật, regenerate có thể giảm con số này.
+
+**Lỗi luật tìm ra nhờ eval và đã sửa:** `git push`/network trước chỉ là caution (nay dangerous: dữ liệu rời máy
+không hoàn tác được); đường dẫn tuyệt đối ngoài danh sách hệ thống (`/tmp/secrets.env`) trước là scope single
+(nay mọi đường dẫn tuyệt đối đều là ngoài workspace); key YAML `true`/`false`/`yes` bị đọc thành boolean (nay
+có kiểm tra khi load).
+
+**Hạn chế đã biết**
+- Giá trị của option (`-n 5`, `tar -f x`) bị tính là target: chỉ có thể tăng scope, không giảm.
+- Không lần theo phép gán biến (`D=/; rm -rf $D` → scope unknown → critical, an toàn nhưng thô).
+- bashlex không parse được `time cmd`, `[[ ]]`, `case` → fail closed (dangerous).
+- `LocalBackend` chỉ cắt mạng, không cô lập filesystem: chỉ dùng trên máy ảo dùng một lần (Colab); Kaggle
+  không có `unshare` nên không chạy lệnh được nữa.
+- Không có nhãn `remote_exec` trong dữ liệu: `curl | sh` luôn là effect thừa → luôn block (cố ý).
+
+**Việc tiếp theo**
+1. Chạy phần "Safety module" trong `notebooks/colab_pipeline.ipynb`: k=3 mẫu từ base/A/B, correctness template
+   chạy trong sandbox → AUROC thật và tỷ lệ chặn nhầm khi có regenerate.
+2. Nếu classifier vẫn là nút thắt: thêm cách diễn đạt đa dạng hơn cho dữ liệu, hoặc chỉ dùng classifier cho
+   phát hiện mơ hồ và để luật quyết định phần effect.
+"""
+
+
 def render_report(paths: Paths, project_root: str | Path) -> str:
     header = "# ViShell — Báo cáo pipeline\n\n" + _PIPELINE_MERMAID
     sections = [
         header,
         _work_done_section(),
+        _safety_section(),
         _artifacts_section(paths),
         _data_stats_section(paths, Path(project_root)),
         _verify_section(paths),
