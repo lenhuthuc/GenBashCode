@@ -1,0 +1,271 @@
+# Declarative rule table for the AST risk analyzer (analyzer/__init__.py).
+# Risk of one (effect, scopes) action = effect_risk[effect] + sum(scope_bump[s] for s in scopes)
+# (bumps apply only to scoped_effects), capped at critical, floored by the tool's min_risk.
+# Command risk = max over actions. Unknown tools and unparseable input fail closed.
+
+risk_levels: [safe, caution, dangerous, critical]
+
+effect_risk:
+  read: safe
+  write: caution
+  overwrite: caution
+  delete: caution
+  perm_change: caution
+  network: dangerous   # data leaves the machine / remote state changes: cannot be undone locally
+  process_control: dangerous
+  privilege: dangerous
+  remote_exec: critical
+
+scoped_effects: [write, overwrite, delete, perm_change]
+
+scope_bump:
+  single: 0
+  glob: 1
+  recursive: 1
+  unknown: 1       # target is $VAR / $(...) / stdin (xargs): cannot be resolved statically
+  system_path: 2
+
+# A target is system_path if it equals one of `system_exact` or starts with a `system_prefixes` entry.
+# Every absolute path is outside the snapshotted workspace, so "/" covers /etc, /tmp, /mnt, ... alike.
+system_exact: ["/", "~", "~/", "$HOME", "${HOME}", "/*", "~/*", "$HOME/*"]
+system_prefixes: [/]
+# Redirect/target sinks that are not real mutations.
+safe_sinks: [/dev/null, /dev/stdout, /dev/stderr, /dev/tty]
+
+unparseable_risk: dangerous
+unknown_tool_risk: dangerous
+
+# Commands that run another command. `adds`: effects of the wrapper itself.
+# `value_flags`: options that consume the next word. `skip`: leading positionals to drop
+# (e.g. `timeout 10 cmd`). `assignments`: skip VAR=x words. `stdin_targets`: the wrapped
+# command's targets come from stdin (scope unknown).
+wrappers:
+  sudo:    {adds: [privilege], value_flags: [-u, -g, -C, -h, -p, -U, -r, -t, -D]}
+  doas:    {adds: [privilege], value_flags: [-u, -C]}
+  su:      {adds: [privilege]}        # su -c "cmd" handled via shell_c below
+  pkexec:  {adds: [privilege], value_flags: [--user]}
+  env:     {assignments: true, value_flags: [-u, -C, -S]}
+  nohup:   {}
+  command: {}
+  exec:    {}
+  time:    {}
+  nice:    {value_flags: [-n]}
+  ionice:  {value_flags: [-c, -n]}
+  stdbuf:  {}
+  timeout: {value_flags: [-s, -k], skip: 1}
+  watch:   {value_flags: [-n, -d]}
+  xargs:   {value_flags: [-I, -n, -P, -s, -E, -e, -L, -l, -d, -a, --replace, --max-args, --max-procs, --delimiter], stdin_targets: true}
+
+# Shell interpreters: `-c script` is parsed recursively; fed from a network source
+# (pipe, <(...), $(...)) they are remote_exec; running a local script is an unknown tool.
+shells: [bash, sh, zsh, dash, ksh, fish]
+# Builtins that execute text as code.
+eval_like: [eval, source, .]
+
+# Tool rules. `effects`: always-on effects. `flags`: option -> extra effects (a short
+# option like -i also matches -i.bak / bundled forms). `recursive_flags`: short letters
+# (inside -xyz bundles) or long options that make the action recursive; `recursive: true`
+# means always recursive. `targets`: which words are the scoped targets:
+#   args (default) = non-option positionals, none = no filesystem targets,
+#   after_first = positionals after the first (chmod MODE f, grep PAT f),
+#   last = last positional (cp/mv destination), kv = dd-style of=PATH.
+# `subcommands`: first positional -> effects (overrides `effects`).
+# `readonly_flags`: if present, the command only reads (crontab -l).
+# `min_risk`: floor regardless of scope.
+tools:
+  # --- read-only
+  ls: {effects: [read]}
+  cat: {effects: [read]}
+  head: {effects: [read]}
+  tail: {effects: [read]}
+  less: {effects: [read]}
+  more: {effects: [read]}
+  wc: {effects: [read]}
+  du: {effects: [read]}
+  df: {effects: [read]}
+  stat: {effects: [read]}
+  file: {effects: [read]}
+  tree: {effects: [read]}
+  pwd: {effects: [read]}
+  echo: {effects: [read], targets: none}
+  printf: {effects: [read], targets: none}
+  "true": {effects: [read], targets: none}
+  "false": {effects: [read], targets: none}
+  sleep: {effects: [read], targets: none}
+  date: {effects: [read], targets: none}
+  whoami: {effects: [read], targets: none}
+  id: {effects: [read], targets: none}
+  uname: {effects: [read], targets: none}
+  hostname: {effects: [read], targets: none}
+  printenv: {effects: [read], targets: none}
+  which: {effects: [read], targets: none}
+  type: {effects: [read], targets: none}
+  basename: {effects: [read], targets: none}
+  dirname: {effects: [read], targets: none}
+  realpath: {effects: [read]}
+  readlink: {effects: [read]}
+  seq: {effects: [read], targets: none}
+  "yes": {effects: [read], targets: none}
+  ps: {effects: [read], targets: none}
+  pgrep: {effects: [read], targets: none}
+  top: {effects: [read], targets: none}
+  uptime: {effects: [read], targets: none}
+  free: {effects: [read], targets: none}
+  lsblk: {effects: [read], targets: none}
+  lsof: {effects: [read], targets: none}
+  history: {effects: [read], targets: none}
+  jobs: {effects: [read], targets: none}
+  cal: {effects: [read], targets: none}
+  vmstat: {effects: [read], targets: none}
+  iostat: {effects: [read], targets: none}
+  last: {effects: [read], targets: none}
+  who: {effects: [read], targets: none}
+  w: {effects: [read], targets: none}
+  lscpu: {effects: [read], targets: none}
+  nproc: {effects: [read], targets: none}
+  locale: {effects: [read], targets: none}
+  tty: {effects: [read], targets: none}
+  shuf: {effects: [read], targets: none}
+  grep: {effects: [read], targets: after_first}
+  egrep: {effects: [read], targets: after_first}
+  fgrep: {effects: [read], targets: after_first}
+  awk: {effects: [read], targets: after_first}
+  cut: {effects: [read]}
+  tr: {effects: [read], targets: none}
+  sort: {effects: [read], flags: {-o: [write]}}
+  uniq: {effects: [read]}
+  diff: {effects: [read]}
+  cmp: {effects: [read]}
+  comm: {effects: [read]}
+  join: {effects: [read]}
+  paste: {effects: [read]}
+  column: {effects: [read]}
+  nl: {effects: [read]}
+  rev: {effects: [read]}
+  tac: {effects: [read]}
+  xxd: {effects: [read]}
+  od: {effects: [read]}
+  jq: {effects: [read], targets: after_first}
+  bc: {effects: [read]}
+  base64: {effects: [read]}
+  md5sum: {effects: [read]}
+  sha1sum: {effects: [read]}
+  sha256sum: {effects: [read]}
+  test: {effects: [read], targets: none}
+  "[": {effects: [read], targets: none}
+  cd: {effects: [read], targets: none}
+  export: {effects: [read], targets: none}
+  set: {effects: [read], targets: none}
+  read: {effects: [read], targets: none}
+  find:
+    effects: [read]
+    recursive: true
+    flags: {-delete: [delete]}   # -exec/-execdir/-ok are analysed as nested commands
+
+  # --- filesystem mutation
+  touch: {effects: [write]}
+  mkdir: {effects: [write]}
+  cp: {effects: [write], targets: last}
+  mv: {effects: [write], targets: args}   # source disappears, dest may be clobbered
+  ln: {effects: [write], targets: last}
+  install: {effects: [write], targets: last}
+  tee: {effects: [overwrite], flags: {-a: [write]}}
+  truncate: {effects: [overwrite], targets: args}
+  split: {effects: [write]}
+  patch: {effects: [overwrite]}
+  sed: {effects: [read], targets: after_first, flags: {-i: [overwrite], --in-place: [overwrite]}}
+  tar: {effects: [write]}   # archive name and -C DIR both count as targets
+  zip: {effects: [write]}
+  unzip: {effects: [write]}
+  gzip: {effects: [overwrite]}
+  gunzip: {effects: [overwrite]}
+  bzip2: {effects: [overwrite]}
+  xz: {effects: [overwrite]}
+  rsync: {effects: [write], targets: last, recursive_flags: [r, a, --recursive, --archive], flags: {--delete: [delete]}}
+  rm: {effects: [delete], recursive_flags: [r, R, --recursive]}
+  rmdir: {effects: [delete]}
+  unlink: {effects: [delete]}
+  shred: {effects: [delete, overwrite], min_risk: dangerous}
+  chmod: {effects: [perm_change], targets: after_first, recursive_flags: [R, --recursive]}
+  chown: {effects: [perm_change], targets: after_first, recursive_flags: [R, --recursive]}
+  chgrp: {effects: [perm_change], targets: after_first, recursive_flags: [R, --recursive]}
+  setfacl: {effects: [perm_change], recursive_flags: [R]}
+  dd: {effects: [overwrite], targets: kv}
+
+  # --- disks / system state
+  "mkfs*": {effects: [delete, overwrite], min_risk: critical}
+  fdisk: {effects: [delete, overwrite], min_risk: critical}
+  parted: {effects: [delete, overwrite], min_risk: critical}
+  wipefs: {effects: [delete], min_risk: critical}
+  mount: {effects: [write], min_risk: dangerous}
+  umount: {effects: [write], min_risk: dangerous}
+  shutdown: {effects: [process_control], targets: none, min_risk: critical}
+  reboot: {effects: [process_control], targets: none, min_risk: critical}
+  halt: {effects: [process_control], targets: none, min_risk: critical}
+  poweroff: {effects: [process_control], targets: none, min_risk: critical}
+  init: {effects: [process_control], targets: none, min_risk: critical}
+  crontab: {effects: [write], targets: none, min_risk: dangerous, readonly_flags: [-l]}
+  useradd: {effects: [privilege], targets: none}
+  usermod: {effects: [privilege], targets: none}
+  passwd: {effects: [privilege], targets: none}
+  visudo: {effects: [privilege], targets: none}
+
+  # --- processes
+  kill: {effects: [process_control], targets: none}
+  pkill: {effects: [process_control], targets: none}
+  killall: {effects: [process_control], targets: none}
+  systemctl:
+    targets: none
+    effects: [process_control, privilege]
+    subcommands: {status: [read], list-units: [read], list-unit-files: [read], is-active: [read], is-enabled: [read], show: [read], cat: [read]}
+  service: {effects: [process_control, privilege], targets: none}
+
+  # --- network
+  curl: {effects: [network], targets: none, flags: {-o: [write], -O: [write], --output: [write]}}
+  wget: {effects: [network, write], targets: none, flags: {-O: [overwrite]}}
+  ssh: {effects: [network], targets: none, min_risk: dangerous}
+  scp: {effects: [network, write], targets: none, min_risk: dangerous}
+  sftp: {effects: [network], targets: none}
+  nc: {effects: [network], targets: none}
+  ncat: {effects: [network], targets: none}
+  netcat: {effects: [network], targets: none}
+  telnet: {effects: [network], targets: none}
+  ftp: {effects: [network], targets: none}
+  ping: {effects: [network], targets: none}
+  dig: {effects: [network], targets: none}
+  nslookup: {effects: [network], targets: none}
+
+  # --- package managers (system-wide unless venv, which we cannot see)
+  apt: {effects: [write, network, privilege], targets: none}
+  apt-get: {effects: [write, network, privilege], targets: none}
+  yum: {effects: [write, network, privilege], targets: none}
+  dnf: {effects: [write, network, privilege], targets: none}
+  pacman: {effects: [write, network, privilege], targets: none}
+  snap: {effects: [write, network, privilege], targets: none}
+  apk: {effects: [write, network, privilege], targets: none}
+  pip: {effects: [write, network], targets: none, subcommands: {list: [read], show: [read], freeze: [read]}}
+  pip3: {effects: [write, network], targets: none, subcommands: {list: [read], show: [read], freeze: [read]}}
+  npm: {effects: [write, network], targets: none, subcommands: {ls: [read], list: [read]}}
+
+  git:
+    targets: none
+    effects: [write]
+    subcommands:
+      status: [read]
+      diff: [read]
+      log: [read]
+      show: [read]
+      blame: [read]
+      ls-files: [read]
+      rev-parse: [read]
+      describe: [read]
+      shortlog: [read]
+      branch: [read]      # listing; creating a branch is a harmless write
+      push: [network]
+      pull: [network, overwrite]
+      fetch: [network]
+      clone: [network, write]
+      reset: [overwrite]
+      checkout: [overwrite]
+      restore: [overwrite]
+      clean: [delete]

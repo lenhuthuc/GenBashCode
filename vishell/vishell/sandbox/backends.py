@@ -10,7 +10,6 @@ import platform
 import shutil
 import subprocess
 import sys
-import warnings
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -18,14 +17,11 @@ _RUNNER_PATH = Path(__file__).resolve().parent / "runner.py"
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # vishell/ (contains docker/, vishell/)
 _IMAGE = "vishell-sandbox"
 
-_UNSHARE_WARNED = False
-
 
 class LocalBackend:
-    """Runs runner.py as a direct subprocess. Uses `unshare -rn` to block network when
-    available (typical on Colab/Kaggle Linux runtimes); otherwise runs unsandboxed and
-    warns once — the network-block guarantee is then only as good as classify.py's
-    static filter, so this path is not meant for the Windows laptop."""
+    """Runs runner.py as a direct subprocess under `unshare -rn` (no network). Refuses to
+    run without it: generated commands are never executed unsandboxed. Note this isolates
+    network only, not the filesystem -- use it on disposable VMs (Colab), DockerBackend elsewhere."""
 
     def __init__(self, timeout: float = 30):
         self.timeout = timeout
@@ -34,18 +30,12 @@ class LocalBackend:
         self._has_unshare = shutil.which("unshare") is not None and subprocess.run(
             ["unshare", "-rn", "true"], capture_output=True
         ).returncode == 0
+        if not self._has_unshare:
+            raise RuntimeError("LocalBackend needs working `unshare -rn` (user namespaces); "
+                               "refusing to execute generated commands unsandboxed. Use DockerBackend.")
 
     def run(self, payload: dict) -> dict:
-        global _UNSHARE_WARNED
-        cmd = [sys.executable, str(_RUNNER_PATH)]
-        if self._has_unshare:
-            cmd = ["unshare", "-rn"] + cmd
-        elif not _UNSHARE_WARNED:
-            warnings.warn(
-                "LocalBackend: `unshare` not found, running WITHOUT network isolation. "
-                "Sandbox network-boundary guarantees rely entirely on classify.py here."
-            )
-            _UNSHARE_WARNED = True
+        cmd = ["unshare", "-rn", sys.executable, str(_RUNNER_PATH)]
         proc = subprocess.run(
             cmd, input=json.dumps(payload), capture_output=True, text=True,
             timeout=self.timeout + 15,

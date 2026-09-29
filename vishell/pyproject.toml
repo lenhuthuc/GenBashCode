@@ -18,12 +18,17 @@ train = [
   "huggingface_hub==0.36.2", "torch==2.11.0", "torchao==0.18.0",
 ]
 data = ["requests", "pandas"]
+# Request classifier (XLM-R); same pins as `train` so both run in one Colab env.
+classifier = ["transformers==4.57.6", "tokenizers==0.22.2", "torch==2.11.0", "sentencepiece", "scikit-learn"]
 demo = ["gradio>=5,<6"]
 diversity = ["py_vncorenlp", "scikit-learn"]
 dev = ["pytest"]
 
 [tool.setuptools.packages.find]
 include = ["vishell*"]
+
+[tool.setuptools.package-data]
+"vishell.analyzer" = ["rules.yaml"]
 
 [build-system]
 requires = ["setuptools>=68"]

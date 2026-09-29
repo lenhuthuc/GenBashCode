@@ -29,6 +29,18 @@ Mỗi bước cũng gọi riêng được: `data-nl2bash`, `verify`, `build-data
 `merge-nl2bash`, `sft-scenarios`, `merge-scenarios`, `grpo`, `merge-grpo`, `export`,
 `evaluate`, `report`, `demo`. Override bất kỳ giá trị config nào bằng `--set a.b=c`.
 
+## Safety module (LLM chỉ sinh lệnh, module riêng quyết định)
+
+```bash
+python scripts/autolabel.py                                   # nhãn effects/ambiguous từ AST lệnh gold -> data/classifier/
+python -m vishell.classifier train                            # XLM-R: request -> ambiguous + expected effects
+python -m vishell.generator --model <dir> --items <jsonl> --k 3 --out <jsonl>   # GPU: k mẫu bash/NONE
+python -m vishell.eval [--templates predictions_templates.jsonl]               # so sánh (a) LLM, (b) luật, (c) hybrid
+```
+
+`analyzer/` (bashlex + `rules.yaml`) -> effects/scope/risk; `policy/` -> run/confirm/regenerate/
+ask_clarification/block. Risk cuối luôn là risk của AST; phân loại request chỉ có thể làm chặt hơn.
+
 ## Cấu trúc
 
 ```
