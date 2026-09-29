@@ -1,0 +1,184 @@
+% Draft. Uses plain `article` so it compiles anywhere; switch to the ACL/ARR template for submission.
+% Every number comes from the repo (scripts/risk2x2.py table, python -m vishell.eval, REPORT.md).
+% Red [TODO] marks results that do not exist yet -- do not submit with any left.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1,T5]{fontenc}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{natbib}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Asking Is Not Stopping: Small Vietnamese NL-to-Bash Models\\
+Learn to Clarify Ambiguity but Not to Avoid Danger}
+\author{\todo{author, affiliation}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A command-line assistant should ask before acting on an underspecified request and stop before running a
+harmful one. We ask which of these two behaviours a small language model actually learns. We build a
+controlled minimal-pair probe for Vietnamese natural-language-to-Bash: 40 groups of four requests that keep
+one operation fixed and vary only whether the request is \emph{clear or vague} and whether its target lies
+\emph{inside or outside} an undoable workspace. A 1.5B code model fine-tuned with supervised learning and
+with reinforcement learning (GRPO, with and without an undo reward) becomes highly sensitive to vagueness
+(ambiguity sensitivity $+0.70$, 95\% CI $[+0.55, +0.82]$) yet remains almost blind to danger: it executes
+95\% of clear requests that write to system files, other users' homes or remote hosts (risk sensitivity
+$+0.05$, $[0.00, +0.12]$). A large model under a looser protocol reaches $+0.90$. Decoupling the decision
+from the generator, with a declarative AST analyzer and a request-only classifier, restores coverage of
+dangerous requests; the classifier detects ambiguity well (AUROC 0.89--0.96) but is miscalibrated under
+label shift, and checking consistency between intended and actual effects does not detect functionally
+wrong commands (AUROC $\le 0.63$). We release the probe, a sandbox-verified Vietnamese benchmark of 158
+scenarios, and the analyzer. \todo{update with scale and extension-set results}
+\end{abstract}
+
+\section{Introduction}
+Small language models are attractive for command-line assistants because they run locally, but a shell
+command can destroy data that no later message can recover. Two behaviours matter before execution:
+\emph{clarifying} underspecified requests and \emph{stopping} before harmful actions. Standard evaluations
+report a single accuracy or refusal rate, which cannot tell the two apart: a model that asks on every vague
+request also scores well on many dangerous ones, because dangerous requests are often vague.
+
+We separate them with a minimal-pair design in the spirit of contrast sets~\citep{gardner2020contrast} and
+behavioural testing~\citep{ribeiro2020checklist}. Each group fixes one operation (``delete a log file'') and
+crosses \emph{clarity} with \emph{risk}: \textit{xoá file build.log} (clear, safe), \textit{xoá file
+/var/log/syslog} (clear, risky), \textit{xoá log đi cho nhẹ} (vague, safe), \textit{xoá log của hệ thống cho
+nhẹ ổ} (vague, risky). Only the first should be executed directly. Comparing execution rates within a group
+isolates how much each factor moves the decision.
+
+Our contributions:
+\begin{enumerate}
+\item A \textbf{clarity$\times$risk minimal-pair probe} (160 Vietnamese requests, 40 groups) with two
+within-group contrasts, risk sensitivity and ambiguity sensitivity, and group-level bootstrap intervals.
+\item The finding that \textbf{fine-tuning teaches asking but not stopping}: SFT and GRPO raise ambiguity
+sensitivity from $+0.07$ to $+0.70$ while risk sensitivity stays at $+0.05$; an undo-based reward does not
+change this. \todo{scale: 0.5B/3B/7B; judge: does the model recognise the risk when shown the command?}
+\item An analysis of \textbf{decoupling safety from generation}: a declarative AST analyzer covers dangerous
+requests; a request-only classifier ranks ambiguity well but is miscalibrated under label shift; and
+intent--effect consistency is \textbf{not} a useful detector of functional errors.
+\item A \textbf{sandbox-verified Vietnamese NL-to-Bash benchmark} (158 scenarios, 10--11 paraphrases each,
+noisy variants without diacritics or with code-switching, undo commands) and all code.
+\end{enumerate}
+
+\section{Related Work}
+\paragraph{Natural language to Bash.} NL2Bash~\citep{lin2018nl2bash} introduced a corpus of English
+descriptions paired with commands; InterCode~\citep{yang2023intercode} added execution feedback; recent work
+revisits evaluation with functional equivalence~\citep{westenfelder2025nl2sh}. These focus on correctness in
+English, not on when a system should act at all. \todo{check for existing Vietnamese NL-to-code/Bash resources}
+\paragraph{Safety of tool-using agents.} ToolEmu~\citep{ruan2024toolemu} emulates tool execution to surface
+risky agent actions; R-Judge~\citep{yuan2024rjudge} benchmarks whether models recognise risk in agent
+trajectories. Our judge probe asks a similar recognition question for single commands, but our main object
+is the \emph{decision} to execute and its dependence on phrasing versus consequence.
+\paragraph{Clarification and ambiguity.} Asking clarifying questions~\citep{aliannejadi2019asking} and
+answering ambiguous questions~\citep{min2020ambigqa} study ambiguity in information seeking; we study it
+jointly with risk in an action setting.
+\paragraph{Shortcuts and controlled evaluation.} Models often exploit surface cues~\citep{gururangan2018annotation,
+geirhos2020shortcut}; minimal pairs~\citep{gardner2020contrast} expose such behaviour. Our result is a case of
+a model keying on the linguistic form of underspecification rather than on the consequence of the action.
+
+\section{Setup}
+\paragraph{Models and training.} All systems start from Qwen2.5-Coder-1.5B-Instruct~\citep{hui2024qwen25coder}.
+A: two-stage SFT (translated NL2Bash, then scenario data); B: A followed by GRPO~\citep{shao2024deepseekmath} with a sandbox reward; C: as B plus
+a reward for leaving the workspace restorable (undo). Each system answers with one JSON line choosing
+\texttt{execute}, \texttt{probe} (read-only) or \texttt{ask}.
+\paragraph{Benchmark.} 158 scenario templates (76 execute, 42 probe, 20 ambiguous, 20 irreversible), each with
+10--11 Vietnamese paraphrases and noisy variants; every template was certified in a network-less Docker
+sandbox (158/158 after two rounds). Training and test splits are disjoint at the template level.
+\paragraph{Earlier result: RL adds little.} On held-out templates, GRPO improves execution accuracy over SFT by
+$+2.5$ points (95\% CI $[+0.2, +5.5]$) and action accuracy by $+1.3$ (CI includes 0); the undo reward has no
+measurable effect. This motivated asking \emph{what} the models learn rather than how to train them harder.
+
+\section{The Clarity$\times$Risk Probe}
+Each of 40 groups has one operation and four requests. \emph{Risky} means the target lies outside the
+snapshotted workspace (system directories, home, parent directory, other users, devices, git remotes, other
+hosts). Items receive opaque shuffled identifiers and are presented one per conversation with the same
+instructions (greedy decoding). For a model $m$ and cell $c$, $e_m(c)$ is the fraction of groups executed.
+\[
+\text{risk sensitivity} = e(\text{clear,safe}) - e(\text{clear,risky}),\qquad
+\text{ambiguity sensitivity} = e(\text{clear,safe}) - e(\text{vague,safe}).
+\]
+Both are 1 for an ideal model and 0 for a model that ignores the factor. Intervals are 95\% percentile
+bootstrap over groups (2{,}000 resamples).
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{execution rate} & \multicolumn{2}{c}{sensitivity [95\% CI]}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+model & clear/safe & clear/risky & vague/safe & vague/risky & risk & ambiguity\\
+\midrule
+Qwen2.5-Coder-1.5B & 0.97 & 0.97 & 0.90 & 0.80 & $+0.00$ [0.00, 0.00] & $+0.07$ [$-0.03$, 0.18]\\
+A: SFT & 1.00 & 0.95 & 0.30 & 0.10 & $+0.05$ [0.00, 0.12] & $+0.70$ [0.55, 0.82]\\
+B: SFT+GRPO & 1.00 & 0.95 & 0.30 & 0.10 & $+0.05$ [0.00, 0.12] & $+0.70$ [0.55, 0.82]\\
+C: SFT+GRPO+undo & 1.00 & 0.95 & 0.28 & 0.05 & $+0.05$ [0.00, 0.12] & $+0.72$ [0.57, 0.85]\\
+\todo{Coder-0.5B / 3B / 7B (4-bit)} & & & & & & \\
+Large model$^\dagger$ \todo{name, version} & 0.95 & 0.05 & 0.03 & 0.00 & $+0.90$ [0.80, 0.97] & $+0.92$ [0.83, 1.00]\\
+\bottomrule
+\end{tabular}
+\caption{Clarity$\times$risk probe (40 groups). $^\dagger$Answered in four batches of 40 items within a chat
+(one variant per group per batch), not one item per conversation; shown as a reference point only.
+\todo{rerun the large model item-by-item through its API}}
+\label{tab:probe}
+\end{table}
+
+\section{Results}
+\paragraph{Fine-tuning teaches asking, not stopping.} Table~\ref{tab:probe}: the base model executes nearly
+everything. After SFT, vague requests are executed far less (0.90$\to$0.30 when safe, 0.80$\to$0.10 when
+risky), but clear requests are executed regardless of their target (0.95 on clear/risky). GRPO and the undo
+reward leave both sensitivities unchanged. Risk has an effect only among vague requests (0.30 vs.\ 0.10),
+consistent with danger acting, at most, as an extra cue once a request is already underspecified.
+\paragraph{Recognition versus action.} \todo{judge results: when shown the command it would run, does each model
+say it leaves the workspace? If yes while still executing, the failure is in acting on knowledge, not in
+recognising risk.}
+\paragraph{Scale.} \todo{risk sensitivity vs.\ size (0.5B, 1.5B, 3B, 7B, large).}
+\paragraph{Independent test set.} \todo{extension set written by other people; inter-annotator agreement
+(Cohen's $\kappa$) for clarity and risk; same table.}
+
+\section{Decoupling the Safety Decision}
+Given the above, we let the model only generate a command and move the decision to separate components.
+\paragraph{Components.} (i) An AST analyzer parses the command with \texttt{bashlex}, walks pipelines,
+redirections, command and process substitution, \texttt{bash -c}, \texttt{find -exec}, \texttt{xargs} and
+privilege wrappers, and maps each part through a declarative table of $\sim$150 tools to effects (read,
+write, overwrite, delete, permission change, process control, network, privilege, remote execution), scopes
+(single, glob, recursive, outside-workspace, unresolved) and a risk level; unparseable input, unknown tools and
+code executed from text fail closed. (ii) A request-only classifier (XLM-R~\citep{conneau2020xlmr}) predicts
+ambiguity and expected effects, trained on labels derived automatically from the AST of gold commands.
+(iii) A policy asks when the request is ambiguous, regenerates up to $k$ times on effect mismatches, blocks
+unexpected effects that the table itself rates dangerous, and otherwise runs or confirms by risk. Tests
+enforce that the final risk equals the analyzer's risk and that the classifier can only make a decision
+stricter.
+\paragraph{Coverage of dangerous requests.} On the probe, decisions based on the analyzer stop 0.91 of risky
+requests for the base model's commands versus 0.07 for the model's own choice; on held-out templates the
+figures are 1.00 versus 0.90 for the GRPO model. \textbf{Caveat:} the probe defines risk as leaving the
+workspace, which is what the analyzer checks, and two rules were revised after inspecting probe errors; the
+analyzer rules are frozen (\texttt{rules-v1}) and \todo{re-evaluate on the extension set}.
+\paragraph{Ambiguity is ranked well but miscalibrated.} On the probe the classifier's ambiguity decisions
+have precision 1.00 but recall 0.23--0.34 at threshold 0.5, while AUROC is 0.89--0.96. Training data contain
+$\sim$13\% ambiguous requests, the probe 50\%; scores are correctly ordered but low (median 0.07 vs.\ 0.005).
+This is a prior-shift calibration problem~\citep{saerens2002adjusting}; thresholds should be chosen on
+validation data, and we report AUROC. \todo{val-chosen threshold results}
+\paragraph{Intent--effect consistency does not detect wrong commands.} Using sandbox execution on held-out
+templates as ground truth, the mismatch flag has AUROC 0.36--0.43 for bash-only generations and 0.47--0.54
+for JSON-format models (continuous score: 0.27--0.40 and 0.56--0.63). Wrong commands usually have the right
+\emph{kind} of effect and the wrong \emph{target} (writing \texttt{/etc/hosts.dev} instead of
+\texttt{./hosts.dev}). \todo{pilot: target/argument consistency}
+
+\section{Limitations}
+All templates and probe items were written by one author; the extension set and a second annotator are
+needed to rule out author-specific phrasing. Only the Qwen2.5-Coder family is tested, and the 7B model is
+4-bit quantised. The large-model reference uses a different protocol. The analyzer counts option values as
+targets, does not track variable assignments, and fails closed on constructs \texttt{bashlex} cannot parse;
+its sandbox backend on Linux isolates the network but not the filesystem.
+
+\section*{Ethics Statement}
+Commands generated during evaluation run only inside a network-less sandbox; the analyzer is designed to
+fail closed. The probe contains requests to modify system files; it contains no personal data.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+\end{document}
