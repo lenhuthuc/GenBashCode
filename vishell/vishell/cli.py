@@ -271,6 +271,29 @@ def step_merge(stage: str, cfg: dict, paths: Paths, force: bool) -> None:
     out_dir = paths.models / f"merged_{stage}"
     result = merge_adapter(base_model, adapter_dir, str(out_dir), dtype=cfg["train"]["dtype"], force=force)
     print(f"[merge-{stage}] {result}")
+    if not result["skipped"]:
+        _invalidate_downstream(stage, paths)
+
+
+# Stages trained on top of each merged model. A fresh merge means a new base, so their
+# checkpoints are stale: resuming one would graft a LoRA trained on the old base onto the new.
+# ponytail: also wipes still-valid downstream work when a deterministic merge is merely redone
+# (e.g. merged_* not copied to a new Drive); a content fingerprint would avoid that.
+_DOWNSTREAM = {
+    "nl2bash": ["sft_scenarios", "grpo", "grpo_undo"],
+    "scenarios": ["grpo", "grpo_undo"],
+}
+
+
+def _invalidate_downstream(stage: str, paths: Paths) -> None:
+    import shutil
+
+    for dep in _DOWNSTREAM.get(stage, []):
+        merged_name = "scenarios" if dep == "sft_scenarios" else dep
+        for d in (paths.checkpoints / dep, paths.models / f"merged_{merged_name}"):
+            if d.exists():
+                shutil.rmtree(d)
+                print(f"[merge-{stage}] new base -> removed stale {d}")
 
 
 def _prev_stage(stage: str) -> str:

@@ -1,0 +1,22 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 8645.09it/s]
+[transformers] [1mXLMRobertaModel LOAD REPORT[0m from: FacebookAI/xlm-roberta-base
+Key                       | Status     |  | 
+--------------------------+------------+--+-
+lm_head.dense.weight      | UNEXPECTED |  | 
+lm_head.layer_norm.bias   | UNEXPECTED |  | 
+lm_head.bias              | UNEXPECTED |  | 
+lm_head.layer_norm.weight | UNEXPECTED |  | 
+lm_head.dense.bias        | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+{"epoch": 1, "train_loss": 0.7423773875216392, "ambiguity_f1": 0.717, "effects_micro_f1": 0.589, "effects_exact": 0.1429}
+{"epoch": 2, "train_loss": 0.38235525851637, "ambiguity_f1": 0.7805, "effects_micro_f1": 0.6606, "effects_exact": 0.5325}
+{"epoch": 3, "train_loss": 0.19729265758319747, "ambiguity_f1": 0.7568, "effects_micro_f1": 0.7048, "effects_exact": 0.5844}
+{"epoch": 4, "train_loss": 0.11592339679661683, "ambiguity_f1": 0.6875, "effects_micro_f1": 0.7296, "effects_exact": 0.6623}
+{"epoch": 5, "train_loss": 0.07557502383452679, "ambiguity_f1": 0.8205, "effects_micro_f1": 0.7143, "effects_exact": 0.632}
+{"epoch": 6, "train_loss": 0.04795330732997963, "ambiguity_f1": 0.7778, "effects_micro_f1": 0.6788, "effects_exact": 0.5931}
+{"epoch": 7, "train_loss": 0.034067333014957006, "ambiguity_f1": 0.8108, "effects_micro_f1": 0.6801, "effects_exact": 0.5974}
+{"epoch": 8, "train_loss": 0.028058383176849864, "ambiguity_f1": 0.8205, "effects_micro_f1": 0.6718, "effects_exact": 0.5844}
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.87s/it]Writing model shards: 100%|██████████| 1/1 [00:01<00:00,  1.87s/it]

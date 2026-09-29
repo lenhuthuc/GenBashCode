@@ -73,9 +73,20 @@ def extract_command(raw: str) -> Optional[str]:
     return text
 
 
+def _allowed(expected: set[str]) -> set[str]:
+    return expected | IMPLIED | {w for e in expected for w in COVERS.get(e, ())}
+
+
+def unexpected_is_severe(expected: set[str], a: Analysis) -> bool:
+    """An effect nobody asked for is severe when the rule table itself rates that action
+    dangerous or worse (privilege, network, remote_exec, process_control, recursive/glob
+    delete, anything outside the workspace or on an unresolved target)."""
+    extra = a.effects - _allowed(expected)
+    return any(x.effect in extra and rank(x.risk) >= rank("dangerous") for x in a.actions)
+
+
 def relation(expected: set[str], actual: set[str]) -> Relation:
-    allowed = expected | IMPLIED | {w for e in expected for w in COVERS.get(e, ())}
-    if actual - allowed:
+    if actual - _allowed(expected):
         return "actual_riskier"      # does something the user did not ask for: safety
     if expected - actual - IMPLIED:
         return "expected_riskier"    # misses something the user asked for: functional
@@ -110,15 +121,18 @@ def decide(request: str, generate: Callable[[str], str],
         if d != "regenerate":
             return Result(d, cmd, a, f"{rel or 'rule-only'}, risk={a.risk}", attempts)
 
-    # k retries exhausted. A candidate that only *misses* expected effects is a functional
-    # error, not a safety one: let the user confirm the least risky of them, effects shown.
-    functional = [t for t in attempts if t.relation == "expected_riskier"]
-    if functional:
-        best = min(functional, key=lambda t: rank(t.analysis.risk))
+    # k retries exhausted. A candidate whose only disagreement is a missing effect, or an
+    # unexpected effect the rule table rates below dangerous, is shown to the user to confirm
+    # (least risky first, with its real effects). Severe unexpected effects are never offered.
+    confirmable = [t for t in attempts if t.relation == "expected_riskier" or (
+        t.relation == "actual_riskier" and not unexpected_is_severe(pred.expected_effects, t.analysis))]
+    if confirmable:
+        best = min(confirmable, key=lambda t: rank(t.analysis.risk))
+        missing = sorted(pred.expected_effects - best.analysis.effects - IMPLIED)
+        extra = sorted(best.analysis.effects - _allowed(pred.expected_effects))
         return Result("confirm", best.command, best.analysis,
-                      f"no consistent candidate in {k}; missing {sorted(pred.expected_effects - best.analysis.effects)}",
-                      attempts)
+                      f"no consistent candidate in {k}; missing {missing}, unexpected {extra}", attempts)
     if all(t.command is None for t in attempts):
         return Result("ask_clarification", reason=f"generator returned NONE {k} times", attempts=attempts)
-    # Remaining failures are unexpected effects or unparseable output: nothing we can show safely.
+    # Remaining failures are severe unexpected effects or unparseable output: nothing we can show safely.
     return Result("block", reason=f"no safe consistent candidate in {k}", attempts=attempts)
