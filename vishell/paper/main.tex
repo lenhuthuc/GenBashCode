@@ -28,12 +28,16 @@ one operation fixed and vary only whether the request is \emph{clear or vague} a
 with reinforcement learning (GRPO, with and without an undo reward) becomes highly sensitive to vagueness
 (ambiguity sensitivity $+0.70$, 95\% CI $[+0.55, +0.82]$) yet remains almost blind to danger: it executes
 95\% of clear requests that write to system files, other users' homes or remote hosts (risk sensitivity
-$+0.05$, $[0.00, +0.12]$). A large model under a looser protocol reaches $+0.90$. Decoupling the decision
+$+0.05$, $[0.00, +0.12]$), although its training data contained as many risk-motivated as ambiguity-motivated
+clarification examples. Across the untuned model family the pattern reverses: risk sensitivity is zero up to
+3B, $+0.40$ $[+0.25, +0.55]$ at 7B and $+0.90$ for a large model (queried under a looser protocol), while
+ambiguity sensitivity stays low.
+Ambiguity handling is learned from data; risk awareness appears only with scale. Decoupling the decision
 from the generator, with a declarative AST analyzer and a request-only classifier, restores coverage of
 dangerous requests; the classifier detects ambiguity well (AUROC 0.89--0.96) but is miscalibrated under
 label shift, and checking consistency between intended and actual effects does not detect functionally
 wrong commands (AUROC $\le 0.63$). We release the probe, a sandbox-verified Vietnamese benchmark of 158
-scenarios, and the analyzer. \todo{update with scale and extension-set results}
+scenarios, and the analyzer. \todo{update with extension-set results}
 \end{abstract}
 
 \section{Introduction}
@@ -54,9 +58,11 @@ Our contributions:
 \begin{enumerate}
 \item A \textbf{clarity$\times$risk minimal-pair probe} (160 Vietnamese requests, 40 groups) with two
 within-group contrasts, risk sensitivity and ambiguity sensitivity, and group-level bootstrap intervals.
-\item The finding that \textbf{fine-tuning teaches asking but not stopping}: SFT and GRPO raise ambiguity
-sensitivity from $+0.07$ to $+0.70$ while risk sensitivity stays at $+0.05$; an undo-based reward does not
-change this. \todo{scale: 0.5B/3B/7B; judge: does the model recognise the risk when shown the command?}
+\item A \textbf{dissociation between the two behaviours}: fine-tuning a 1.5B model raises ambiguity
+sensitivity from $+0.07$ to $+0.70$ but risk sensitivity only to $+0.05$, despite balanced risk and ambiguity
+supervision and an undo-based RL reward; conversely, risk sensitivity emerges with model scale (0 up to 3B,
+$+0.40$ at 7B, $+0.90$ for a large model) while ambiguity sensitivity does not.
+\todo{judge AUROC: recognition vs.\ action}
 \item An analysis of \textbf{decoupling safety from generation}: a declarative AST analyzer covers dangerous
 requests; a request-only classifier ranks ambiguity well but is miscalibrated under label shift; and
 intent--effect consistency is \textbf{not} a useful detector of functional errors.
@@ -112,15 +118,21 @@ bootstrap over groups (2{,}000 resamples).
 \cmidrule(lr){2-5}\cmidrule(lr){6-7}
 model & clear/safe & clear/risky & vague/safe & vague/risky & risk & ambiguity\\
 \midrule
+Qwen2.5-Coder-0.5B$^\ast$ & 0.45 & 0.47 & 0.17 & 0.30 & $-0.02$ [$-0.10$, 0.05] & $+0.28$ [0.07, 0.47]\\
 Qwen2.5-Coder-1.5B & 0.97 & 0.97 & 0.90 & 0.80 & $+0.00$ [0.00, 0.00] & $+0.07$ [$-0.03$, 0.18]\\
+Qwen2.5-Coder-3B & 1.00 & 1.00 & 0.90 & 0.70 & $+0.00$ [0.00, 0.00] & $+0.10$ [0.03, 0.20]\\
+Qwen2.5-Coder-7B (4-bit) & 0.90 & 0.50 & 0.75 & 0.20 & $+0.40$ [0.25, 0.55] & $+0.15$ [0.00, 0.30]\\
+\midrule
 A: SFT & 1.00 & 0.95 & 0.30 & 0.10 & $+0.05$ [0.00, 0.12] & $+0.70$ [0.55, 0.82]\\
 B: SFT+GRPO & 1.00 & 0.95 & 0.30 & 0.10 & $+0.05$ [0.00, 0.12] & $+0.70$ [0.55, 0.82]\\
 C: SFT+GRPO+undo & 1.00 & 0.95 & 0.28 & 0.05 & $+0.05$ [0.00, 0.12] & $+0.72$ [0.57, 0.85]\\
-\todo{Coder-0.5B / 3B / 7B (4-bit)} & & & & & & \\
+\midrule
 Large model$^\dagger$ \todo{name, version} & 0.95 & 0.05 & 0.03 & 0.00 & $+0.90$ [0.80, 0.97] & $+0.92$ [0.83, 1.00]\\
 \bottomrule
 \end{tabular}
-\caption{Clarity$\times$risk probe (40 groups). $^\dagger$Answered in four batches of 40 items within a chat
+\caption{Clarity$\times$risk probe (40 groups). Top: untuned models by size; middle: the 1.5B model after
+fine-tuning. $^\ast$The 0.5B model executes fewer than half of the clear, safe requests, so its sensitivities
+are hard to interpret. $^\dagger$Answered in four batches of 40 items within a chat
 (one variant per group per batch), not one item per conversation; shown as a reference point only.
 \todo{rerun the large model item-by-item through its API}}
 \label{tab:probe}
@@ -131,11 +143,23 @@ Large model$^\dagger$ \todo{name, version} & 0.95 & 0.05 & 0.03 & 0.00 & $+0.90$
 everything. After SFT, vague requests are executed far less (0.90$\to$0.30 when safe, 0.80$\to$0.10 when
 risky), but clear requests are executed regardless of their target (0.95 on clear/risky). GRPO and the undo
 reward leave both sensitivities unchanged. Risk has an effect only among vague requests (0.30 vs.\ 0.10),
-consistent with danger acting, at most, as an extra cue once a request is already underspecified.
-\paragraph{Recognition versus action.} \todo{judge results: when shown the command it would run, does each model
-say it leaves the workspace? If yes while still executing, the failure is in acting on knowledge, not in
-recognising risk.}
-\paragraph{Scale.} \todo{risk sensitivity vs.\ size (0.5B, 1.5B, 3B, 7B, large).}
+consistent with danger acting, at most, as an extra cue once a request is already underspecified. This is
+not for lack of supervision: the fine-tuning scenarios contain 20 templates whose correct action is to ask
+because the request is ambiguous and 20 whose correct action is to ask because the command is irreversible
+or leaves the workspace.
+\paragraph{Scale.} Without fine-tuning, risk sensitivity is zero at 1.5B and 3B, $+0.40$ $[+0.25, +0.55]$ at 7B
+and $+0.90$ for the large reference model, whereas ambiguity sensitivity of untuned models stays low ($+0.07$
+to $+0.15$ for 1.5B--7B). The two behaviours therefore have different sources: ambiguity handling is acquired
+from task data, risk awareness from scale. The 7B model's gain comes with some over-caution (it executes 0.90
+of clear, safe requests).
+\paragraph{Recognition versus action.} We show every model the same 78 commands (those model A executed for
+clear requests) and ask whether each leaves the workspace. Generated yes/no answers are dominated by a
+constant bias or by unusable output: the 1.5B model flags only 1 of 38 risky commands, the 7B model is wrong
+on 39 of 40 safe ones, and the fine-tuned models on all 40 safe ones (they often answer in their JSON format),
+so these answers cannot measure recognition; only the 3B model discriminates (31/38
+risky and 28/40 safe correct). We therefore score $\log P(\text{CÓ}) - \log P(\text{KHÔNG})$ and report its
+AUROC. \todo{judge AUROC per model; if the fine-tuned 1.5B ranks risky commands above safe ones while still
+executing them, the failure is in acting on recognised risk rather than in recognising it}
 \paragraph{Independent test set.} \todo{extension set written by other people; inter-annotator agreement
 (Cohen's $\kappa$) for clarity and risk; same table.}
 

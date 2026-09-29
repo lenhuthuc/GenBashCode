@@ -74,7 +74,10 @@ cùng nhóm; khoảng tin cậy 95% bootstrap theo nhóm.
 
 | model | chạy: rõ+an toàn | rõ+nguy hiểm | mơ hồ+an toàn | mơ hồ+nguy hiểm | độ nhạy nguy hiểm | độ nhạy mơ hồ |
 | --- | --- | --- | --- | --- | --- | --- |
+| Qwen2.5-Coder-0.5B (gốc)¹ | 0.45 | 0.47 | 0.17 | 0.30 | −0.02 [−0.10, +0.05] | +0.28 [+0.07, +0.47] |
 | Qwen2.5-Coder-1.5B (gốc) | 0.97 | 0.97 | 0.90 | 0.80 | +0.00 [+0.00, +0.00] | +0.07 [−0.03, +0.18] |
+| Qwen2.5-Coder-3B (gốc) | 1.00 | 1.00 | 0.90 | 0.70 | +0.00 [+0.00, +0.00] | +0.10 [+0.03, +0.20] |
+| Qwen2.5-Coder-7B (gốc, 4-bit) | 0.90 | 0.50 | 0.75 | 0.20 | +0.40 [+0.25, +0.55] | +0.15 [+0.00, +0.30] |
 | A: SFT | 1.00 | 0.95 | 0.30 | 0.10 | +0.05 [+0.00, +0.12] | +0.70 [+0.55, +0.82] |
 | B: SFT + GRPO | 1.00 | 0.95 | 0.30 | 0.10 | +0.05 [+0.00, +0.12] | +0.70 [+0.55, +0.82] |
 | C: SFT + GRPO + thưởng undo | 1.00 | 0.95 | 0.28 | 0.05 | +0.05 [+0.00, +0.12] | +0.72 [+0.57, +0.85] |
@@ -83,8 +86,15 @@ cùng nhóm; khoảng tin cậy 95% bootstrap theo nhóm.
 \* Giao thức khác: model lớn nhận câu theo lô 40 câu trong một chat (mỗi lô một biến thể/nhóm), các model nhỏ
 nhận từng câu riêng. **Chưa ghi tên/phiên bản model lớn** — cần bổ sung trước khi dùng trong paper.
 
-Chưa có: cỡ 0.5B / 3B / 7B và phép thử `judge` (model có *nhận ra* lệnh đụng ra ngoài không, khi được xem lệnh):
-chạy phần "Phép thử 2×2 theo cỡ model" trong notebook.
+¹ 0.5B chạy chưa tới nửa số câu rõ + an toàn nên độ nhạy khó diễn giải.
+
+**Hai năng lực đến từ hai nguồn:** độ nhạy nguy hiểm = 0 tới 3B, +0.40 ở 7B, +0.90 ở model lớn (theo cỡ model);
+độ nhạy mơ hồ của model gốc chỉ +0.07–+0.15, fine-tune đưa lên +0.70 (theo dữ liệu). Dữ liệu fine-tune có
+20 template "hỏi lại vì mơ hồ" và 20 template "hỏi lại vì nguy hiểm", nhưng model chỉ học được phần mơ hồ.
+
+**`judge`** (cho model xem lệnh, hỏi có đụng ra ngoài không): câu trả lời sinh ra bị thiên lệch hằng (1.5B gần như
+luôn "không", 7B và A/B/C gần như luôn "có" hoặc trả JSON) nên không đo được; chỉ 3B phân biệt (31/38 và 28/40).
+Đã đổi sang AUROC của log P(CÓ) − log P(KHÔNG); cần chạy lại phần judge trên Colab.
 
 #### 2. Safety module: LLM chỉ sinh lệnh, module riêng quyết định
 - `generator/`: yêu cầu → một lệnh bash hoặc `NONE` (mẫu đầu greedy, sau đó sample).

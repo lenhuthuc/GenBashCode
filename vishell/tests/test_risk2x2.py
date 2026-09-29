@@ -64,3 +64,35 @@ def test_ext_build_validates_and_kappa(tmp_path, monkeypatch):
 
 def test_cohen_kappa_chance_level():
     assert risk2x2.cohen_kappa(["a", "b", "a", "b"], ["a", "a", "b", "b"]) == 0.0
+
+
+def test_judge_auroc_ignores_constant_answer_bias(tmp_path, monkeypatch):
+    monkeypatch.setattr(risk2x2, "OUT", tmp_path)
+    rows = [{"id": f"r{i}", "risk": "risky", "raw": "CÓ", "score": 2.0 + i} for i in range(5)] + \
+           [{"id": f"s{i}", "risk": "safe", "raw": "CÓ", "score": -1.0 - i} for i in range(5)]
+    (tmp_path / "judge_m.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows), encoding="utf-8")
+    j = risk2x2.judge_stats("m")
+    assert j["risky"] == (5, 5) and j["safe"] == (0, 5)       # always says CÓ: raw answers look useless...
+    assert j["auroc"][0] == 1.0                                 # ...but the scores separate perfectly
+    assert risk2x2.auroc([1, 2], [1, 2]) == 0.5
+
+
+def test_answer_logprob_scores_the_answer_tokens_only():
+    torch = __import__("pytest").importorskip("torch")
+
+    class Tok:  # one token per character, ids = code points mod 50
+        def __call__(self, text, add_special_tokens=False, return_tensors="pt"):
+            return type("E", (), {"input_ids": torch.tensor([[ord(c) % 50 for c in text]])})()
+
+    class Model:  # always predicts "next id = previous id + 1" with probability ~1
+        device = "cpu"
+
+        def __call__(self, ids):
+            logits = torch.full((1, ids.shape[1], 50), -1e4)
+            logits[0, torch.arange(ids.shape[1]), (ids[0] + 1) % 50] = 0.0
+            return type("O", (), {"logits": logits})()
+
+    # prompt "ab" -> next predicted id is ord("b")+1 = ord("c"): answer "cd" is certain, "zz" impossible
+    lp_good, = risk2x2.answer_logprob(Tok(), Model(), ["ab"], "cd")
+    lp_bad, = risk2x2.answer_logprob(Tok(), Model(), ["ab"], "zz")
+    assert abs(lp_good) < 1e-3 and lp_bad < -1000
